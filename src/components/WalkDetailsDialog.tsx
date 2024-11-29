@@ -5,7 +5,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import { GoogleMap, LoadScript, Marker, DirectionsRenderer } from "@react-google-maps/api";
+import { GoogleMap, LoadScript, DirectionsRenderer } from "@react-google-maps/api";
 import { useState, useEffect, useCallback } from "react";
 
 const GOOGLE_MAPS_API_KEY = "AIzaSyC806xlYYv2CYq2euqLnD4_cMrKrUTZGNI";
@@ -40,23 +40,33 @@ const WalkDetailsDialog = ({
   const [isLoaded, setIsLoaded] = useState(false);
 
   const calculateRoute = useCallback((stepsWithPositions: Step[]) => {
-    if (!isLoaded || !window.google) return;
+    if (!isLoaded || !window.google || !stepsWithPositions.length) return;
+
+    const stepsWithValidPositions = stepsWithPositions.filter(step => 
+      step.position && 
+      typeof step.position.lat === 'number' && 
+      typeof step.position.lng === 'number'
+    );
+
+    if (stepsWithValidPositions.length < 2) return;
 
     const directionsService = new window.google.maps.DirectionsService();
-    const waypoints = stepsWithPositions
+
+    const origin = stepsWithValidPositions[0].position;
+    const destination = stepsWithValidPositions[stepsWithValidPositions.length - 1].position;
+    const waypoints = stepsWithValidPositions
       .slice(1, -1)
-      .filter(step => step.position)
       .map(step => ({
         location: step.position as google.maps.LatLngLiteral,
         stopover: true
       }));
 
-    if (stepsWithPositions[0]?.position && stepsWithPositions[stepsWithPositions.length - 1]?.position) {
+    if (origin && destination) {
       directionsService.route(
         {
-          origin: stepsWithPositions[0].position,
-          destination: stepsWithPositions[stepsWithPositions.length - 1].position,
-          waypoints: waypoints,
+          origin,
+          destination,
+          waypoints,
           travelMode: window.google.maps.TravelMode.WALKING
         },
         (result, status) => {
@@ -69,7 +79,7 @@ const WalkDetailsDialog = ({
   }, [isLoaded]);
 
   useEffect(() => {
-    if (walk && isOpen && isLoaded) {
+    if (walk?.title && isOpen && isLoaded) {
       const steps = getStepsForWalk(walk.title);
       const stepsWithPositions = steps.map(step => {
         switch(walk.title) {
@@ -167,6 +177,11 @@ const WalkDetailsDialog = ({
                   mapContainerStyle={{ width: "100%", height: "100%" }}
                   center={center}
                   zoom={13}
+                  options={{
+                    gestureHandling: 'cooperative',
+                    streetViewControl: false,
+                    mapTypeControl: false,
+                  }}
                 >
                   {directions && <DirectionsRenderer directions={directions} />}
                 </GoogleMap>

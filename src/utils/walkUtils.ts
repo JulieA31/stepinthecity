@@ -5,145 +5,126 @@ const generatePointsOfInterest = (type: string, center: { lat: number; lng: numb
   const pointsCount = {
     "30min": 2,
     "1h": 3,
-    "2h": 4,
-    "3h": 5
+    "2h": 5,
+    "3h": 7
   }[duration] || 3;
 
-  // Ajuster le rayon en fonction de la durée
+  // Ajuster le rayon en fonction de la durée (en degrés, ~1km = 0.01)
   const radiusMap = {
-    "30min": 0.003, // ~300m
-    "1h": 0.005,    // ~500m
-    "2h": 0.008,    // ~800m
-    "3h": 0.01      // ~1km
+    "30min": 0.01,    // ~1km
+    "1h": 0.02,       // ~2km
+    "2h": 0.03,       // ~3km
+    "3h": 0.04        // ~4km
   };
   
-  const radius = radiusMap[duration as keyof typeof radiusMap] || 0.005;
+  const radius = radiusMap[duration as keyof typeof radiusMap] || 0.02;
   
-  const pointsByType = {
-    historical: [
-      {
-        title: "Monument historique",
-        description: "Un lieu chargé d'histoire à découvrir",
-        duration: "30min",
-        position: {
-          lat: center.lat + radius * Math.cos(Math.PI / 4),
-          lng: center.lng + radius * Math.sin(Math.PI / 4)
+  // Points d'intérêt par ville (basé sur les coordonnées du centre)
+  const cityPOIs: { [key: string]: any } = {
+    // Toulouse (approximativement 43.6045, 1.4440)
+    "toulouse": {
+      historical: [
+        {
+          title: "Capitole de Toulouse",
+          description: "Hôtel de ville historique et théâtre",
+          duration: "45min",
+          position: { lat: 43.6045, lng: 1.4440 }
+        },
+        {
+          title: "Basilique Saint-Sernin",
+          description: "Plus grande église romane d'Europe",
+          duration: "30min",
+          position: { lat: 43.6088, lng: 1.4417 }
+        },
+        {
+          title: "Couvent des Jacobins",
+          description: "Chef d'œuvre de l'art gothique",
+          duration: "40min",
+          position: { lat: 43.6033, lng: 1.4402 }
+        },
+        {
+          title: "Musée des Augustins",
+          description: "Musée des Beaux-Arts",
+          duration: "1h",
+          position: { lat: 43.6003, lng: 1.4467 }
         }
-      },
-      {
-        title: "Site archéologique",
-        description: "Vestiges anciens remarquables",
-        duration: "30min",
-        position: {
-          lat: center.lat + radius * Math.cos(3 * Math.PI / 4),
-          lng: center.lng + radius * Math.sin(3 * Math.PI / 4)
+      ],
+      cultural: [
+        {
+          title: "Musée des Abattoirs",
+          description: "Art moderne et contemporain",
+          duration: "1h",
+          position: { lat: 43.5989, lng: 1.4308 }
+        },
+        {
+          title: "Théâtre du Capitole",
+          description: "Opéra national",
+          duration: "45min",
+          position: { lat: 43.6043, lng: 1.4437 }
+        },
+        {
+          title: "Halle de La Machine",
+          description: "Machines géantes et spectaculaires",
+          duration: "1h30",
+          position: { lat: 43.5717, lng: 1.4778 }
         }
-      },
-      {
-        title: "Musée d'histoire",
-        description: "Collections historiques fascinantes",
-        duration: "45min",
-        position: {
-          lat: center.lat + radius * Math.cos(5 * Math.PI / 4),
-          lng: center.lng + radius * Math.sin(5 * Math.PI / 4)
+      ],
+      nature: [
+        {
+          title: "Jardin des Plantes",
+          description: "Plus grand jardin public de Toulouse",
+          duration: "45min",
+          position: { lat: 43.5923, lng: 1.4503 }
+        },
+        {
+          title: "Prairie des Filtres",
+          description: "Parc en bord de Garonne",
+          duration: "30min",
+          position: { lat: 43.5977, lng: 1.4397 }
+        },
+        {
+          title: "Jardin Royal",
+          description: "Jardin historique",
+          duration: "30min",
+          position: { lat: 43.5954, lng: 1.4515 }
         }
-      }
-    ],
-    cultural: [
-      {
-        title: "Musée d'art",
-        description: "Collections d'art exceptionnelles",
-        duration: "45min",
-        position: {
-          lat: center.lat + radius * Math.cos(Math.PI / 3),
-          lng: center.lng + radius * Math.sin(Math.PI / 3)
+      ],
+      food: [
+        {
+          title: "Marché Victor Hugo",
+          description: "Plus grand marché couvert",
+          duration: "45min",
+          position: { lat: 43.6024, lng: 1.4453 }
+        },
+        {
+          title: "Quartier des Carmes",
+          description: "Restaurants et épiceries fines",
+          duration: "1h",
+          position: { lat: 43.5977, lng: 1.4453 }
         }
-      },
-      {
-        title: "Galerie d'art contemporain",
-        description: "Expositions d'art moderne",
-        duration: "30min",
-        position: {
-          lat: center.lat + radius * Math.cos(2 * Math.PI / 3),
-          lng: center.lng + radius * Math.sin(2 * Math.PI / 3)
-        }
-      },
-      {
-        title: "Théâtre historique",
-        description: "Lieu culturel emblématique",
-        duration: "30min",
-        position: {
-          lat: center.lat + radius * Math.cos(4 * Math.PI / 3),
-          lng: center.lng + radius * Math.sin(4 * Math.PI / 3)
-        }
-      }
-    ],
-    nature: [
-      {
-        title: "Jardin public",
-        description: "Espace vert paisible",
-        duration: "30min",
-        position: {
-          lat: center.lat + radius * Math.cos(Math.PI / 6),
-          lng: center.lng + radius * Math.sin(Math.PI / 6)
-        }
-      },
-      {
-        title: "Parc botanique",
-        description: "Collection de plantes remarquables",
-        duration: "45min",
-        position: {
-          lat: center.lat + radius * Math.cos(5 * Math.PI / 6),
-          lng: center.lng + radius * Math.sin(5 * Math.PI / 6)
-        }
-      },
-      {
-        title: "Point de vue naturel",
-        description: "Panorama sur la ville",
-        duration: "20min",
-        position: {
-          lat: center.lat + radius * Math.cos(7 * Math.PI / 6),
-          lng: center.lng + radius * Math.sin(7 * Math.PI / 6)
-        }
-      }
-    ],
-    food: [
-      {
-        title: "Restaurant traditionnel",
-        description: "Cuisine locale authentique",
-        duration: "1h",
-        position: {
-          lat: center.lat + radius * Math.cos(Math.PI / 2),
-          lng: center.lng + radius * Math.sin(Math.PI / 2)
-        }
-      },
-      {
-        title: "Marché local",
-        description: "Produits frais et spécialités",
-        duration: "45min",
-        position: {
-          lat: center.lat + radius * Math.cos(3 * Math.PI / 2),
-          lng: center.lng + radius * Math.sin(3 * Math.PI / 2)
-        }
-      },
-      {
-        title: "Pâtisserie artisanale",
-        description: "Délices sucrés traditionnels",
-        duration: "20min",
-        position: {
-          lat: center.lat + radius * Math.cos(0),
-          lng: center.lng + radius * Math.sin(0)
-        }
-      }
-    ]
+      ]
+    }
+    // Ajoutez d'autres villes ici avec leurs points d'intérêt
   };
 
-  let selectedPoints = type === "all" 
-    ? Object.values(pointsByType).flat()
-    : pointsByType[type as keyof typeof pointsByType] || [];
+  // Déterminer la ville en fonction des coordonnées
+  const city = "toulouse"; // Pour l'instant fixé à Toulouse, à rendre dynamique plus tard
 
-  // Sélectionner aléatoirement le bon nombre de points
-  return selectedPoints
+  // Sélectionner les points d'intérêt en fonction du type
+  let availablePoints = type === "all" 
+    ? Object.values(cityPOIs[city]).flat()
+    : cityPOIs[city][type] || [];
+
+  // Si pas assez de points pour le type spécifique, compléter avec d'autres types
+  if (availablePoints.length < pointsCount) {
+    const otherPoints = Object.values(cityPOIs[city])
+      .flat()
+      .filter(point => !availablePoints.includes(point));
+    availablePoints = [...availablePoints, ...otherPoints];
+  }
+
+  // Sélectionner aléatoirement le nombre de points requis
+  return availablePoints
     .sort(() => Math.random() - 0.5)
     .slice(0, pointsCount);
 };

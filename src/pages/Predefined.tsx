@@ -1,7 +1,7 @@
 import { MapPin, Clock, Users, Volume2 } from "lucide-react";
 import { useState } from "react";
 import { useLocation } from "react-router-dom";
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import WalkDetailsDialog from "@/components/WalkDetailsDialog";
 
 const lisbonneHistoriqueSteps = [
   {
@@ -103,15 +103,12 @@ const Predefined = () => {
 
   const getImageForWalk = (title: string) => {
     const imageMap: { [key: string]: string } = {
-      // Paris
       "Sur les pas de Victor Hugo": "/lovable-uploads/00ff1698-cc1b-43bb-be54-594a21634a90.png",
       "Les classiques de Paris": "/lovable-uploads/84b16743-6931-4157-9ce5-f52dc2c22cbd.png",
       "Balade gastronomique": "/lovable-uploads/d47de2a6-5b1a-40bd-86da-20acfad3f35a.png",
-      // Lisbonne
       "Lisbonne historique": "/lovable-uploads/68af49fb-4c88-402f-99c2-e06a4af91c2a.png",
       "Sur les rails du Tram 28": "/lovable-uploads/ae74de2f-fbb8-4777-bf21-bfbe98673652.png",
       "Saveurs portugaises": "/lovable-uploads/e3d12aa4-a953-4b29-858d-2ab4ea55a7da.png",
-      // Porto
       "Route des vins": "https://images.unsplash.com/photo-1469041797191-50ace28483c3",
       "Porto médiéval": "https://images.unsplash.com/photo-1452378174528-3090a4bba7b2",
       "Porto artistique": "https://images.unsplash.com/photo-1487252665478-49b61b47f302",
@@ -189,51 +186,13 @@ const Predefined = () => {
           ))}
         </div>
 
-        <Dialog open={selectedWalk !== null} onOpenChange={() => setSelectedWalk(null)}>
-          <DialogContent className="max-w-3xl">
-            {selectedWalk && (
-              <>
-                <DialogHeader>
-                  <DialogTitle className="text-2xl font-display">{selectedWalk.title}</DialogTitle>
-                </DialogHeader>
-                <div 
-                  className="h-64 w-full bg-cover bg-center rounded-lg mb-6"
-                  style={{ 
-                    backgroundImage: `url(${getImageForWalk(selectedWalk.title)}?auto=format&fit=crop&w=1200&q=80)`,
-                  }}
-                />
-                <div className="mt-4">
-                  <p className="text-gray-600 mb-6">{selectedWalk.description}</p>
-                  
-                  <div className="flex items-center gap-6 mb-8">
-                    <div className="flex items-center gap-2">
-                      <Clock className="text-primary" size={20} />
-                      <span>{selectedWalk.duration}</span>
-                    </div>
-                    <div className="flex items-center gap-2">
-                      <Users className="text-primary" size={20} />
-                      <span>{selectedWalk.difficulty}</span>
-                    </div>
-                  </div>
-
-                  <div className="space-y-6">
-                    <h3 className="text-xl font-semibold">Étapes du parcours</h3>
-                    {getStepsForWalk(selectedWalk.title).map((step, index) => (
-                      <div key={index} className="border-l-2 border-primary pl-4">
-                        <h4 className="text-lg font-medium mb-2">{step.title}</h4>
-                        <p className="text-gray-600 mb-2">{step.description}</p>
-                        <div className="flex items-center text-sm text-gray-500">
-                          <Clock size={16} className="mr-1" />
-                          <span>{step.duration}</span>
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              </>
-            )}
-          </DialogContent>
-        </Dialog>
+        <WalkDetailsDialog
+          walk={selectedWalk}
+          isOpen={selectedWalk !== null}
+          onClose={() => setSelectedWalk(null)}
+          getImageForWalk={getImageForWalk}
+          getStepsForWalk={getStepsForWalk}
+        />
       </div>
     </div>
   );

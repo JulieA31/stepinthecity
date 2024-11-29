@@ -28,7 +28,7 @@ const Index = () => {
       <main className="container mx-auto px-4 py-12">
         <div className="grid md:grid-cols-2 gap-8 animate-fade-up">
           <Link to="/custom" className="card group">
-            <div className="flex items-center gap-4 mb-4">
+            <div className="flex items-center justify-center gap-4 mb-4">
               <div className="p-3 bg-primary/10 rounded-full">
                 <Compass className="w-6 h-6 text-primary" />
               </div>
@@ -43,7 +43,7 @@ const Index = () => {
           </Link>
 
           <Link to="/predefined" className="card group">
-            <div className="flex items-center gap-4 mb-4">
+            <div className="flex items-center justify-center gap-4 mb-4">
               <div className="p-3 bg-primary/10 rounded-full">
                 <MapPin className="w-6 h-6 text-primary" />
               </div>
@@ -59,7 +59,7 @@ const Index = () => {
 
           <div className="md:col-span-2 mt-8">
             <div className="card">
-              <div className="flex items-center gap-4 mb-4">
+              <div className="flex items-center justify-center gap-4 mb-4">
                 <div className="p-3 bg-primary/10 rounded-full">
                   <Clock className="w-6 h-6 text-primary" />
                 </div>

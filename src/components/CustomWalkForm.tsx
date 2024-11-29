@@ -28,15 +28,6 @@ const CustomWalkForm = ({ onGenerate, startLocation, endLocation, setShowMap, ro
       return;
     }
 
-    if (routeType === "point-to-point" && !endLocation) {
-      toast({
-        title: "Point d'arrivée manquant",
-        description: "Veuillez sélectionner un point d'arrivée sur la carte",
-        variant: "destructive"
-      });
-      return;
-    }
-
     const steps = generateStepsForType(type, startLocation, duration);
     
     if (startLocation) {
@@ -46,18 +37,25 @@ const CustomWalkForm = ({ onGenerate, startLocation, endLocation, setShowMap, ro
         duration: "0min",
         position: startLocation
       });
+
+      // Ajout du point d'arrivée identique au point de départ pour une boucle
+      if (routeType === "loop") {
+        steps.push({
+          title: "Point d'arrivée",
+          description: "Fin du parcours",
+          duration: "0min",
+          position: startLocation
+        });
+      } else if (routeType === "point-to-point" && endLocation) {
+        steps.push({
+          title: "Point d'arrivée",
+          description: "Fin du parcours",
+          duration: "0min",
+          position: endLocation
+        });
+      }
     }
 
-    if (routeType === "point-to-point" && endLocation) {
-      steps.push({
-        title: "Point d'arrivée",
-        description: "Fin du parcours",
-        duration: "0min",
-        position: endLocation
-      });
-    }
-
-    console.log("Steps generated:", steps); // Ajout d'un log pour déboguer
     onGenerate(steps);
     
     toast({

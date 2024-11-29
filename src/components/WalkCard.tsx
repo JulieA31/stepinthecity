@@ -1,5 +1,5 @@
 import { Volume2, Clock, Users, MapPin } from "lucide-react";
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import { useToast } from "@/components/ui/use-toast";
 
 interface WalkCardProps {
@@ -16,17 +16,28 @@ const WalkCard = ({ walk, audioEnabled, onAudioToggle, onClick, getImageForWalk,
   const [isPlaying, setIsPlaying] = useState(false);
   const { toast } = useToast();
 
+  useEffect(() => {
+    // Cleanup function to stop audio when component unmounts
+    return () => {
+      if (audioRef.current) {
+        audioRef.current.pause();
+        audioRef.current = null;
+      }
+    };
+  }, []);
+
   const handleAudioToggle = async (e: React.MouseEvent) => {
     e.stopPropagation();
     
-    const audioPath = `/audio/${walk.title.toLowerCase().replace(/ /g, '-')}.mp3`;
+    const formattedTitle = walk.title.toLowerCase().replace(/ /g, '-');
+    const audioPath = `/audio/${formattedTitle}.mp3`;
     console.log('Tentative de lecture audio:', audioPath);
     
     if (!audioRef.current) {
       console.log('Création d\'un nouvel élément audio');
-      audioRef.current = new Audio(audioPath);
+      const audio = new Audio(audioPath);
       
-      audioRef.current.onerror = (e) => {
+      audio.addEventListener('error', (e) => {
         console.error('Erreur de chargement audio:', e);
         toast({
           title: "Erreur",
@@ -34,28 +45,50 @@ const WalkCard = ({ walk, audioEnabled, onAudioToggle, onClick, getImageForWalk,
           variant: "destructive"
         });
         setIsPlaying(false);
-      };
+      });
+
+      audio.addEventListener('canplaythrough', () => {
+        console.log('Audio chargé avec succès');
+      });
+
+      audioRef.current = audio;
     }
 
-    if (isPlaying) {
-      console.log('Pause de l\'audio');
-      audioRef.current.pause();
-      setIsPlaying(false);
-    } else {
-      try {
+    try {
+      if (isPlaying) {
+        console.log('Pause de l\'audio');
+        audioRef.current.pause();
+        setIsPlaying(false);
+      } else {
         console.log('Tentative de lecture');
-        await audioRef.current.play();
-        console.log('Lecture démarrée avec succès');
-        setIsPlaying(true);
-        onAudioToggle(walk.title);
-      } catch (error) {
-        console.error('Erreur lors de la lecture:', error);
-        toast({
-          title: "Erreur",
-          description: "Impossible de lancer la narration audio.",
-          variant: "destructive"
-        });
+        const playPromise = audioRef.current.play();
+        
+        if (playPromise !== undefined) {
+          playPromise
+            .then(() => {
+              console.log('Lecture démarrée avec succès');
+              setIsPlaying(true);
+              onAudioToggle(walk.title);
+            })
+            .catch(error => {
+              console.error('Erreur lors de la lecture:', error);
+              toast({
+                title: "Erreur",
+                description: "Impossible de lancer la narration audio.",
+                variant: "destructive"
+              });
+              setIsPlaying(false);
+            });
+        }
       }
+    } catch (error) {
+      console.error('Erreur lors de la lecture:', error);
+      toast({
+        title: "Erreur",
+        description: "Impossible de lancer la narration audio.",
+        variant: "destructive"
+      });
+      setIsPlaying(false);
     }
   };
 

@@ -12,12 +12,12 @@ const Index = () => {
           </div>
           <div className="relative">
             <img 
-              src="/lovable-uploads/6721e497-8569-4a9d-b197-0993800eab92.png"
+              src="/lovable-uploads/fd183326-fb36-4fca-88df-47ac0310f4c7.png"
               alt="Illustration urbaine avec des personnes marchant dans la ville et des arbres roses"
-              className="w-full h-64 object-cover rounded-lg shadow-md mb-4"
+              className="w-full h-80 object-contain bg-white rounded-lg shadow-md mb-4"
             />
             <div className="absolute inset-0 flex items-center justify-center px-4">
-              <h2 className="font-script text-4xl md:text-6xl text-white drop-shadow-[0_2px_2px_rgba(0,0,0,0.8)] text-center">
+              <h2 className="font-script text-4xl md:text-6xl text-text drop-shadow-[0_2px_2px_rgba(255,255,255,0.8)] text-center">
                 Explorez la Ville Autrement
               </h2>
             </div>

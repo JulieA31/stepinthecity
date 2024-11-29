@@ -1,12 +1,83 @@
-// Update this page (the content is just a fallback if you fail to update the page)
+import { MapPin, Clock, Compass } from "lucide-react";
+import { Link } from "react-router-dom";
 
 const Index = () => {
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-100">
-      <div className="text-center">
-        <h1 className="text-4xl font-bold mb-4">Welcome to Your Blank App</h1>
-        <p className="text-xl text-gray-600">Start building your amazing project here!</p>
-      </div>
+    <div className="min-h-screen bg-secondary">
+      <header className="bg-white shadow-sm">
+        <div className="container mx-auto px-4 py-6">
+          <h1 className="text-4xl font-display text-text">BaladIA</h1>
+          <p className="text-lg mt-2 text-gray-600">Explorez la ville autrement</p>
+        </div>
+      </header>
+
+      <main className="container mx-auto px-4 py-12">
+        <div className="grid md:grid-cols-2 gap-8 animate-fade-up">
+          <Link to="/custom" className="card group">
+            <div className="flex items-center gap-4 mb-4">
+              <div className="p-3 bg-primary/10 rounded-full">
+                <Compass className="w-6 h-6 text-primary" />
+              </div>
+              <h2 className="text-2xl font-display">Itinéraire Personnalisé</h2>
+            </div>
+            <p className="text-gray-600">
+              Créez votre parcours idéal en fonction de vos préférences et du temps disponible.
+            </p>
+            <button className="btn-primary mt-6 w-full">
+              Commencer
+            </button>
+          </Link>
+
+          <Link to="/predefined" className="card group">
+            <div className="flex items-center gap-4 mb-4">
+              <div className="p-3 bg-primary/10 rounded-full">
+                <MapPin className="w-6 h-6 text-primary" />
+              </div>
+              <h2 className="text-2xl font-display">Parcours Prédéfinis</h2>
+            </div>
+            <p className="text-gray-600">
+              Découvrez nos sélections d'itinéraires thématiques soigneusement préparés.
+            </p>
+            <button className="btn-primary mt-6 w-full">
+              Explorer
+            </button>
+          </Link>
+
+          <div className="md:col-span-2 mt-8">
+            <div className="card">
+              <div className="flex items-center gap-4 mb-4">
+                <div className="p-3 bg-primary/10 rounded-full">
+                  <Clock className="w-6 h-6 text-primary" />
+                </div>
+                <h2 className="text-2xl font-display">Comment ça marche ?</h2>
+              </div>
+              <div className="grid md:grid-cols-3 gap-6 mt-6">
+                <div className="text-center">
+                  <div className="w-12 h-12 bg-accent/10 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <span className="text-accent font-bold">1</span>
+                  </div>
+                  <h3 className="font-semibold mb-2">Choisissez votre style</h3>
+                  <p className="text-gray-600">Sélectionnez le type de balade qui vous correspond</p>
+                </div>
+                <div className="text-center">
+                  <div className="w-12 h-12 bg-accent/10 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <span className="text-accent font-bold">2</span>
+                  </div>
+                  <h3 className="font-semibold mb-2">Personnalisez</h3>
+                  <p className="text-gray-600">Ajustez la durée et les points d'intérêt</p>
+                </div>
+                <div className="text-center">
+                  <div className="w-12 h-12 bg-accent/10 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <span className="text-accent font-bold">3</span>
+                  </div>
+                  <h3 className="font-semibold mb-2">Explorez</h3>
+                  <p className="text-gray-600">Laissez-vous guider à travers la ville</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </main>
     </div>
   );
 };

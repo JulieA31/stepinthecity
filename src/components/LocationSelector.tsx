@@ -9,92 +9,70 @@ import {
 import { MapPin } from "lucide-react";
 
 export const touristicCities = {
-  France: ["Paris", "Nice", "Lyon", "Bordeaux", "Marseille"],
-  Italy: ["Rome", "Venice", "Florence", "Milan", "Naples"],
-  Spain: ["Barcelona", "Madrid", "Seville", "Valencia", "Granada"],
-  "United Kingdom": ["London", "Edinburgh", "Bath", "Oxford", "Cambridge"],
-  Portugal: ["Lisbon", "Porto"],
+  France: ["Paris"],
+  Italy: ["Rome"],
+  Portugal: ["Lisbonne"]
 };
 
-export const cityItineraries = {
+export const cityItineraries: { [key: string]: any[] } = {
   Paris: [
     {
       title: "Sur les pas de Victor Hugo",
+      description: "Découvrez les lieux emblématiques qui ont marqué la vie et l'œuvre de Victor Hugo à Paris.",
       duration: "2h30",
-      difficulty: "Facile",
-      description: "Découvrez les lieux qui ont inspiré les plus grandes œuvres de Victor Hugo"
+      difficulty: "Facile"
     },
     {
       title: "Les classiques de Paris",
-      duration: "3h",
-      difficulty: "Moyen",
-      description: "Tour Eiffel, Louvre, Notre-Dame... Les incontournables de Paris"
+      description: "Un parcours incontournable pour découvrir les monuments les plus emblématiques de Paris.",
+      duration: "5h",
+      difficulty: "Modéré"
     },
     {
       title: "Balade gastronomique",
-      duration: "2h",
-      difficulty: "Facile",
-      description: "Découvrez les meilleures adresses culinaires de la capitale"
-    }
-  ],
-  Lisbon: [
-    {
-      title: "Lisbonne historique",
-      duration: "3h",
-      difficulty: "Moyen",
-      description: "Du château São Jorge à la Tour de Belém, découvrez l'histoire de Lisbonne"
-    },
-    {
-      title: "Sur les rails du Tram 28",
-      duration: "2h",
-      difficulty: "Facile",
-      description: "Suivez l'itinéraire du célèbre tramway à travers les quartiers typiques"
-    },
-    {
-      title: "Saveurs portugaises",
-      duration: "2h30",
-      difficulty: "Facile",
-      description: "Des pastéis de nata aux sardines grillées, goûtez aux spécialités locales"
-    }
-  ],
-  Porto: [
-    {
-      title: "Route des vins",
-      duration: "3h",
-      difficulty: "Facile",
-      description: "Découverte des caves et dégustation des meilleurs portos"
-    },
-    {
-      title: "Porto médiéval",
-      duration: "2h30",
-      difficulty: "Moyen",
-      description: "Exploration du quartier historique de la Ribeira"
-    },
-    {
-      title: "Porto artistique",
-      duration: "2h",
-      difficulty: "Facile",
-      description: "Des azulejos aux street art, l'art dans tous ses états"
+      description: "Une promenade gourmande à travers les quartiers historiques de Paris.",
+      duration: "3h30",
+      difficulty: "Facile"
     }
   ],
   Rome: [
     {
       title: "Sur les pas de César",
+      description: "Revivez l'histoire de la Rome antique en suivant les traces de Jules César.",
       duration: "3h",
-      difficulty: "Moyen",
-      description: "Découvrez les vestiges de la Rome antique, du Colisée au Forum Romain"
+      difficulty: "Modéré"
     },
     {
       title: "Rome baroque",
+      description: "Découvrez les plus belles places et fontaines de la Rome baroque.",
       duration: "2h30",
-      difficulty: "Facile",
-      description: "Fontaine de Trevi, Place Navone, Panthéon... Les merveilles de la Rome baroque"
+      difficulty: "Facile"
     },
     {
       title: "Vatican et spiritualité",
+      description: "Une immersion dans le plus petit État du monde et ses trésors.",
       duration: "3h",
-      difficulty: "Facile",
-      description: "Explorez la Cité du Vatican, ses musées et la basilique Saint-Pierre"
+      difficulty: "Facile"
+    }
+  ],
+  Lisbonne: [
+    {
+      title: "Lisbonne historique",
+      description: "Un voyage dans le temps à travers les monuments emblématiques de Lisbonne.",
+      duration: "3h",
+      difficulty: "Modéré"
+    },
+    {
+      title: "Sur les rails du Tram 28",
+      description: "Suivez l'itinéraire du célèbre tramway à travers les quartiers historiques.",
+      duration: "2h",
+      difficulty: "Facile"
+    },
+    {
+      title: "Saveurs portugaises",
+      description: "Une découverte des spécialités culinaires lisboètes.",
+      duration: "2h30",
+      difficulty: "Facile"
     }
   ]
 };

@@ -3,7 +3,6 @@ import { useCallback, useEffect, useState } from "react";
 import { Step } from "@/types/walk";
 import { calculateDirectionsRoute } from "@/utils/mapUtils";
 import { HoverCard, HoverCardContent, HoverCardTrigger } from "@/components/ui/hover-card";
-import Image from "@/components/ui/image";
 
 interface WalkMapProps {
   steps: Step[];
@@ -72,7 +71,6 @@ const WalkMap = ({ steps, walkTitle, isLoaded }: WalkMapProps) => {
               color: "white",
               fontWeight: "bold"
             }}
-            title={step.title}
           />
         </div>
       </HoverCardTrigger>

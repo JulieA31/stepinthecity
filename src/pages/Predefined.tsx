@@ -25,7 +25,7 @@ const countryFlags: { [key: string]: string } = {
 const Predefined = () => {
   const [audioEnabled, setAudioEnabled] = useState<{ [key: string]: boolean }>({});
   const [selectedWalk, setSelectedWalk] = useState<any | null>(null);
-  const [selectedCity, setSelectedCity] = useState<string | null>(null);
+  const [selectedCity, setSelectedCity] = useState<string>("");
 
   const toggleAudio = (title: string) => {
     setAudioEnabled(prev => ({

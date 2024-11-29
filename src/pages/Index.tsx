@@ -12,8 +12,8 @@ const Index = () => {
           </div>
           <div className="relative">
             <img 
-              src="/lovable-uploads/cf7da931-623b-442f-b18a-62ba82e479fe.png"
-              alt="Illustration d'une rue urbaine avec lampadaires et bâtiments roses"
+              src="/lovable-uploads/6721e497-8569-4a9d-b197-0993800eab92.png"
+              alt="Illustration urbaine avec des personnes marchant dans la ville et des arbres roses"
               className="w-full h-64 object-cover rounded-lg shadow-md mb-4"
             />
             <div className="absolute inset-0 flex items-center justify-center px-4">

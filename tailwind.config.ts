@@ -33,6 +33,7 @@ export default {
       fontFamily: {
         sans: ["Inter", "sans-serif"],
         display: ["Playfair Display", "serif"],
+        avallon: ["Avallon", "sans-serif"],
       },
       keyframes: {
         "fade-up": {

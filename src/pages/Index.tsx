@@ -10,11 +10,18 @@ const Index = () => {
             <Globe className="w-6 h-6 text-primary" />
             <h1 className="text-4xl font-display text-text">Balad.IA</h1>
           </div>
-          <img 
-            src="/lovable-uploads/cf7da931-623b-442f-b18a-62ba82e479fe.png"
-            alt="Illustration d'une rue urbaine avec lampadaires et bâtiments roses"
-            className="w-full h-64 object-cover rounded-lg shadow-md mb-4"
-          />
+          <div className="relative">
+            <img 
+              src="/lovable-uploads/cf7da931-623b-442f-b18a-62ba82e479fe.png"
+              alt="Illustration d'une rue urbaine avec lampadaires et bâtiments roses"
+              className="w-full h-64 object-cover rounded-lg shadow-md mb-4"
+            />
+            <div className="absolute inset-0 flex items-center justify-center">
+              <h2 className="font-avallon text-4xl md:text-5xl text-white drop-shadow-[0_2px_2px_rgba(0,0,0,0.8)]">
+                Explorez la Ville Autrement
+              </h2>
+            </div>
+          </div>
         </div>
       </header>
 

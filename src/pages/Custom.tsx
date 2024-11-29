@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { LoadScript } from "@react-google-maps/api";
+import { useJsApiLoader } from "@react-google-maps/api";
 import LocationMap from "@/components/LocationMap";
 import WalkMap from "@/components/WalkMap";
 import CustomWalkForm from "@/components/CustomWalkForm";
@@ -14,6 +14,11 @@ const Custom = () => {
   const [endLocation, setEndLocation] = useState<{ lat: number; lng: number } | null>(null);
   const [generatedSteps, setGeneratedSteps] = useState<Step[]>([]);
   const [isMapVisible, setIsMapVisible] = useState(false);
+
+  const { isLoaded } = useJsApiLoader({
+    id: 'google-map-script',
+    googleMapsApiKey: GOOGLE_MAPS_API_KEY
+  });
 
   const handleGenerateSteps = (steps: Step[]) => {
     console.log("Steps received in Custom:", steps);
@@ -36,13 +41,17 @@ const Custom = () => {
 
         {isMapVisible && generatedSteps.length > 0 && (
           <div className="h-[600px] relative mt-8 rounded-lg overflow-hidden shadow-lg">
-            <LoadScript googleMapsApiKey={GOOGLE_MAPS_API_KEY}>
+            {isLoaded ? (
               <WalkMap
                 steps={generatedSteps}
                 walkTitle="Parcours personnalisé"
-                isLoaded={true}
+                isLoaded={isLoaded}
               />
-            </LoadScript>
+            ) : (
+              <div className="h-full flex items-center justify-center">
+                Chargement de la carte...
+              </div>
+            )}
           </div>
         )}
       </div>

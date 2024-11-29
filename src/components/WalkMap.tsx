@@ -9,27 +9,14 @@ interface WalkMapProps {
   isLoaded: boolean;
 }
 
-const mapContainerStyle = {
-  width: "100%",
-  height: "100%",
-  minHeight: "400px"
-};
-
-const defaultCenter = { lat: 48.8566, lng: 2.3522 };
-
 const WalkMap = ({ steps, walkTitle, isLoaded }: WalkMapProps) => {
   const [directions, setDirections] = useState<google.maps.DirectionsResult | null>(null);
-  const [center, setCenter] = useState<google.maps.LatLngLiteral>(defaultCenter);
+  const [center, setCenter] = useState<google.maps.LatLngLiteral>({ lat: 48.8566, lng: 2.3522 });
   const [map, setMap] = useState<google.maps.Map | null>(null);
 
-  const onLoad = useCallback((map: google.maps.Map) => {
-    console.log("Map loaded successfully");
-    setMap(map);
-  }, []);
-
   const calculateRoute = useCallback(async () => {
-    if (!isLoaded || !steps || steps.length < 2) {
-      console.log("Cannot calculate route: map not loaded or insufficient steps");
+    if (!steps || steps.length < 2) {
+      console.log("Cannot calculate route: insufficient steps");
       return;
     }
 
@@ -67,7 +54,7 @@ const WalkMap = ({ steps, walkTitle, isLoaded }: WalkMapProps) => {
     } catch (error) {
       console.error("Error calculating route:", error);
     }
-  }, [steps, isLoaded]);
+  }, [steps]);
 
   useEffect(() => {
     if (steps.length > 0) {
@@ -76,17 +63,16 @@ const WalkMap = ({ steps, walkTitle, isLoaded }: WalkMapProps) => {
     }
   }, [calculateRoute, steps]);
 
-  if (!isLoaded) {
-    console.log("Map is not loaded yet");
-    return <div className="h-full flex items-center justify-center">Loading...</div>;
-  }
-
   return (
     <GoogleMap
-      mapContainerStyle={mapContainerStyle}
+      mapContainerStyle={{
+        width: "100%",
+        height: "100%",
+        minHeight: "400px"
+      }}
       center={center}
       zoom={13}
-      onLoad={onLoad}
+      onLoad={setMap}
       options={{
         gestureHandling: 'cooperative',
         streetViewControl: false,

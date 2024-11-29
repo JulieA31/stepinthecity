@@ -11,9 +11,9 @@ const Header = () => {
         <div className="flex justify-between items-center">
           <Link to="/" className="flex items-center gap-2 text-text">
             <img 
-              src="/lovable-uploads/cb8a89a9-b412-4275-9f16-1200ded34287.png" 
-              alt="Réverbère"
-              className="w-6 h-8 object-contain"
+              src="/lovable-uploads/18a323e4-8732-4bd7-8a15-069876a74b4a.png" 
+              alt="Silhouette Charlie Chaplin"
+              className="w-8 h-8 object-contain"
             />
             <span className="text-2xl font-display text-text">Balad.IA</span>
           </Link>

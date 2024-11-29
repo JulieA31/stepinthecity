@@ -4,12 +4,12 @@ import { Link } from "react-router-dom";
 const Index = () => {
   return (
     <div className="min-h-screen bg-secondary pt-24">
-      <main className="container mx-auto px-4 py-12">
+      <main className="container mx-auto px-4 py-8">
         <div className="text-center mb-12">
           <img 
             src="/lovable-uploads/fd183326-fb36-4fca-88df-47ac0310f4c7.png"
             alt="Illustration urbaine avec des personnes marchant dans la ville et des arbres roses"
-            className="w-full h-80 object-contain bg-white rounded-lg shadow-md mx-auto"
+            className="w-full max-w-3xl h-80 object-contain bg-white rounded-lg shadow-md mx-auto"
           />
           <h2 className="font-bigelow text-5xl md:text-7xl text-text mt-6 mb-8">
             Explore la ville autrement
@@ -17,7 +17,10 @@ const Index = () => {
         </div>
 
         <div className="grid md:grid-cols-2 gap-8 animate-fade-up">
-          <Link to="/custom" className="card group">
+          <Link 
+            to="/custom" 
+            className="bg-white p-6 rounded-lg shadow-md hover:shadow-lg transition-shadow"
+          >
             <div className="flex items-center justify-center gap-4 mb-4">
               <div className="p-3 bg-primary/10 rounded-full">
                 <Compass className="w-6 h-6 text-primary" />
@@ -27,12 +30,15 @@ const Index = () => {
             <p className="text-gray-600">
               Crée ton parcours idéal en fonction de tes préférences et de ton temps.
             </p>
-            <button className="btn-primary mt-6 w-full">
+            <button className="mt-6 w-full bg-primary text-white py-2 px-4 rounded-md hover:bg-accent transition-colors">
               Commencer
             </button>
           </Link>
 
-          <Link to="/predefined" className="card group">
+          <Link 
+            to="/predefined" 
+            className="bg-white p-6 rounded-lg shadow-md hover:shadow-lg transition-shadow"
+          >
             <div className="flex items-center justify-center gap-4 mb-4">
               <div className="p-3 bg-primary/10 rounded-full">
                 <MapPin className="w-6 h-6 text-primary" />
@@ -42,13 +48,13 @@ const Index = () => {
             <p className="text-gray-600">
               Découvre nos sélections d'itinéraires thématiques soigneusement préparés.
             </p>
-            <button className="btn-primary mt-6 w-full">
+            <button className="mt-6 w-full bg-primary text-white py-2 px-4 rounded-md hover:bg-accent transition-colors">
               Explorer
             </button>
           </Link>
 
           <div className="md:col-span-2 mt-8">
-            <div className="card">
+            <div className="bg-white p-6 rounded-lg shadow-md">
               <div className="flex items-center justify-center gap-4 mb-4">
                 <div className="p-3 bg-primary/10 rounded-full">
                   <Clock className="w-6 h-6 text-primary" />

@@ -15,25 +15,46 @@ const Index = () => {
               <h1 className="text-4xl font-display text-text">StepInTheCity</h1>
             </div>
             
-            <button 
-              onClick={() => setIsMenuOpen(!isMenuOpen)}
-              className="cursor-pointer"
-              aria-label="Toggle menu"
-            >
-              {isMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
-            </button>
+            <div className="flex items-center gap-4">
+              <nav className="hidden lg:flex items-center gap-4">
+                <Link to="/custom" className="text-text hover:text-primary transition-colors">
+                  Parcours personnalisé
+                </Link>
+                <Link to="/predefined" className="text-text hover:text-primary transition-colors">
+                  Parcours prédéfinis
+                </Link>
+              </nav>
+              
+              <button 
+                onClick={() => setIsMenuOpen(!isMenuOpen)}
+                className="cursor-pointer"
+                aria-label="Toggle menu"
+              >
+                {isMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
+              </button>
+            </div>
 
             <nav className={`${
-              isMenuOpen ? 'flex' : 'hidden'
-            } absolute top-full left-0 w-full 
-            bg-white shadow-lg flex-col 
-            items-center gap-4 p-4 z-50`}>
-              <Link to="/custom" className="text-text hover:text-primary transition-colors">
-                Parcours personnalisé
-              </Link>
-              <Link to="/predefined" className="text-text hover:text-primary transition-colors">
-                Parcours prédéfinis
-              </Link>
+              isMenuOpen ? 'block' : 'hidden'
+            } absolute top-full right-0 w-64 
+            bg-white shadow-lg rounded-lg
+            mt-2 py-4 z-50`}>
+              <div className="flex flex-col items-start px-4">
+                <Link 
+                  to="/custom" 
+                  className="w-full text-left py-2 text-text hover:text-primary transition-colors"
+                  onClick={() => setIsMenuOpen(false)}
+                >
+                  Parcours personnalisé
+                </Link>
+                <Link 
+                  to="/predefined" 
+                  className="w-full text-left py-2 text-text hover:text-primary transition-colors"
+                  onClick={() => setIsMenuOpen(false)}
+                >
+                  Parcours prédéfinis
+                </Link>
+              </div>
             </nav>
           </div>
 

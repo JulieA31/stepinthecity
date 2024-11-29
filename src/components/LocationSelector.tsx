@@ -13,6 +13,7 @@ const touristicCities = {
   Italy: ["Rome", "Venice", "Florence", "Milan", "Naples"],
   Spain: ["Barcelona", "Madrid", "Seville", "Valencia", "Granada"],
   "United Kingdom": ["London", "Edinburgh", "Bath", "Oxford", "Cambridge"],
+  Portugal: ["Lisbon", "Porto"],
 };
 
 type CountryKey = keyof typeof touristicCities;
@@ -31,12 +32,16 @@ const LocationSelector = () => {
       <MapPin className="w-5 h-5 text-primary" />
       <div className="flex flex-col sm:flex-row gap-2">
         <Select value={selectedCountry} onValueChange={handleCountryChange}>
-          <SelectTrigger className="w-[180px]">
+          <SelectTrigger className="w-[180px] bg-white">
             <SelectValue placeholder="Choisir un pays" />
           </SelectTrigger>
-          <SelectContent>
+          <SelectContent className="bg-white border shadow-lg">
             {Object.keys(touristicCities).map((country) => (
-              <SelectItem key={country} value={country}>
+              <SelectItem 
+                key={country} 
+                value={country}
+                className="hover:bg-gray-100 cursor-pointer py-2"
+              >
                 {country}
               </SelectItem>
             ))}
@@ -48,13 +53,17 @@ const LocationSelector = () => {
           onValueChange={setSelectedCity}
           disabled={!selectedCountry}
         >
-          <SelectTrigger className="w-[180px]">
+          <SelectTrigger className="w-[180px] bg-white">
             <SelectValue placeholder="Choisir une ville" />
           </SelectTrigger>
-          <SelectContent>
+          <SelectContent className="bg-white border shadow-lg">
             {selectedCountry &&
               touristicCities[selectedCountry].map((city) => (
-                <SelectItem key={city} value={city}>
+                <SelectItem 
+                  key={city} 
+                  value={city}
+                  className="hover:bg-gray-100 cursor-pointer py-2"
+                >
                   {city}
                 </SelectItem>
               ))}

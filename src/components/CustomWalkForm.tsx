@@ -6,7 +6,7 @@ import { useToast } from "@/components/ui/use-toast";
 import { generateStepsForType } from "@/utils/walkUtils";
 
 interface CustomWalkFormProps {
-  onGenerate: (steps: Step[]) => void;
+  onGenerate: (steps: Step[], targetDuration: number) => void;
   startLocation: { lat: number; lng: number } | null;
   endLocation: { lat: number; lng: number } | null;
   setShowMap: (show: boolean) => void;
@@ -15,7 +15,7 @@ interface CustomWalkFormProps {
 }
 
 const CustomWalkForm = ({ onGenerate, startLocation, endLocation, setShowMap, routeType, setRouteType }: CustomWalkFormProps) => {
-  const [duration, setDuration] = useState("1h");
+  const [duration, setDuration] = useState("60");
   const [type, setType] = useState("all");
   const { toast } = useToast();
 
@@ -48,7 +48,6 @@ const CustomWalkForm = ({ onGenerate, startLocation, endLocation, setShowMap, ro
         position: startLocation
       });
 
-      // Ajout du point d'arrivée selon le type de parcours
       if (routeType === "loop") {
         steps.push({
           title: "Point d'arrivée",
@@ -66,7 +65,7 @@ const CustomWalkForm = ({ onGenerate, startLocation, endLocation, setShowMap, ro
       }
     }
 
-    onGenerate(steps);
+    onGenerate(steps, parseInt(duration));
     
     toast({
       title: "Parcours généré",
@@ -87,10 +86,10 @@ const CustomWalkForm = ({ onGenerate, startLocation, endLocation, setShowMap, ro
               onChange={(e) => setDuration(e.target.value)}
               className="w-full p-2 border rounded-lg"
             >
-              <option value="30min">30 minutes</option>
-              <option value="1h">1 heure</option>
-              <option value="2h">2 heures</option>
-              <option value="3h">3 heures</option>
+              <option value="30">30 minutes</option>
+              <option value="60">1 heure</option>
+              <option value="120">2 heures</option>
+              <option value="180">3 heures</option>
             </select>
           </div>
           

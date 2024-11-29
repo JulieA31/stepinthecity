@@ -5,6 +5,7 @@ import WalkMap from "@/components/WalkMap";
 import CustomWalkForm from "@/components/CustomWalkForm";
 import { Step } from "@/types/walk";
 import { Clock } from "lucide-react";
+import { useToast } from "@/components/ui/use-toast";
 
 const GOOGLE_MAPS_API_KEY = "AIzaSyC806xlYYv2CYq2euqLnD4_cMrKrUTZGNI";
 
@@ -17,20 +18,31 @@ const Custom = () => {
   const [isMapVisible, setIsMapVisible] = useState(false);
   const [totalDuration, setTotalDuration] = useState(0);
   const [legDurations, setLegDurations] = useState<number[]>([]);
+  const [targetDuration, setTargetDuration] = useState(0);
+  const { toast } = useToast();
 
   const { isLoaded } = useJsApiLoader({
     id: 'google-map-script',
     googleMapsApiKey: GOOGLE_MAPS_API_KEY
   });
 
-  const handleGenerateSteps = (steps: Step[]) => {
+  const handleGenerateSteps = (steps: Step[], duration: number) => {
     setGeneratedSteps(steps);
+    setTargetDuration(duration);
     setIsMapVisible(true);
   };
 
   const handleRouteCalculated = (durationInMinutes: number, legDurations: number[]) => {
     setTotalDuration(durationInMinutes);
     setLegDurations(legDurations);
+
+    if (Math.abs(durationInMinutes - targetDuration) > 10) {
+      toast({
+        title: "Attention",
+        description: `Le parcours généré dure ${durationInMinutes} minutes, ce qui diffère de la durée demandée de ${targetDuration} minutes.`,
+        variant: "destructive"
+      });
+    }
   };
 
   return (

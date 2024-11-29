@@ -2,7 +2,15 @@ import { useState } from "react";
 import WalkDetailsDialog from "@/components/WalkDetailsDialog";
 import WalkCard from "@/components/WalkCard";
 import { getImageForWalk } from "@/utils/walkImages";
-import { lisbonneHistoriqueSteps, tramSteps, saveursSteps, victorHugoSteps } from "@/data/walkSteps";
+import { 
+  lisbonneHistoriqueSteps, 
+  tramSteps, 
+  saveursSteps, 
+  victorHugoSteps,
+  romeAntiqueSteps,
+  romeBaroqueSteps,
+  vaticanSteps 
+} from "@/data/walkSteps";
 import { touristicCities, cityItineraries } from "@/components/LocationSelector";
 
 const countryFlags: { [key: string]: string } = {
@@ -29,7 +37,10 @@ const Predefined = () => {
       "Sur les pas de Victor Hugo": victorHugoSteps,
       "Lisbonne historique": lisbonneHistoriqueSteps,
       "Sur les rails du Tram 28": tramSteps,
-      "Saveurs portugaises": saveursSteps
+      "Saveurs portugaises": saveursSteps,
+      "Rome antique": romeAntiqueSteps,
+      "Rome baroque": romeBaroqueSteps,
+      "Vatican et spiritualité": vaticanSteps
     };
     return stepsMap[title] || [];
   };

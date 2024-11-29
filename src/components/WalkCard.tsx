@@ -1,4 +1,6 @@
 import { Volume2, Clock, Users, MapPin } from "lucide-react";
+import { useState, useRef } from "react";
+import { useToast } from "@/components/ui/use-toast";
 
 interface WalkCardProps {
   walk: any;
@@ -10,6 +12,45 @@ interface WalkCardProps {
 }
 
 const WalkCard = ({ walk, audioEnabled, onAudioToggle, onClick, getImageForWalk, city }: WalkCardProps) => {
+  const audioRef = useRef<HTMLAudioElement | null>(null);
+  const [isPlaying, setIsPlaying] = useState(false);
+  const { toast } = useToast();
+
+  const handleAudioToggle = async (e: React.MouseEvent) => {
+    e.stopPropagation();
+    
+    if (!audioRef.current) {
+      // Créer un nouvel élément audio
+      audioRef.current = new Audio(`/audio/${walk.title.toLowerCase().replace(/ /g, '-')}.mp3`);
+      
+      audioRef.current.onerror = () => {
+        toast({
+          title: "Erreur",
+          description: "La narration audio n'est pas disponible pour ce parcours.",
+          variant: "destructive"
+        });
+        setIsPlaying(false);
+      };
+    }
+
+    if (isPlaying) {
+      audioRef.current.pause();
+      setIsPlaying(false);
+    } else {
+      try {
+        await audioRef.current.play();
+        setIsPlaying(true);
+        onAudioToggle(walk.title);
+      } catch (error) {
+        toast({
+          title: "Erreur",
+          description: "Impossible de lancer la narration audio.",
+          variant: "destructive"
+        });
+      }
+    }
+  };
+
   return (
     <div 
       className="card hover:scale-105 transition-transform duration-200 cursor-pointer bg-white rounded-lg shadow-lg overflow-hidden"
@@ -25,13 +66,11 @@ const WalkCard = ({ walk, audioEnabled, onAudioToggle, onClick, getImageForWalk,
         <div className="flex justify-between items-start mb-4">
           <h2 className="text-2xl font-display text-text">{walk.title}</h2>
           <button 
-            onClick={(e) => {
-              e.stopPropagation();
-              onAudioToggle(walk.title);
-            }}
+            onClick={handleAudioToggle}
             className={`p-2 rounded-full transition-colors ${
-              audioEnabled ? 'bg-primary text-white' : 'bg-gray-100'
+              isPlaying ? 'bg-primary text-white' : 'bg-gray-100'
             }`}
+            aria-label={isPlaying ? "Arrêter la narration" : "Lancer la narration"}
           >
             <Volume2 size={20} />
           </button>

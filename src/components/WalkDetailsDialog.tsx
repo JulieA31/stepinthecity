@@ -5,11 +5,16 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
+import { GoogleMap, LoadScript, Marker, DirectionsRenderer } from "@react-google-maps/api";
+import { useState, useEffect } from "react";
+
+const GOOGLE_MAPS_API_KEY = "AIzaSyC806xlYYv2CYq2euqLnD4_cMrKrUTZGNI";
 
 interface Step {
   title: string;
   description: string;
   duration: string;
+  position?: google.maps.LatLngLiteral;
 }
 
 interface WalkDetailsDialogProps {
@@ -27,6 +32,68 @@ const WalkDetailsDialog = ({
   getImageForWalk,
   getStepsForWalk,
 }: WalkDetailsDialogProps) => {
+  const [directions, setDirections] = useState<google.maps.DirectionsResult | null>(null);
+  const [center, setCenter] = useState<google.maps.LatLngLiteral>({
+    lat: 48.8566,
+    lng: 2.3522
+  });
+
+  useEffect(() => {
+    if (walk && isOpen) {
+      const steps = getStepsForWalk(walk.title);
+      // Définir les positions pour chaque étape selon le parcours
+      const stepsWithPositions = steps.map(step => {
+        switch(walk.title) {
+          case "Sur les pas de Victor Hugo":
+            if (step.title === "Place des Vosges") return { ...step, position: { lat: 48.8554, lng: 2.3671 } };
+            if (step.title === "Notre-Dame de Paris") return { ...step, position: { lat: 48.8530, lng: 2.3499 } };
+            if (step.title === "Panthéon") return { ...step, position: { lat: 48.8462, lng: 2.3464 } };
+            if (step.title === "Café Procope") return { ...step, position: { lat: 48.8527, lng: 2.3394 } };
+            break;
+          case "Lisbonne historique":
+            if (step.title === "Château São Jorge") return { ...step, position: { lat: 38.7139, lng: -9.1334 } };
+            if (step.title === "Cathédrale de Lisbonne") return { ...step, position: { lat: 38.7098, lng: -9.1325 } };
+            if (step.title === "Place du Commerce") return { ...step, position: { lat: 38.7075, lng: -9.1364 } };
+            if (step.title === "Tour de Belém") return { ...step, position: { lat: 38.6916, lng: -9.2159 } };
+            break;
+          // Ajoutez d'autres cas pour les différents parcours
+        }
+        return step;
+      });
+
+      // Centrer la carte sur la première étape
+      if (stepsWithPositions[0]?.position) {
+        setCenter(stepsWithPositions[0].position);
+      }
+
+      // Calculer l'itinéraire entre les points
+      const directionsService = new google.maps.DirectionsService();
+      const waypoints = stepsWithPositions
+        .slice(1, -1)
+        .filter(step => step.position)
+        .map(step => ({
+          location: step.position as google.maps.LatLngLiteral,
+          stopover: true
+        }));
+
+      if (stepsWithPositions[0]?.position && stepsWithPositions[stepsWithPositions.length - 1]?.position) {
+        directionsService.route(
+          {
+            origin: stepsWithPositions[0].position,
+            destination: stepsWithPositions[stepsWithPositions.length - 1].position,
+            waypoints: waypoints,
+            travelMode: google.maps.TravelMode.WALKING
+          },
+          (result, status) => {
+            if (status === google.maps.DirectionsStatus.OK) {
+              setDirections(result);
+            }
+          }
+        );
+      }
+    }
+  }, [walk, isOpen, getStepsForWalk]);
+
   if (!walk) return null;
 
   return (
@@ -56,6 +123,18 @@ const WalkDetailsDialog = ({
                 <Clock className="text-primary" size={20} />
                 <span>{walk.difficulty}</span>
               </div>
+            </div>
+
+            <div className="h-[400px] w-full mb-8 rounded-lg overflow-hidden">
+              <LoadScript googleMapsApiKey={GOOGLE_MAPS_API_KEY}>
+                <GoogleMap
+                  mapContainerStyle={{ width: "100%", height: "100%" }}
+                  center={center}
+                  zoom={13}
+                >
+                  {directions && <DirectionsRenderer directions={directions} />}
+                </GoogleMap>
+              </LoadScript>
             </div>
 
             <div className="space-y-6">

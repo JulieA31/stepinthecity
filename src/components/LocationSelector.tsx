@@ -7,7 +7,6 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { MapPin } from "lucide-react";
-import { useNavigate } from "react-router-dom";
 
 export const touristicCities = {
   France: ["Paris", "Nice", "Lyon", "Bordeaux", "Marseille"],
@@ -102,19 +101,23 @@ export const cityItineraries = {
 
 type CountryKey = keyof typeof touristicCities;
 
-const LocationSelector = () => {
+interface LocationSelectorProps {
+  onCitySelect: (city: string) => void;
+}
+
+const LocationSelector = ({ onCitySelect }: LocationSelectorProps) => {
   const [selectedCountry, setSelectedCountry] = useState<CountryKey | "">("");
   const [selectedCity, setSelectedCity] = useState("");
-  const navigate = useNavigate();
 
   const handleCountryChange = (value: string) => {
     setSelectedCountry(value as CountryKey);
     setSelectedCity("");
+    onCitySelect("");
   };
 
   const handleCityChange = (city: string) => {
     setSelectedCity(city);
-    navigate('/predefined', { state: { city, itineraries: cityItineraries[city as keyof typeof cityItineraries] } });
+    onCitySelect(city);
   };
 
   return (

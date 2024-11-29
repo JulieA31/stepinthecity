@@ -12,6 +12,7 @@ import {
   vaticanSteps 
 } from "@/data/walkSteps";
 import { touristicCities, cityItineraries } from "@/components/LocationSelector";
+import LocationSelector from "@/components/LocationSelector";
 
 const countryFlags: { [key: string]: string } = {
   France: "🇫🇷",
@@ -24,6 +25,7 @@ const countryFlags: { [key: string]: string } = {
 const Predefined = () => {
   const [audioEnabled, setAudioEnabled] = useState<{ [key: string]: boolean }>({});
   const [selectedWalk, setSelectedWalk] = useState<any | null>(null);
+  const [selectedCity, setSelectedCity] = useState<string | null>(null);
 
   const toggleAudio = (title: string) => {
     setAudioEnabled(prev => ({
@@ -45,11 +47,37 @@ const Predefined = () => {
     return stepsMap[title] || [];
   };
 
-  return (
-    <div className="min-h-screen bg-secondary pt-20">
-      <div className="container mx-auto px-4 py-8">
-        <h1 className="text-4xl font-display text-text mb-8">Tous les parcours prédéfinis</h1>
-        
+  const handleCitySelect = (city: string) => {
+    setSelectedCity(city);
+  };
+
+  const renderWalks = () => {
+    if (selectedCity) {
+      const itineraries = cityItineraries[selectedCity as keyof typeof cityItineraries];
+      if (!itineraries) return null;
+
+      return (
+        <div className="mb-8">
+          <h3 className="text-2xl font-display text-text mb-4">{selectedCity}</h3>
+          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+            {itineraries.map((walk: any, index: number) => (
+              <WalkCard
+                key={index}
+                walk={walk}
+                audioEnabled={audioEnabled[walk.title]}
+                onAudioToggle={toggleAudio}
+                onClick={() => setSelectedWalk(walk)}
+                getImageForWalk={getImageForWalk}
+                city={selectedCity}
+              />
+            ))}
+          </div>
+        </div>
+      );
+    }
+
+    return (
+      <>
         {Object.entries(touristicCities).map(([country, cities]) => (
           <div key={country} className="mb-12">
             <h2 className="text-3xl font-display text-text mb-6">
@@ -81,6 +109,20 @@ const Predefined = () => {
             })}
           </div>
         ))}
+      </>
+    );
+  };
+
+  return (
+    <div className="min-h-screen bg-secondary pt-20">
+      <div className="container mx-auto px-4 py-8">
+        <h1 className="text-4xl font-display text-text mb-8">Tous les parcours prédéfinis</h1>
+        
+        <LocationSelector onCitySelect={handleCitySelect} />
+        
+        <div className="mt-8">
+          {renderWalks()}
+        </div>
 
         <WalkDetailsDialog
           walk={selectedWalk}

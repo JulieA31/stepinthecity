@@ -11,9 +11,10 @@ interface CustomWalkFormProps {
   endLocation: { lat: number; lng: number } | null;
   setShowMap: (show: boolean) => void;
   routeType: string;
+  setRouteType: (type: string) => void;
 }
 
-const CustomWalkForm = ({ onGenerate, startLocation, endLocation, setShowMap, routeType }: CustomWalkFormProps) => {
+const CustomWalkForm = ({ onGenerate, startLocation, endLocation, setShowMap, routeType, setRouteType }: CustomWalkFormProps) => {
   const [duration, setDuration] = useState("1h");
   const [type, setType] = useState("all");
   const { toast } = useToast();

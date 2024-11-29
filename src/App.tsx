@@ -6,7 +6,6 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Index from "./pages/Index";
 import Custom from "./pages/Custom";
 import Predefined from "./pages/Predefined";
-import AllWalks from "./pages/AllWalks";
 import Header from "./components/Header";
 
 const queryClient = new QueryClient();
@@ -22,7 +21,6 @@ const App = () => (
           <Route path="/" element={<Index />} />
           <Route path="/custom" element={<Custom />} />
           <Route path="/predefined" element={<Predefined />} />
-          <Route path="/all-walks" element={<AllWalks />} />
         </Routes>
       </BrowserRouter>
     </TooltipProvider>

@@ -33,7 +33,7 @@ const Index = () => {
               <h2 className="text-2xl font-display">Itinéraire Personnalisé</h2>
             </div>
             <p className="text-gray-600">
-              Créez votre parcours idéal en fonction de vos préférences.
+              Crée ton parcours idéal en fonction de tes préférences.
             </p>
             <button className="btn-primary mt-6 w-full">
               Commencer
@@ -48,7 +48,7 @@ const Index = () => {
               <h2 className="text-2xl font-display">Parcours Prédéfinis</h2>
             </div>
             <p className="text-gray-600">
-              Découvrez nos sélections d'itinéraires thématiques soigneusement préparés.
+              Découvre nos sélections d'itinéraires thématiques soigneusement préparés.
             </p>
             <button className="btn-primary mt-6 w-full">
               Explorer
@@ -69,7 +69,7 @@ const Index = () => {
                     <span className="text-accent font-bold">1</span>
                   </div>
                   <h3 className="font-semibold mb-2">Choisissez votre style</h3>
-                  <p className="text-gray-600">Sélectionnez le type de balade qui vous correspond</p>
+                  <p className="text-gray-600">Sélectionne le type de balade qui te correspond</p>
                 </div>
                 <div className="text-center">
                   <div className="w-12 h-12 bg-accent/10 rounded-full flex items-center justify-center mx-auto mb-4">
@@ -83,7 +83,7 @@ const Index = () => {
                     <span className="text-accent font-bold">3</span>
                   </div>
                   <h3 className="font-semibold mb-2">Explorez</h3>
-                  <p className="text-gray-600">Laissez-vous guider à travers la ville</p>
+                  <p className="text-gray-600">Laisse-toi guider à travers la ville</p>
                 </div>
               </div>
             </div>

@@ -3,7 +3,7 @@ import { GoogleMap, LoadScript, Marker, DirectionsRenderer } from "@react-google
 import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 
-const GOOGLE_MAPS_API_KEY = "YOUR_GOOGLE_MAPS_API_KEY"; // À remplacer par votre clé API Google Maps
+const GOOGLE_MAPS_API_KEY = "AIzaSyC806xlYYv2CYq2euqLnD4_cMrKrUTZGNI";
 
 interface LocationMapProps {
   open: boolean;
@@ -43,7 +43,6 @@ const LocationMap = ({ open, onOpenChange, onLocationSelect }: LocationMapProps)
       };
       setSelectedPosition(newPosition);
 
-      // Calculer l'itinéraire depuis la position actuelle jusqu'au point sélectionné
       const directionsService = new google.maps.DirectionsService();
       directionsService.route(
         {
@@ -85,13 +84,8 @@ const LocationMap = ({ open, onOpenChange, onLocationSelect }: LocationMapProps)
               zoom={13}
               onClick={handleMapClick}
             >
-              {/* Marqueur pour la position actuelle */}
               <Marker position={position} />
-              
-              {/* Marqueur pour la position sélectionnée */}
               {selectedPosition && <Marker position={selectedPosition} />}
-              
-              {/* Affichage de l'itinéraire */}
               {directions && <DirectionsRenderer directions={directions} />}
             </GoogleMap>
           </LoadScript>

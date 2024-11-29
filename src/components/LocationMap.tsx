@@ -20,6 +20,7 @@ const LocationMap = ({ open, onOpenChange, onLocationSelect }: LocationMapProps)
   const [selectedPosition, setSelectedPosition] = useState<google.maps.LatLngLiteral | null>(null);
   const [directions, setDirections] = useState<google.maps.DirectionsResult | null>(null);
   const [map, setMap] = useState<google.maps.Map | null>(null);
+  const [markers, setMarkers] = useState<google.maps.Marker[]>([]);
   const { toast } = useToast();
 
   const { isLoaded } = useJsApiLoader({
@@ -38,8 +39,7 @@ const LocationMap = ({ open, onOpenChange, onLocationSelect }: LocationMapProps)
           setPosition(newPosition);
           map.setCenter(newPosition);
           
-          // Créer un marqueur pour la position actuelle
-          new window.google.maps.Marker({
+          const userMarker = new window.google.maps.Marker({
             map,
             position: newPosition,
             icon: {
@@ -52,6 +52,7 @@ const LocationMap = ({ open, onOpenChange, onLocationSelect }: LocationMapProps)
             },
             title: "Votre position"
           });
+          setMarkers(prev => [...prev, userMarker]);
         },
         (error) => {
           console.error("Erreur de géolocalisation:", error);
@@ -73,21 +74,23 @@ const LocationMap = ({ open, onOpenChange, onLocationSelect }: LocationMapProps)
       };
       setSelectedPosition(clickedPosition);
 
-      // Supprimer tous les marqueurs existants sauf celui de la position actuelle
-      map.overlays?.forEach((overlay) => {
-        if (overlay instanceof window.google.maps.Marker && overlay.getTitle() !== "Votre position") {
-          overlay.setMap(null);
+      // Clear existing markers except user position marker
+      markers.forEach(marker => {
+        if (marker.getTitle() !== "Votre position") {
+          marker.setMap(null);
         }
       });
+      setMarkers(markers.filter(marker => marker.getTitle() === "Votre position"));
 
-      // Ajouter le nouveau marqueur
-      new window.google.maps.Marker({
+      // Add new marker
+      const newMarker = new window.google.maps.Marker({
         map,
         position: clickedPosition,
         animation: window.google.maps.Animation.DROP
       });
+      setMarkers(prev => [...prev, newMarker]);
 
-      // Calculer l'itinéraire
+      // Calculate route
       const directionsService = new window.google.maps.DirectionsService();
       directionsService.route(
         {
@@ -109,7 +112,7 @@ const LocationMap = ({ open, onOpenChange, onLocationSelect }: LocationMapProps)
         }
       );
     }
-  }, [position, map, isLoaded]);
+  }, [position, map, isLoaded, markers]);
 
   const handleConfirm = () => {
     if (selectedPosition) {

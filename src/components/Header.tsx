@@ -12,18 +12,17 @@ const Header = () => {
   };
 
   const handleCitySelect = (city: string) => {
-    // Dispatch un événement personnalisé pour la sélection de ville
     const event = new CustomEvent('citySelected', { detail: city });
     window.dispatchEvent(event);
+    setIsOpen(false); // Ferme le menu après la sélection
   };
 
-  // N'affiche le sélecteur que sur la page des parcours prédéfinis
   const showLocationSelector = location.pathname === '/predefined';
 
   return (
     <header className="bg-white shadow-sm fixed w-full top-0 z-50">
       <div className="container mx-auto px-4 py-4">
-        <div className="flex justify-between items-center">
+        <div className="flex justify-between items-center relative">
           <Link to="/" className="flex items-center gap-2 text-text">
             <img 
               src="/lovable-uploads/18a323e4-8732-4bd7-8a15-069876a74b4a.png" 
@@ -39,39 +38,47 @@ const Header = () => {
             </div>
           )}
           
-          <button onClick={() => setIsOpen(!isOpen)} className="flex items-center">
+          <button 
+            onClick={() => setIsOpen(!isOpen)} 
+            className="flex items-center md:hidden"
+            aria-label="Toggle menu"
+          >
             {isOpen ? <X /> : <Menu />}
           </button>
 
-          <nav className={`${isOpen ? 'block' : 'hidden'} absolute top-full left-0 w-full bg-white shadow-lg`}>
+          <nav 
+            className={`${
+              isOpen ? 'block' : 'hidden'
+            } absolute top-full left-0 w-full bg-white shadow-lg md:hidden mt-4`}
+          >
             {showLocationSelector && (
-              <div className="md:hidden">
+              <div className="p-4 border-b border-gray-100">
                 <LocationSelector onCitySelect={handleCitySelect} />
               </div>
             )}
-            <ul className="flex flex-col gap-4 p-4">
-              <li>
+            <ul className="flex flex-col p-4">
+              <li className="py-2">
                 <Link 
                   to="/custom" 
-                  className="text-text hover:text-primary transition-colors block text-center"
+                  className="text-text hover:text-primary transition-colors block"
                   onClick={handleNavClick}
                 >
                   Parcours personnalisé
                 </Link>
               </li>
-              <li>
+              <li className="py-2">
                 <Link 
                   to="/predefined" 
-                  className="text-text hover:text-primary transition-colors block text-center"
+                  className="text-text hover:text-primary transition-colors block"
                   onClick={handleNavClick}
                 >
                   Parcours prédéfinis
                 </Link>
               </li>
-              <li>
+              <li className="py-2">
                 <Link 
                   to="/login" 
-                  className="flex items-center gap-2 text-text hover:text-primary transition-colors justify-center"
+                  className="flex items-center gap-2 text-text hover:text-primary transition-colors"
                   onClick={handleNavClick}
                 >
                   <User size={18} />

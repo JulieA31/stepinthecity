@@ -22,16 +22,16 @@ const Header = () => {
             <span className="text-2xl font-display text-text">Balad.IA</span>
           </Link>
           
-          <button onClick={() => setIsOpen(!isOpen)} className="md:hidden">
+          <button onClick={() => setIsOpen(!isOpen)} className="flex items-center">
             {isOpen ? <X /> : <Menu />}
           </button>
 
-          <nav className={`${isOpen ? 'block' : 'hidden'} absolute top-full left-0 w-full bg-white shadow-lg md:shadow-none md:block md:static md:w-auto`}>
-            <ul className="flex flex-col md:flex-row gap-4 p-4 md:p-0">
+          <nav className={`${isOpen ? 'block' : 'hidden'} absolute top-full left-0 w-full bg-white shadow-lg`}>
+            <ul className="flex flex-col gap-4 p-4">
               <li>
                 <Link 
                   to="/custom" 
-                  className="text-text hover:text-primary transition-colors block text-center md:text-left"
+                  className="text-text hover:text-primary transition-colors block text-center"
                   onClick={handleNavClick}
                 >
                   Parcours personnalisé
@@ -40,7 +40,7 @@ const Header = () => {
               <li>
                 <Link 
                   to="/predefined" 
-                  className="text-text hover:text-primary transition-colors block text-center md:text-left"
+                  className="text-text hover:text-primary transition-colors block text-center"
                   onClick={handleNavClick}
                 >
                   Parcours prédéfinis
@@ -49,7 +49,7 @@ const Header = () => {
               <li>
                 <Link 
                   to="/login" 
-                  className="flex items-center gap-2 text-text hover:text-primary transition-colors justify-center md:justify-start"
+                  className="flex items-center gap-2 text-text hover:text-primary transition-colors justify-center"
                   onClick={handleNavClick}
                 >
                   <User size={18} />

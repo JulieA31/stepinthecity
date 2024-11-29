@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Step } from "@/types/walk";
 import { useToast } from "@/components/ui/use-toast";
 import { generateStepsForType } from "@/utils/walkUtils";
+import { Alert, AlertDescription } from "@/components/ui/alert";
 
 interface CustomWalkFormProps {
   onGenerate: (steps: Step[], targetDuration: number) => void;
@@ -17,6 +18,7 @@ interface CustomWalkFormProps {
 const CustomWalkForm = ({ onGenerate, startLocation, endLocation, setShowMap, routeType, setRouteType }: CustomWalkFormProps) => {
   const [duration, setDuration] = useState("60");
   const [type, setType] = useState("all");
+  const [actualDuration, setActualDuration] = useState<number | null>(null);
   const { toast } = useToast();
 
   const handleGenerate = () => {
@@ -73,10 +75,31 @@ const CustomWalkForm = ({ onGenerate, startLocation, endLocation, setShowMap, ro
     });
   };
 
+  const handleRouteCalculated = (calculatedDuration: number) => {
+    setActualDuration(calculatedDuration);
+    const targetDuration = parseInt(duration);
+    
+    if (calculatedDuration > targetDuration + 10) {
+      toast({
+        title: "Attention",
+        description: `Le parcours généré dure ${calculatedDuration} minutes, ce qui dépasse la durée demandée de ${targetDuration} minutes.`,
+        variant: "destructive"
+      });
+    }
+  };
+
   return (
     <div className="card mb-8">
       <div className="p-6">
         <h2 className="text-2xl font-display text-text mb-6">Critères de personnalisation</h2>
+        
+        {actualDuration && actualDuration > parseInt(duration) + 10 && (
+          <Alert variant="destructive" className="mb-6">
+            <AlertDescription>
+              ⚠️ Ce parcours dure {actualDuration} minutes, soit {actualDuration - parseInt(duration)} minutes de plus que la durée souhaitée.
+            </AlertDescription>
+          </Alert>
+        )}
         
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
           <div>

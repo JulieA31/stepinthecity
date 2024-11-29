@@ -77,6 +77,26 @@ export const cityItineraries = {
       difficulty: "Facile",
       description: "Des azulejos aux street art, l'art dans tous ses états"
     }
+  ],
+  Rome: [
+    {
+      title: "Rome antique",
+      duration: "3h",
+      difficulty: "Moyen",
+      description: "Découvrez les vestiges de la Rome antique, du Colisée au Forum Romain"
+    },
+    {
+      title: "Rome baroque",
+      duration: "2h30",
+      difficulty: "Facile",
+      description: "Fontaine de Trevi, Place Navone, Panthéon... Les merveilles de la Rome baroque"
+    },
+    {
+      title: "Vatican et spiritualité",
+      duration: "3h",
+      difficulty: "Facile",
+      description: "Explorez la Cité du Vatican, ses musées et la basilique Saint-Pierre"
+    }
   ]
 };
 

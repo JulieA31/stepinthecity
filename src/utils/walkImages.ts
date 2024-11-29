@@ -9,7 +9,7 @@ export const getImageForWalk = (title: string) => {
     "Route des vins": "https://images.unsplash.com/photo-1469041797191-50ace28483c3",
     "Porto médiéval": "https://images.unsplash.com/photo-1452378174528-3090a4bba7b2",
     "Porto artistique": "https://images.unsplash.com/photo-1487252665478-49b61b47f302",
-    "Sur les pas de César": "/lovable-uploads/9cca43e2-895d-425c-8241-4f75705a0235.png",
+    "Sur les pas de César": "/lovable-uploads/9cca43e2-895d-425c-8241-4f75705a0235.png?auto=format&fit=crop&w=1200&h=800&q=80",
     "Rome baroque": "https://images.unsplash.com/photo-1529260830199-42c24126f198?auto=format&fit=crop&w=1200&q=80",
     "Vatican et spiritualité": "https://images.unsplash.com/photo-1531572753322-ad063cecc140?auto=format&fit=crop&w=1200&q=80"
   };

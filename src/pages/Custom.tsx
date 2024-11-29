@@ -21,7 +21,6 @@ const Custom = () => {
   });
 
   const handleGenerateSteps = (steps: Step[]) => {
-    console.log("Steps received in Custom:", steps);
     setGeneratedSteps(steps);
     setIsMapVisible(true);
   };
@@ -37,6 +36,7 @@ const Custom = () => {
           endLocation={endLocation}
           setShowMap={setShowMap}
           routeType={routeType}
+          setRouteType={setRouteType}
         />
 
         {isMapVisible && generatedSteps.length > 0 && (

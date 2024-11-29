@@ -112,6 +112,7 @@ const CustomWalkForm = ({ onGenerate, startLocation, endLocation, setShowMap, ro
             <label className="block text-sm font-medium text-gray-700 mb-2">Type de parcours</label>
             <select 
               value={routeType}
+              onChange={(e) => setRouteType(e.target.value)}
               className="w-full p-2 border rounded-lg"
             >
               <option value="loop">Boucle</option>

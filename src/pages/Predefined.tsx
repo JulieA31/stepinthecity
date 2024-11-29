@@ -43,7 +43,7 @@ const Predefined = () => {
       "Lisbonne historique": lisbonneHistoriqueSteps,
       "Sur les rails du Tram 28": tramSteps,
       "Saveurs portugaises": saveursSteps,
-      "Rome antique": romeAntiqueSteps,
+      "Sur les pas de César": romeAntiqueSteps,
       "Rome baroque": romeBaroqueSteps,
       "Vatican et spiritualité": vaticanSteps
     };

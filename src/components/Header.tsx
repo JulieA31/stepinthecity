@@ -12,7 +12,7 @@ const Header = () => {
   };
 
   const handleCitySelect = (city: string) => {
-    if (city) { // Ne ferme le menu que si une ville est sélectionnée
+    if (city) {
       const event = new CustomEvent('citySelected', { detail: city });
       window.dispatchEvent(event);
       setIsOpen(false);
@@ -42,7 +42,7 @@ const Header = () => {
           
           <button 
             onClick={() => setIsOpen(!isOpen)} 
-            className="flex items-center md:hidden"
+            className="flex items-center"
             aria-label="Toggle menu"
           >
             {isOpen ? <X /> : <Menu />}
@@ -51,7 +51,7 @@ const Header = () => {
           <nav 
             className={`${
               isOpen ? 'block' : 'hidden'
-            } absolute top-full left-0 w-full bg-white shadow-lg md:hidden mt-4`}
+            } absolute top-full left-0 w-full bg-white shadow-lg mt-4`}
           >
             {showLocationSelector && (
               <div className="p-4 border-b border-gray-100">

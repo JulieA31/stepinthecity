@@ -19,15 +19,15 @@ export default {
     },
     extend: {
       colors: {
-        primary: "#FF69B4",  // Rose vif
+        primary: "#FF69B4",  // Rose vif (gardé pour la marque)
         secondary: "#F8F9FA", // Gris très clair
-        accent: "#FF1493",    // Rose plus foncé
+        accent: "#FF1493",    // Rose plus foncé (gardé pour la marque)
         text: "#2D3436",      // Presque noir
         background: "#FFFFFF", // Blanc
         theme: {
-          light: "#FFB6C1",   // Rose clair
-          DEFAULT: "#FF69B4", // Rose medium
-          dark: "#FF1493",    // Rose foncé
+          light: "#F5F5F5",   // Gris très clair
+          DEFAULT: "#6B7280", // Gris medium
+          dark: "#4B5563",    // Gris foncé
         }
       },
       fontFamily: {

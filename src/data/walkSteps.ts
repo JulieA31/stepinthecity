@@ -90,7 +90,7 @@ export const victorHugoSteps = [
   }
 ];
 
-export const romeAntiqueSteps = [
+export const romeAntiqueSteps = [ // Renamed to "Sur les pas de César" in the UI
   {
     title: "Colisée",
     description: "Commencez par l'emblème de Rome. Découvrez l'histoire fascinante de cet amphithéâtre qui pouvait accueillir jusqu'à 50 000 spectateurs.",

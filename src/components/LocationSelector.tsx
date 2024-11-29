@@ -79,7 +79,7 @@ export const cityItineraries = {
   ],
   Rome: [
     {
-      title: "Rome antique",
+      title: "Sur les pas de César",
       duration: "3h",
       difficulty: "Moyen",
       description: "Découvrez les vestiges de la Rome antique, du Colisée au Forum Romain"

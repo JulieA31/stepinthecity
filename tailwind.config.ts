@@ -19,11 +19,16 @@ export default {
     },
     extend: {
       colors: {
-        primary: "#8B9D83",
+        primary: "#8B9D83",  // Sage green
         secondary: "#F5F5DC",
         accent: "#FF7F50",
         text: "#2F4F4F",
         background: "#FFFFFF",
+        sage: {
+          light: "#CED4CA",
+          DEFAULT: "#8B9D83",
+          dark: "#5C6B55",
+        }
       },
       fontFamily: {
         sans: ["Inter", "sans-serif"],

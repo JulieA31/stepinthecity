@@ -1,13 +1,22 @@
 import { useState } from "react";
-import { Clock, MapPin, Users, Filter } from "lucide-react";
+import { Clock, MapPin, Users, Filter, Repeat, Navigation2, Volume2 } from "lucide-react";
 
 const Custom = () => {
   const [duration, setDuration] = useState("1h");
   const [type, setType] = useState("all");
+  const [routeType, setRouteType] = useState("loop"); // "loop" or "point-to-point"
 
   return (
     <div className="min-h-screen bg-secondary pt-20">
       <div className="container mx-auto px-4 py-8">
+        <div className="flex items-center justify-center mb-12">
+          <img 
+            src="https://images.unsplash.com/photo-1486312338219-ce68d2c6f44d" 
+            alt="Walking person logo" 
+            className="w-24 h-24 object-cover rounded-full border-4 border-sage"
+          />
+        </div>
+
         <h1 className="text-4xl font-display text-text mb-8">Créez votre parcours</h1>
         
         <div className="card mb-8">
@@ -43,6 +52,18 @@ const Custom = () => {
                   <option value="food">Gastronomie</option>
                 </select>
               </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">Type de parcours</label>
+                <select 
+                  value={routeType}
+                  onChange={(e) => setRouteType(e.target.value)}
+                  className="w-full p-2 border rounded-lg"
+                >
+                  <option value="loop">Boucle</option>
+                  <option value="point-to-point">Point à point</option>
+                </select>
+              </div>
               
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">Point de départ</label>
@@ -51,6 +72,16 @@ const Custom = () => {
                   Choisir sur la carte
                 </button>
               </div>
+
+              {routeType === "point-to-point" && (
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">Point d'arrivée</label>
+                  <button className="btn-primary w-full flex items-center justify-center gap-2">
+                    <Navigation2 size={18} />
+                    Choisir sur la carte
+                  </button>
+                </div>
+              )}
             </div>
             
             <button className="btn-primary mt-8 w-full">

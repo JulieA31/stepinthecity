@@ -32,6 +32,24 @@ const Predefined = () => {
   const location = useLocation();
   const { city, itineraries } = location.state || { city: "Paris", itineraries: [] };
 
+  const getImageForWalk = (title: string) => {
+    const imageMap: { [key: string]: string } = {
+      // Paris
+      "Sur les pas de Victor Hugo": "https://images.unsplash.com/photo-1472396961693-142e6e269027",
+      "Les classiques de Paris": "https://images.unsplash.com/photo-1498936178812-4b2e558d2937",
+      "Balade gastronomique": "https://images.unsplash.com/photo-1465379944081-7f47de8d74ac",
+      // Lisbonne
+      "Lisbonne historique": "https://images.unsplash.com/photo-1485833077593-4278bba3f11f",
+      "Sur les rails du Tram 28": "https://images.unsplash.com/photo-1438565434616-3ef039228b15",
+      "Saveurs portugaises": "https://images.unsplash.com/photo-1441057206919-63d19fac2369",
+      // Porto
+      "Route des vins": "https://images.unsplash.com/photo-1469041797191-50ace28483c3",
+      "Porto médiéval": "https://images.unsplash.com/photo-1452378174528-3090a4bba7b2",
+      "Porto artistique": "https://images.unsplash.com/photo-1487252665478-49b61b47f302",
+    };
+    return imageMap[title] || "https://images.unsplash.com/photo-1472396961693-142e6e269027";
+  };
+
   const toggleAudio = (title: string) => {
     setAudioEnabled(prev => ({
       ...prev,
@@ -48,9 +66,15 @@ const Predefined = () => {
           {itineraries.map((walk: any, index: number) => (
             <div 
               key={index} 
-              className="card hover:scale-105 transition-transform duration-200 cursor-pointer"
+              className="card hover:scale-105 transition-transform duration-200 cursor-pointer bg-white rounded-lg shadow-lg overflow-hidden"
               onClick={() => setSelectedWalk(walk)}
             >
+              <div 
+                className="h-48 w-full bg-cover bg-center"
+                style={{ 
+                  backgroundImage: `url(${getImageForWalk(walk.title)}?auto=format&fit=crop&w=800&q=80)`,
+                }}
+              />
               <div className="p-6">
                 <div className="flex justify-between items-start mb-4">
                   <h2 className="text-2xl font-display text-text">{walk.title}</h2>
@@ -60,7 +84,7 @@ const Predefined = () => {
                       toggleAudio(walk.title);
                     }}
                     className={`p-2 rounded-full transition-colors ${
-                      audioEnabled[walk.title] ? 'bg-sage text-white' : 'bg-gray-100'
+                      audioEnabled[walk.title] ? 'bg-primary text-white' : 'bg-gray-100'
                     }`}
                   >
                     <Volume2 size={20} />
@@ -93,16 +117,22 @@ const Predefined = () => {
                 <DialogHeader>
                   <DialogTitle className="text-2xl font-display">{selectedWalk.title}</DialogTitle>
                 </DialogHeader>
+                <div 
+                  className="h-64 w-full bg-cover bg-center rounded-lg mb-6"
+                  style={{ 
+                    backgroundImage: `url(${getImageForWalk(selectedWalk.title)}?auto=format&fit=crop&w=1200&q=80)`,
+                  }}
+                />
                 <div className="mt-4">
                   <p className="text-gray-600 mb-6">{selectedWalk.description}</p>
                   
                   <div className="flex items-center gap-6 mb-8">
                     <div className="flex items-center gap-2">
-                      <Clock className="text-sage" size={20} />
+                      <Clock className="text-primary" size={20} />
                       <span>{selectedWalk.duration}</span>
                     </div>
                     <div className="flex items-center gap-2">
-                      <Users className="text-sage" size={20} />
+                      <Users className="text-primary" size={20} />
                       <span>{selectedWalk.difficulty}</span>
                     </div>
                   </div>

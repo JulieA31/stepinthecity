@@ -41,7 +41,7 @@ const Predefined = () => {
       // Lisbonne
       "Lisbonne historique": "/lovable-uploads/68af49fb-4c88-402f-99c2-e06a4af91c2a.png",
       "Sur les rails du Tram 28": "/lovable-uploads/ae74de2f-fbb8-4777-bf21-bfbe98673652.png",
-      "Saveurs portugaises": "https://images.unsplash.com/photo-1441057206919-63d19fac2369",
+      "Saveurs portugaises": "/lovable-uploads/e3d12aa4-a953-4b29-858d-2ab4ea55a7da.png",
       // Porto
       "Route des vins": "https://images.unsplash.com/photo-1469041797191-50ace28483c3",
       "Porto médiéval": "https://images.unsplash.com/photo-1452378174528-3090a4bba7b2",

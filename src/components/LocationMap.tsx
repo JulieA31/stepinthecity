@@ -2,7 +2,6 @@ import { useState, useEffect, useCallback } from "react";
 import { GoogleMap, LoadScript, DirectionsRenderer } from "@react-google-maps/api";
 import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
-import { AdvancedMarker } from "@googlemaps/adv-markers-utils";
 
 const GOOGLE_MAPS_API_KEY = "AIzaSyC806xlYYv2CYq2euqLnD4_cMrKrUTZGNI";
 
@@ -20,7 +19,7 @@ const LocationMap = ({ open, onOpenChange, onLocationSelect }: LocationMapProps)
   const [selectedPosition, setSelectedPosition] = useState<google.maps.LatLngLiteral | null>(null);
   const [directions, setDirections] = useState<google.maps.DirectionsResult | null>(null);
   const [map, setMap] = useState<google.maps.Map | null>(null);
-  const [markers, setMarkers] = useState<AdvancedMarker[]>([]);
+  const [marker, setMarker] = useState<google.maps.Marker | null>(null);
 
   useEffect(() => {
     if (navigator.geolocation) {
@@ -40,24 +39,24 @@ const LocationMap = ({ open, onOpenChange, onLocationSelect }: LocationMapProps)
   }, []);
 
   const handleMapClick = useCallback((e: google.maps.MapMouseEvent) => {
-    if (e.latLng) {
+    if (e.latLng && map) {
       const newPosition = {
         lat: e.latLng.lat(),
         lng: e.latLng.lng()
       };
       setSelectedPosition(newPosition);
 
-      // Clear existing markers
-      markers.forEach(marker => marker.setMap(null));
-      setMarkers([]);
-
-      if (map) {
-        const marker = new google.maps.marker.AdvancedMarkerElement({
-          map,
-          position: newPosition
-        });
-        setMarkers([marker]);
+      // Clear existing marker
+      if (marker) {
+        marker.setMap(null);
       }
+
+      // Create new marker
+      const newMarker = new google.maps.Marker({
+        map,
+        position: newPosition
+      });
+      setMarker(newMarker);
 
       const directionsService = new google.maps.DirectionsService();
       directionsService.route(
@@ -75,7 +74,7 @@ const LocationMap = ({ open, onOpenChange, onLocationSelect }: LocationMapProps)
         }
       );
     }
-  }, [position, map, markers]);
+  }, [position, map, marker]);
 
   const handleConfirm = () => {
     if (selectedPosition) {
@@ -87,7 +86,7 @@ const LocationMap = ({ open, onOpenChange, onLocationSelect }: LocationMapProps)
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="sm:max-w-[800px] h-[600px]">
-        <DialogTitle className="sr-only">Sélectionnez un emplacement</DialogTitle>
+        <DialogTitle>Sélectionnez un emplacement</DialogTitle>
         <div className="h-[500px] relative">
           <LoadScript googleMapsApiKey={GOOGLE_MAPS_API_KEY}>
             <GoogleMap

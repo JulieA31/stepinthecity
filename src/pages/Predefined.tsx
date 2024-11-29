@@ -5,6 +5,14 @@ import { getImageForWalk } from "@/utils/walkImages";
 import { lisbonneHistoriqueSteps, tramSteps, saveursSteps, victorHugoSteps } from "@/data/walkSteps";
 import { touristicCities, cityItineraries } from "@/components/LocationSelector";
 
+const countryFlags: { [key: string]: string } = {
+  France: "🇫🇷",
+  Italy: "🇮🇹",
+  Spain: "🇪🇸",
+  "United Kingdom": "🇬🇧",
+  Portugal: "🇵🇹"
+};
+
 const Predefined = () => {
   const [audioEnabled, setAudioEnabled] = useState<{ [key: string]: boolean }>({});
   const [selectedWalk, setSelectedWalk] = useState<any | null>(null);
@@ -33,7 +41,10 @@ const Predefined = () => {
         
         {Object.entries(touristicCities).map(([country, cities]) => (
           <div key={country} className="mb-12">
-            <h2 className="text-3xl font-display text-text mb-6">{country}</h2>
+            <h2 className="text-3xl font-display text-text mb-6">
+              <span className="mr-2">{countryFlags[country]}</span>
+              {country}
+            </h2>
             {cities.map(city => {
               const itineraries = cityItineraries[city as keyof typeof cityItineraries];
               if (!itineraries) return null;

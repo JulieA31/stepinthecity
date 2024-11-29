@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback } from "react";
-import { GoogleMap, LoadScript, DirectionsRenderer } from "@react-google-maps/api";
+import { GoogleMap, LoadScript, DirectionsRenderer, useJsApiLoader } from "@react-google-maps/api";
 import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/components/ui/use-toast";
@@ -22,11 +22,15 @@ const LocationMap = ({ open, onOpenChange, onLocationSelect }: LocationMapProps)
   const [map, setMap] = useState<google.maps.Map | null>(null);
   const [marker, setMarker] = useState<google.maps.Marker | null>(null);
   const [userMarker, setUserMarker] = useState<google.maps.Marker | null>(null);
-  const [isLoaded, setIsLoaded] = useState(false);
   const { toast } = useToast();
 
+  const { isLoaded } = useJsApiLoader({
+    id: 'google-map-script',
+    googleMapsApiKey: GOOGLE_MAPS_API_KEY
+  });
+
   useEffect(() => {
-    if (navigator.geolocation && isLoaded && map && open) {
+    if (navigator.geolocation && isLoaded && map && open && window.google) {
       navigator.geolocation.getCurrentPosition(
         (pos) => {
           const newPosition = {
@@ -68,7 +72,7 @@ const LocationMap = ({ open, onOpenChange, onLocationSelect }: LocationMapProps)
   }, [map, open, isLoaded]);
 
   const handleMapClick = useCallback((e: google.maps.MapMouseEvent) => {
-    if (e.latLng && map && isLoaded) {
+    if (e.latLng && map && isLoaded && window.google) {
       const newPosition = {
         lat: e.latLng.lat(),
         lng: e.latLng.lng()
@@ -126,25 +130,24 @@ const LocationMap = ({ open, onOpenChange, onLocationSelect }: LocationMapProps)
     }
   };
 
+  if (!isLoaded) {
+    return <div>Loading...</div>;
+  }
+
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="sm:max-w-[800px] h-[600px]">
         <DialogTitle>Sélectionnez un emplacement</DialogTitle>
         <div className="h-[500px] relative">
-          <LoadScript 
-            googleMapsApiKey={GOOGLE_MAPS_API_KEY}
-            onLoad={() => setIsLoaded(true)}
+          <GoogleMap
+            mapContainerStyle={{ width: "100%", height: "100%" }}
+            center={position}
+            zoom={13}
+            onClick={handleMapClick}
+            onLoad={map => setMap(map)}
           >
-            <GoogleMap
-              mapContainerStyle={{ width: "100%", height: "100%" }}
-              center={position}
-              zoom={13}
-              onClick={handleMapClick}
-              onLoad={map => setMap(map)}
-            >
-              {directions && <DirectionsRenderer directions={directions} />}
-            </GoogleMap>
-          </LoadScript>
+            {directions && <DirectionsRenderer directions={directions} />}
+          </GoogleMap>
           <Button
             className="absolute bottom-4 right-4 z-[1000]"
             onClick={handleConfirm}

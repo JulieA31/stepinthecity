@@ -33,7 +33,7 @@ const Index = () => {
               <h2 className="text-2xl font-display">Itinéraire Personnalisé</h2>
             </div>
             <p className="text-gray-600">
-              Crée ton parcours idéal en fonction de tes préférences.
+              Crée ton parcours idéal en fonction de tes préférences et de ton temps.
             </p>
             <button className="btn-primary mt-6 w-full">
               Commencer

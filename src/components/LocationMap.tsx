@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback } from "react";
-import { GoogleMap, LoadScript, DirectionsRenderer, useJsApiLoader } from "@react-google-maps/api";
+import { GoogleMap, DirectionsRenderer, useJsApiLoader } from "@react-google-maps/api";
 import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/components/ui/use-toast";
@@ -20,8 +20,6 @@ const LocationMap = ({ open, onOpenChange, onLocationSelect }: LocationMapProps)
   const [selectedPosition, setSelectedPosition] = useState<google.maps.LatLngLiteral | null>(null);
   const [directions, setDirections] = useState<google.maps.DirectionsResult | null>(null);
   const [map, setMap] = useState<google.maps.Map | null>(null);
-  const [marker, setMarker] = useState<google.maps.Marker | null>(null);
-  const [userMarker, setUserMarker] = useState<google.maps.Marker | null>(null);
   const { toast } = useToast();
 
   const { isLoaded } = useJsApiLoader({
@@ -38,12 +36,10 @@ const LocationMap = ({ open, onOpenChange, onLocationSelect }: LocationMapProps)
             lng: pos.coords.longitude
           };
           setPosition(newPosition);
+          map.setCenter(newPosition);
           
-          if (userMarker) {
-            userMarker.setMap(null);
-          }
-
-          const newUserMarker = new window.google.maps.Marker({
+          // Créer un marqueur pour la position actuelle
+          new window.google.maps.Marker({
             map,
             position: newPosition,
             icon: {
@@ -56,8 +52,6 @@ const LocationMap = ({ open, onOpenChange, onLocationSelect }: LocationMapProps)
             },
             title: "Votre position"
           });
-          setUserMarker(newUserMarker);
-          map.setCenter(newPosition);
         },
         (error) => {
           console.error("Erreur de géolocalisation:", error);
@@ -73,28 +67,32 @@ const LocationMap = ({ open, onOpenChange, onLocationSelect }: LocationMapProps)
 
   const handleMapClick = useCallback((e: google.maps.MapMouseEvent) => {
     if (e.latLng && map && isLoaded && window.google) {
-      const newPosition = {
+      const clickedPosition = {
         lat: e.latLng.lat(),
         lng: e.latLng.lng()
       };
-      setSelectedPosition(newPosition);
+      setSelectedPosition(clickedPosition);
 
-      if (marker) {
-        marker.setMap(null);
-      }
+      // Supprimer tous les marqueurs existants sauf celui de la position actuelle
+      map.overlays?.forEach((overlay) => {
+        if (overlay instanceof window.google.maps.Marker && overlay.getTitle() !== "Votre position") {
+          overlay.setMap(null);
+        }
+      });
 
-      const newMarker = new window.google.maps.Marker({
+      // Ajouter le nouveau marqueur
+      new window.google.maps.Marker({
         map,
-        position: newPosition,
+        position: clickedPosition,
         animation: window.google.maps.Animation.DROP
       });
-      setMarker(newMarker);
 
+      // Calculer l'itinéraire
       const directionsService = new window.google.maps.DirectionsService();
       directionsService.route(
         {
           origin: position,
-          destination: newPosition,
+          destination: clickedPosition,
           travelMode: window.google.maps.TravelMode.WALKING
         },
         (result, status) => {
@@ -111,7 +109,7 @@ const LocationMap = ({ open, onOpenChange, onLocationSelect }: LocationMapProps)
         }
       );
     }
-  }, [position, map, marker, isLoaded]);
+  }, [position, map, isLoaded]);
 
   const handleConfirm = () => {
     if (selectedPosition) {
@@ -144,7 +142,7 @@ const LocationMap = ({ open, onOpenChange, onLocationSelect }: LocationMapProps)
             center={position}
             zoom={13}
             onClick={handleMapClick}
-            onLoad={map => setMap(map)}
+            onLoad={setMap}
           >
             {directions && <DirectionsRenderer directions={directions} />}
           </GoogleMap>

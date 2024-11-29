@@ -94,7 +94,7 @@ const CustomWalkForm = ({ onGenerate, startLocation, endLocation, setShowMap, ro
           </div>
           
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">Type de balade</label>
+            <label className="block text-sm font-medium text-gray-700 mb-2">Thème du parcours</label>
             <select 
               value={type}
               onChange={(e) => setType(e.target.value)}

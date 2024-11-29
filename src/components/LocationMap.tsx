@@ -37,6 +37,7 @@ const LocationMap = ({ open, onOpenChange, onLocationSelect }: LocationMapProps)
             lng: pos.coords.longitude
           };
           setPosition(newPosition);
+          setSelectedPosition(newPosition); // Définir la position actuelle comme position sélectionnée
           map.setCenter(newPosition);
           
           const userMarker = new window.google.maps.Marker({
@@ -52,6 +53,12 @@ const LocationMap = ({ open, onOpenChange, onLocationSelect }: LocationMapProps)
             },
             title: "Votre position"
           });
+
+          userMarker.addListener('click', () => {
+            setSelectedPosition(newPosition);
+            calculateRoute(newPosition);
+          });
+
           setMarkers(prev => [...prev, userMarker]);
         },
         (error) => {
@@ -65,6 +72,31 @@ const LocationMap = ({ open, onOpenChange, onLocationSelect }: LocationMapProps)
       );
     }
   }, [map, open, isLoaded]);
+
+  const calculateRoute = useCallback((destination: google.maps.LatLngLiteral) => {
+    if (!isLoaded || !window.google || !map) return;
+
+    const directionsService = new window.google.maps.DirectionsService();
+    directionsService.route(
+      {
+        origin: position,
+        destination: destination,
+        travelMode: window.google.maps.TravelMode.WALKING
+      },
+      (result, status) => {
+        if (status === window.google.maps.DirectionsStatus.OK) {
+          setDirections(result);
+        } else {
+          console.error("Erreur lors du calcul de l'itinéraire:", status);
+          toast({
+            title: "Erreur de calcul d'itinéraire",
+            description: "Impossible de calculer l'itinéraire vers ce point",
+            variant: "destructive",
+          });
+        }
+      }
+    );
+  }, [position, isLoaded, map]);
 
   const handleMapClick = useCallback((e: google.maps.MapMouseEvent) => {
     if (e.latLng && map && isLoaded && window.google) {
@@ -90,29 +122,9 @@ const LocationMap = ({ open, onOpenChange, onLocationSelect }: LocationMapProps)
       });
       setMarkers(prev => [...prev, newMarker]);
 
-      // Calculate route
-      const directionsService = new window.google.maps.DirectionsService();
-      directionsService.route(
-        {
-          origin: position,
-          destination: clickedPosition,
-          travelMode: window.google.maps.TravelMode.WALKING
-        },
-        (result, status) => {
-          if (status === window.google.maps.DirectionsStatus.OK) {
-            setDirections(result);
-          } else {
-            console.error("Erreur lors du calcul de l'itinéraire:", status);
-            toast({
-              title: "Erreur de calcul d'itinéraire",
-              description: "Impossible de calculer l'itinéraire vers ce point",
-              variant: "destructive",
-            });
-          }
-        }
-      );
+      calculateRoute(clickedPosition);
     }
-  }, [position, map, isLoaded, markers]);
+  }, [position, map, isLoaded, markers, calculateRoute]);
 
   const handleConfirm = () => {
     if (selectedPosition) {

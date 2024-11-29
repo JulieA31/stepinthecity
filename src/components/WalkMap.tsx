@@ -9,9 +9,23 @@ interface WalkMapProps {
   isLoaded: boolean;
 }
 
+const mapContainerStyle = {
+  width: "100%",
+  height: "100%",
+  minHeight: "400px"
+};
+
+const defaultCenter = { lat: 48.8566, lng: 2.3522 };
+
 const WalkMap = ({ steps, walkTitle, isLoaded }: WalkMapProps) => {
   const [directions, setDirections] = useState<google.maps.DirectionsResult | null>(null);
-  const [center, setCenter] = useState<google.maps.LatLngLiteral>({ lat: 48.8566, lng: 2.3522 });
+  const [center, setCenter] = useState<google.maps.LatLngLiteral>(defaultCenter);
+  const [map, setMap] = useState<google.maps.Map | null>(null);
+
+  const onLoad = useCallback((map: google.maps.Map) => {
+    console.log("Map loaded successfully");
+    setMap(map);
+  }, []);
 
   const calculateRoute = useCallback(async () => {
     if (!isLoaded || !steps || steps.length < 2) {
@@ -64,18 +78,20 @@ const WalkMap = ({ steps, walkTitle, isLoaded }: WalkMapProps) => {
 
   if (!isLoaded) {
     console.log("Map is not loaded yet");
-    return <div>Loading...</div>;
+    return <div className="h-full flex items-center justify-center">Loading...</div>;
   }
 
   return (
     <GoogleMap
-      mapContainerStyle={{ width: "100%", height: "100%" }}
+      mapContainerStyle={mapContainerStyle}
       center={center}
       zoom={13}
+      onLoad={onLoad}
       options={{
         gestureHandling: 'cooperative',
         streetViewControl: false,
         mapTypeControl: false,
+        fullscreenControl: true,
       }}
     >
       {directions && <DirectionsRenderer directions={directions} />}

@@ -31,6 +31,8 @@ const WalkCard = ({ walk, audioEnabled, onAudioToggle, onClick, getImageForWalk,
     let audioPath;
     if (walk.title === "Sur les pas de César") {
       audioPath = '/audio/sur-les-pas-de-jules-cesar.mp3';
+    } else if (walk.title === "Les classiques de Paris") {
+      audioPath = '/audio/les-classiques-de-paris.mp3';
     } else {
       const formattedTitle = walk.title.toLowerCase().replace(/ /g, '-');
       audioPath = `/audio/${formattedTitle}.mp3`;

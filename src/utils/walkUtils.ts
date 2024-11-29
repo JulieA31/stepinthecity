@@ -2,22 +2,23 @@ import { Step } from "@/types/walk";
 
 const generatePointsOfInterest = (type: string, center: { lat: number; lng: number }, duration: string): Step[] => {
   // Convertir la durée en nombre de points d'intérêt
+  // On réduit le nombre de points pour laisser de la marge pour la marche entre les points
   const pointsCount = {
-    "30min": 2,
-    "1h": 3,
-    "2h": 5,
-    "3h": 7
+    "30": 2,  // 30 minutes
+    "60": 3,  // 1 heure
+    "120": 4, // 2 heures
+    "180": 5  // 3 heures
   }[duration] || 3;
 
   // Ajuster le rayon en fonction de la durée (en degrés, ~1km = 0.01)
   const radiusMap = {
-    "30min": 0.01,    // ~1km
-    "1h": 0.02,       // ~2km
-    "2h": 0.03,       // ~3km
-    "3h": 0.04        // ~4km
+    "30": 0.01,    // ~1km pour 30min
+    "60": 0.015,   // ~1.5km pour 1h
+    "120": 0.02,   // ~2km pour 2h
+    "180": 0.025   // ~2.5km pour 3h
   };
   
-  const radius = radiusMap[duration as keyof typeof radiusMap] || 0.02;
+  const radius = radiusMap[duration as keyof typeof radiusMap] || 0.015;
   
   // Points d'intérêt par ville (basé sur les coordonnées du centre)
   const cityPOIs: { [key: string]: any } = {

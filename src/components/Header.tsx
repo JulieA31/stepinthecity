@@ -12,9 +12,11 @@ const Header = () => {
   };
 
   const handleCitySelect = (city: string) => {
-    const event = new CustomEvent('citySelected', { detail: city });
-    window.dispatchEvent(event);
-    setIsOpen(false); // Ferme le menu après la sélection
+    if (city) { // Ne ferme le menu que si une ville est sélectionnée
+      const event = new CustomEvent('citySelected', { detail: city });
+      window.dispatchEvent(event);
+      setIsOpen(false);
+    }
   };
 
   const showLocationSelector = location.pathname === '/predefined';

@@ -112,12 +112,12 @@ const LocationSelector = ({ onCitySelect }: LocationSelectorProps) => {
   const handleCountryChange = (value: string) => {
     setSelectedCountry(value as CountryKey);
     setSelectedCity("");
-    onCitySelect("");
+    // Ne pas appeler onCitySelect ici pour garder le menu ouvert
   };
 
   const handleCityChange = (city: string) => {
     setSelectedCity(city);
-    onCitySelect(city);
+    onCitySelect(city); // Appeler onCitySelect uniquement quand une ville est sélectionnée
   };
 
   return (

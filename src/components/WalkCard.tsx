@@ -19,11 +19,15 @@ const WalkCard = ({ walk, audioEnabled, onAudioToggle, onClick, getImageForWalk,
   const handleAudioToggle = async (e: React.MouseEvent) => {
     e.stopPropagation();
     
+    const audioPath = `/audio/${walk.title.toLowerCase().replace(/ /g, '-')}.mp3`;
+    console.log('Tentative de lecture audio:', audioPath);
+    
     if (!audioRef.current) {
-      // Créer un nouvel élément audio
-      audioRef.current = new Audio(`/audio/${walk.title.toLowerCase().replace(/ /g, '-')}.mp3`);
+      console.log('Création d\'un nouvel élément audio');
+      audioRef.current = new Audio(audioPath);
       
-      audioRef.current.onerror = () => {
+      audioRef.current.onerror = (e) => {
+        console.error('Erreur de chargement audio:', e);
         toast({
           title: "Erreur",
           description: "La narration audio n'est pas disponible pour ce parcours.",
@@ -34,14 +38,18 @@ const WalkCard = ({ walk, audioEnabled, onAudioToggle, onClick, getImageForWalk,
     }
 
     if (isPlaying) {
+      console.log('Pause de l\'audio');
       audioRef.current.pause();
       setIsPlaying(false);
     } else {
       try {
+        console.log('Tentative de lecture');
         await audioRef.current.play();
+        console.log('Lecture démarrée avec succès');
         setIsPlaying(true);
         onAudioToggle(walk.title);
       } catch (error) {
+        console.error('Erreur lors de la lecture:', error);
         toast({
           title: "Erreur",
           description: "Impossible de lancer la narration audio.",

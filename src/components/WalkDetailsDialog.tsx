@@ -6,7 +6,7 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { GoogleMap, LoadScript, Marker, DirectionsRenderer } from "@react-google-maps/api";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 
 const GOOGLE_MAPS_API_KEY = "AIzaSyC806xlYYv2CYq2euqLnD4_cMrKrUTZGNI";
 
@@ -37,11 +37,40 @@ const WalkDetailsDialog = ({
     lat: 48.8566,
     lng: 2.3522
   });
+  const [isLoaded, setIsLoaded] = useState(false);
+
+  const calculateRoute = useCallback((stepsWithPositions: Step[]) => {
+    if (!isLoaded || !window.google) return;
+
+    const directionsService = new window.google.maps.DirectionsService();
+    const waypoints = stepsWithPositions
+      .slice(1, -1)
+      .filter(step => step.position)
+      .map(step => ({
+        location: step.position as google.maps.LatLngLiteral,
+        stopover: true
+      }));
+
+    if (stepsWithPositions[0]?.position && stepsWithPositions[stepsWithPositions.length - 1]?.position) {
+      directionsService.route(
+        {
+          origin: stepsWithPositions[0].position,
+          destination: stepsWithPositions[stepsWithPositions.length - 1].position,
+          waypoints: waypoints,
+          travelMode: window.google.maps.TravelMode.WALKING
+        },
+        (result, status) => {
+          if (status === window.google.maps.DirectionsStatus.OK) {
+            setDirections(result);
+          }
+        }
+      );
+    }
+  }, [isLoaded]);
 
   useEffect(() => {
-    if (walk && isOpen) {
+    if (walk && isOpen && isLoaded) {
       const steps = getStepsForWalk(walk.title);
-      // Définir les positions pour chaque étape selon le parcours
       const stepsWithPositions = steps.map(step => {
         switch(walk.title) {
           case "Sur les pas de Victor Hugo":
@@ -56,43 +85,17 @@ const WalkDetailsDialog = ({
             if (step.title === "Place du Commerce") return { ...step, position: { lat: 38.7075, lng: -9.1364 } };
             if (step.title === "Tour de Belém") return { ...step, position: { lat: 38.6916, lng: -9.2159 } };
             break;
-          // Ajoutez d'autres cas pour les différents parcours
         }
         return step;
       });
 
-      // Centrer la carte sur la première étape
       if (stepsWithPositions[0]?.position) {
         setCenter(stepsWithPositions[0].position);
       }
 
-      // Calculer l'itinéraire entre les points
-      const directionsService = new google.maps.DirectionsService();
-      const waypoints = stepsWithPositions
-        .slice(1, -1)
-        .filter(step => step.position)
-        .map(step => ({
-          location: step.position as google.maps.LatLngLiteral,
-          stopover: true
-        }));
-
-      if (stepsWithPositions[0]?.position && stepsWithPositions[stepsWithPositions.length - 1]?.position) {
-        directionsService.route(
-          {
-            origin: stepsWithPositions[0].position,
-            destination: stepsWithPositions[stepsWithPositions.length - 1].position,
-            waypoints: waypoints,
-            travelMode: google.maps.TravelMode.WALKING
-          },
-          (result, status) => {
-            if (status === google.maps.DirectionsStatus.OK) {
-              setDirections(result);
-            }
-          }
-        );
-      }
+      calculateRoute(stepsWithPositions);
     }
-  }, [walk, isOpen, getStepsForWalk]);
+  }, [walk, isOpen, isLoaded, getStepsForWalk, calculateRoute]);
 
   if (!walk) return null;
 
@@ -126,7 +129,10 @@ const WalkDetailsDialog = ({
             </div>
 
             <div className="h-[400px] w-full mb-8 rounded-lg overflow-hidden">
-              <LoadScript googleMapsApiKey={GOOGLE_MAPS_API_KEY}>
+              <LoadScript 
+                googleMapsApiKey={GOOGLE_MAPS_API_KEY}
+                onLoad={() => setIsLoaded(true)}
+              >
                 <GoogleMap
                   mapContainerStyle={{ width: "100%", height: "100%" }}
                   center={center}

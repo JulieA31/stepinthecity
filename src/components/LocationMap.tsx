@@ -1,17 +1,9 @@
-import { useState, useEffect } from "react";
-import { MapContainer, TileLayer, Marker, useMap } from "react-leaflet";
-import "leaflet/dist/leaflet.css";
+import { useState, useEffect, useCallback } from "react";
+import { GoogleMap, LoadScript, Marker, DirectionsRenderer } from "@react-google-maps/api";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
-import L from "leaflet";
 
-// Fix pour les icônes Leaflet
-delete (L.Icon.Default.prototype as any)._getIconUrl;
-L.Icon.Default.mergeOptions({
-  iconRetinaUrl: "https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-icon-2x.png",
-  iconUrl: "https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-icon.png",
-  shadowUrl: "https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-shadow.png",
-});
+const GOOGLE_MAPS_API_KEY = "YOUR_GOOGLE_MAPS_API_KEY"; // À remplacer par votre clé API Google Maps
 
 interface LocationMapProps {
   open: boolean;
@@ -19,23 +11,22 @@ interface LocationMapProps {
   onLocationSelect: (lat: number, lng: number) => void;
 }
 
-function SetViewOnClick({ coords }: { coords: [number, number] }) {
-  const map = useMap();
-  useEffect(() => {
-    map.setView(coords, map.getZoom());
-  }, [coords, map]);
-  return null;
-}
-
 const LocationMap = ({ open, onOpenChange, onLocationSelect }: LocationMapProps) => {
-  const [position, setPosition] = useState<[number, number]>([48.8566, 2.3522]); // Paris par défaut
-  const [selectedPosition, setSelectedPosition] = useState<[number, number] | null>(null);
+  const [position, setPosition] = useState<google.maps.LatLngLiteral>({
+    lat: 48.8566,
+    lng: 2.3522
+  });
+  const [selectedPosition, setSelectedPosition] = useState<google.maps.LatLngLiteral | null>(null);
+  const [directions, setDirections] = useState<google.maps.DirectionsResult | null>(null);
 
   useEffect(() => {
     if (navigator.geolocation) {
       navigator.geolocation.getCurrentPosition(
         (pos) => {
-          setPosition([pos.coords.latitude, pos.coords.longitude]);
+          setPosition({
+            lat: pos.coords.latitude,
+            lng: pos.coords.longitude
+          });
         },
         (error) => {
           console.error("Erreur de géolocalisation:", error);
@@ -44,35 +35,66 @@ const LocationMap = ({ open, onOpenChange, onLocationSelect }: LocationMapProps)
     }
   }, []);
 
-  const handleMapClick = (e: L.LeafletMouseEvent) => {
-    const { lat, lng } = e.latlng;
-    setSelectedPosition([lat, lng]);
-  };
+  const handleMapClick = useCallback((e: google.maps.MapMouseEvent) => {
+    if (e.latLng) {
+      const newPosition = {
+        lat: e.latLng.lat(),
+        lng: e.latLng.lng()
+      };
+      setSelectedPosition(newPosition);
+
+      // Calculer l'itinéraire depuis la position actuelle jusqu'au point sélectionné
+      const directionsService = new google.maps.DirectionsService();
+      directionsService.route(
+        {
+          origin: position,
+          destination: newPosition,
+          travelMode: google.maps.TravelMode.WALKING
+        },
+        (result, status) => {
+          if (status === google.maps.DirectionsStatus.OK) {
+            setDirections(result);
+          } else {
+            console.error("Erreur lors du calcul de l'itinéraire:", status);
+          }
+        }
+      );
+    }
+  }, [position]);
 
   const handleConfirm = () => {
     if (selectedPosition) {
-      onLocationSelect(selectedPosition[0], selectedPosition[1]);
+      onLocationSelect(selectedPosition.lat, selectedPosition.lng);
       onOpenChange(false);
     }
+  };
+
+  const mapContainerStyle = {
+    width: "100%",
+    height: "100%"
   };
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="sm:max-w-[800px] h-[600px]">
         <div className="h-[500px] relative">
-          <MapContainer
-            center={position}
-            zoom={13}
-            style={{ height: "100%", width: "100%" }}
-            onClick={handleMapClick}
-          >
-            <TileLayer
-              attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-              url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-            />
-            <SetViewOnClick coords={position} />
-            {selectedPosition && <Marker position={selectedPosition} />}
-          </MapContainer>
+          <LoadScript googleMapsApiKey={GOOGLE_MAPS_API_KEY}>
+            <GoogleMap
+              mapContainerStyle={mapContainerStyle}
+              center={position}
+              zoom={13}
+              onClick={handleMapClick}
+            >
+              {/* Marqueur pour la position actuelle */}
+              <Marker position={position} />
+              
+              {/* Marqueur pour la position sélectionnée */}
+              {selectedPosition && <Marker position={selectedPosition} />}
+              
+              {/* Affichage de l'itinéraire */}
+              {directions && <DirectionsRenderer directions={directions} />}
+            </GoogleMap>
+          </LoadScript>
           <Button
             className="absolute bottom-4 right-4 z-[1000]"
             onClick={handleConfirm}

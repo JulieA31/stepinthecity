@@ -21,6 +21,15 @@ const CustomWalkForm = ({ onGenerate, startLocation, endLocation, setShowMap, ro
   const [actualDuration, setActualDuration] = useState<number | null>(null);
   const { toast } = useToast();
 
+  const getMaxDuration = (selectedDuration: string): number => {
+    const durationMap: { [key: string]: number } = {
+      "60": 70,   // 1 heure -> max 70 minutes
+      "120": 140, // 2 heures -> max 140 minutes
+      "180": 190  // 3 heures -> max 190 minutes
+    };
+    return durationMap[selectedDuration] || parseInt(selectedDuration) + 10;
+  };
+
   const handleGenerate = () => {
     if (!startLocation) {
       toast({
@@ -77,12 +86,12 @@ const CustomWalkForm = ({ onGenerate, startLocation, endLocation, setShowMap, ro
 
   const handleRouteCalculated = (calculatedDuration: number) => {
     setActualDuration(calculatedDuration);
-    const targetDuration = parseInt(duration);
+    const maxDuration = getMaxDuration(duration);
     
-    if (calculatedDuration > targetDuration + 10) {
+    if (calculatedDuration > maxDuration) {
       toast({
         title: "Attention",
-        description: `Le parcours généré dure ${calculatedDuration} minutes, ce qui dépasse la durée demandée de ${targetDuration} minutes.`,
+        description: `Le parcours généré dure ${calculatedDuration} minutes, ce qui dépasse la durée maximale autorisée de ${maxDuration} minutes.`,
         variant: "destructive"
       });
     }
@@ -93,7 +102,7 @@ const CustomWalkForm = ({ onGenerate, startLocation, endLocation, setShowMap, ro
       <div className="p-6">
         <h2 className="text-2xl font-display text-text mb-6">Critères de personnalisation</h2>
         
-        {actualDuration && actualDuration > parseInt(duration) + 10 && (
+        {actualDuration && actualDuration > getMaxDuration(duration) && (
           <Alert variant="destructive" className="mb-6">
             <AlertDescription>
               ⚠️ Ce parcours dure {actualDuration} minutes, soit {actualDuration - parseInt(duration)} minutes de plus que la durée souhaitée.

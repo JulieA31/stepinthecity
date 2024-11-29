@@ -8,7 +8,7 @@ interface WalkMapProps {
   steps: Step[];
   walkTitle: string;
   isLoaded: boolean;
-  onRouteCalculated?: (durationInMinutes: number) => void;
+  onRouteCalculated?: (durationInMinutes: number, legDurations: number[]) => void;
 }
 
 const WalkMap = ({ steps, walkTitle, isLoaded, onRouteCalculated }: WalkMapProps) => {
@@ -51,14 +51,21 @@ const WalkMap = ({ steps, walkTitle, isLoaded, onRouteCalculated }: WalkMapProps
       setDirections(result);
       setCenter(origin);
 
-      // Calculer la durée totale en minutes à partir des données de l'itinéraire
+      // Calculer la durée totale et les durées individuelles des segments
       if (result.routes[0] && onRouteCalculated) {
-        const totalDurationInSeconds = result.routes[0].legs.reduce(
+        const legs = result.routes[0].legs;
+        const totalDurationInSeconds = legs.reduce(
           (total, leg) => total + (leg.duration?.value || 0),
           0
         );
         const totalDurationInMinutes = Math.round(totalDurationInSeconds / 60);
-        onRouteCalculated(totalDurationInMinutes);
+        
+        // Extraire les durées individuelles des segments
+        const legDurations = legs.map(leg => 
+          Math.round((leg.duration?.value || 0) / 60)
+        );
+        
+        onRouteCalculated(totalDurationInMinutes, legDurations);
       }
     } catch (error) {
       console.error("Error calculating route:", error);

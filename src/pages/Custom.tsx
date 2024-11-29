@@ -16,6 +16,7 @@ const Custom = () => {
   const [generatedSteps, setGeneratedSteps] = useState<Step[]>([]);
   const [isMapVisible, setIsMapVisible] = useState(false);
   const [totalDuration, setTotalDuration] = useState(0);
+  const [legDurations, setLegDurations] = useState<number[]>([]);
 
   const { isLoaded } = useJsApiLoader({
     id: 'google-map-script',
@@ -25,6 +26,11 @@ const Custom = () => {
   const handleGenerateSteps = (steps: Step[]) => {
     setGeneratedSteps(steps);
     setIsMapVisible(true);
+  };
+
+  const handleRouteCalculated = (durationInMinutes: number, legDurations: number[]) => {
+    setTotalDuration(durationInMinutes);
+    setLegDurations(legDurations);
   };
 
   return (
@@ -49,7 +55,7 @@ const Custom = () => {
                   steps={generatedSteps}
                   walkTitle="Parcours personnalisé"
                   isLoaded={isLoaded}
-                  onRouteCalculated={setTotalDuration}
+                  onRouteCalculated={handleRouteCalculated}
                 />
               ) : (
                 <div className="h-full flex items-center justify-center">
@@ -73,7 +79,9 @@ const Custom = () => {
                         <span className="bg-primary text-white w-6 h-6 rounded-full flex items-center justify-center text-sm">
                           {index + 1}
                         </span>
-                        <span className="text-gray-600">{step.duration}</span>
+                        {index > 0 && legDurations[index - 1] && (
+                          <span className="text-gray-600">{legDurations[index - 1]} min de marche</span>
+                        )}
                       </div>
                       <h3 className="font-medium mt-1">{step.title}</h3>
                     </div>

@@ -3,6 +3,7 @@ export interface Step {
   description: string;
   duration: string;
   position?: google.maps.LatLngLiteral;
+  imageUrl?: string;
 }
 
 export interface Walk {

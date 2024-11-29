@@ -2,6 +2,8 @@ import { GoogleMap, DirectionsRenderer, MarkerF } from "@react-google-maps/api";
 import { useCallback, useEffect, useState } from "react";
 import { Step } from "@/types/walk";
 import { calculateDirectionsRoute } from "@/utils/mapUtils";
+import { HoverCard, HoverCardContent, HoverCardTrigger } from "@/components/ui/hover-card";
+import Image from "@/components/ui/image";
 
 interface WalkMapProps {
   steps: Step[];
@@ -19,8 +21,6 @@ const WalkMap = ({ steps, walkTitle, isLoaded }: WalkMapProps) => {
       console.log("Cannot calculate route: insufficient steps");
       return;
     }
-
-    console.log("Calculating route with steps:", steps);
 
     const validSteps = steps.filter(
       step => step.position && 
@@ -48,7 +48,6 @@ const WalkMap = ({ steps, walkTitle, isLoaded }: WalkMapProps) => {
         destination,
         waypoints
       );
-      console.log("Route calculated successfully:", result);
       setDirections(result);
       setCenter(origin);
     } catch (error) {
@@ -58,10 +57,41 @@ const WalkMap = ({ steps, walkTitle, isLoaded }: WalkMapProps) => {
 
   useEffect(() => {
     if (steps.length > 0) {
-      console.log("Steps changed, recalculating route");
       calculateRoute();
     }
   }, [calculateRoute, steps]);
+
+  const CustomMarker = ({ step, index }: { step: Step; index: number }) => (
+    <HoverCard>
+      <HoverCardTrigger asChild>
+        <div>
+          <MarkerF
+            position={step.position!}
+            label={{
+              text: (index + 1).toString(),
+              color: "white",
+              fontWeight: "bold"
+            }}
+            title={step.title}
+          />
+        </div>
+      </HoverCardTrigger>
+      <HoverCardContent className="w-80 bg-white p-0 shadow-lg rounded-lg overflow-hidden">
+        <div className="relative h-32 w-full">
+          <img
+            src={step.imageUrl || "/placeholder.svg"}
+            alt={step.title}
+            className="object-cover w-full h-full"
+          />
+        </div>
+        <div className="p-4">
+          <h3 className="font-semibold text-lg mb-1">{step.title}</h3>
+          <p className="text-sm text-gray-600 mb-2">{step.duration}</p>
+          <p className="text-sm text-gray-700">{step.description}</p>
+        </div>
+      </HoverCardContent>
+    </HoverCard>
+  );
 
   return (
     <GoogleMap
@@ -83,15 +113,10 @@ const WalkMap = ({ steps, walkTitle, isLoaded }: WalkMapProps) => {
       {directions && <DirectionsRenderer directions={directions} />}
       {steps.map((step, index) => 
         step.position && (
-          <MarkerF
+          <CustomMarker 
             key={index}
-            position={step.position}
-            label={{
-              text: (index + 1).toString(),
-              color: "white",
-              fontWeight: "bold"
-            }}
-            title={`${step.title} (${step.duration})`}
+            step={step}
+            index={index}
           />
         )
       )}

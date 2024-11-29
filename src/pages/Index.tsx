@@ -8,7 +8,7 @@ const Index = () => {
         <div className="container mx-auto px-4 py-6">
           <div className="flex items-center gap-2 mb-4">
             <LampFloor className="w-6 h-6 text-primary" />
-            <h1 className="text-4xl font-display text-text">Balad.IA</h1>
+            <h1 className="text-4xl font-display text-text">StepInTheCity</h1>
           </div>
           <div className="relative">
             <img 

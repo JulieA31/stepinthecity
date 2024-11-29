@@ -1,15 +1,42 @@
-import { LampFloor, Clock, Compass, MapPin } from "lucide-react";
+import { LampFloor, Clock, Compass, MapPin, Menu, X } from "lucide-react";
 import { Link } from "react-router-dom";
+import { useState } from "react";
 
 const Index = () => {
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
+
   return (
     <div className="min-h-screen bg-secondary">
       <header className="bg-white shadow-sm">
         <div className="container mx-auto px-4 py-6">
-          <div className="flex items-center gap-2 mb-4">
-            <LampFloor className="w-6 h-6 text-primary" />
-            <h1 className="text-4xl font-display text-text">StepInTheCity</h1>
+          <div className="flex items-center justify-between mb-4">
+            <div className="flex items-center gap-2">
+              <LampFloor className="w-6 h-6 text-primary" />
+              <h1 className="text-4xl font-display text-text">StepInTheCity</h1>
+            </div>
+            
+            <button 
+              onClick={() => setIsMenuOpen(!isMenuOpen)}
+              className="md:hidden"
+              aria-label="Toggle menu"
+            >
+              {isMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
+            </button>
+
+            <nav className={`${
+              isMenuOpen ? 'flex' : 'hidden'
+            } md:flex absolute md:relative top-full left-0 w-full md:w-auto 
+            bg-white md:bg-transparent shadow-lg md:shadow-none flex-col md:flex-row 
+            items-center gap-4 p-4 md:p-0 z-50`}>
+              <Link to="/custom" className="text-text hover:text-primary transition-colors">
+                Parcours personnalisé
+              </Link>
+              <Link to="/predefined" className="text-text hover:text-primary transition-colors">
+                Parcours prédéfinis
+              </Link>
+            </nav>
           </div>
+
           <div className="text-center">
             <img 
               src="/lovable-uploads/fd183326-fb36-4fca-88df-47ac0310f4c7.png"

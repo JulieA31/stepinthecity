@@ -1,10 +1,24 @@
 import { useState } from "react";
 import { Clock, MapPin, Users, Filter, Repeat, Navigation2, Volume2 } from "lucide-react";
+import LocationMap from "@/components/LocationMap";
+import { Button } from "@/components/ui/button";
 
 const Custom = () => {
   const [duration, setDuration] = useState("1h");
   const [type, setType] = useState("all");
-  const [routeType, setRouteType] = useState("loop"); // "loop" or "point-to-point"
+  const [routeType, setRouteType] = useState("loop");
+  const [showMap, setShowMap] = useState(false);
+  const [startLocation, setStartLocation] = useState<{ lat: number; lng: number } | null>(null);
+  const [endLocation, setEndLocation] = useState<{ lat: number; lng: number } | null>(null);
+  const [selectingEnd, setSelectingEnd] = useState(false);
+
+  const handleLocationSelect = (lat: number, lng: number) => {
+    if (selectingEnd) {
+      setEndLocation({ lat, lng });
+    } else {
+      setStartLocation({ lat, lng });
+    }
+  };
 
   return (
     <div className="min-h-screen bg-secondary pt-20">
@@ -59,29 +73,59 @@ const Custom = () => {
               
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">Point de départ</label>
-                <button className="btn-primary w-full flex items-center justify-center gap-2">
+                <Button
+                  variant="outline"
+                  className="w-full flex items-center justify-center gap-2"
+                  onClick={() => {
+                    setSelectingEnd(false);
+                    setShowMap(true);
+                  }}
+                >
                   <MapPin size={18} />
-                  Choisir sur la carte
-                </button>
+                  {startLocation ? "Changer le point de départ" : "Choisir sur la carte"}
+                </Button>
+                {startLocation && (
+                  <p className="text-sm text-gray-500 mt-1">
+                    Position : {startLocation.lat.toFixed(4)}, {startLocation.lng.toFixed(4)}
+                  </p>
+                )}
               </div>
 
               {routeType === "point-to-point" && (
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">Point d'arrivée</label>
-                  <button className="btn-primary w-full flex items-center justify-center gap-2">
+                  <Button
+                    variant="outline"
+                    className="w-full flex items-center justify-center gap-2"
+                    onClick={() => {
+                      setSelectingEnd(true);
+                      setShowMap(true);
+                    }}
+                  >
                     <Navigation2 size={18} />
-                    Choisir sur la carte
-                  </button>
+                    {endLocation ? "Changer le point d'arrivée" : "Choisir sur la carte"}
+                  </Button>
+                  {endLocation && (
+                    <p className="text-sm text-gray-500 mt-1">
+                      Position : {endLocation.lat.toFixed(4)}, {endLocation.lng.toFixed(4)}
+                    </p>
+                  )}
                 </div>
               )}
             </div>
             
-            <button className="btn-primary mt-8 w-full">
+            <Button className="mt-8 w-full">
               Générer mon parcours
-            </button>
+            </Button>
           </div>
         </div>
       </div>
+
+      <LocationMap
+        open={showMap}
+        onOpenChange={setShowMap}
+        onLocationSelect={handleLocationSelect}
+      />
     </div>
   );
 };

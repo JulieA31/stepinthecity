@@ -85,6 +85,36 @@ const WalkDetailsDialog = ({
             if (step.title === "Place du Commerce") return { ...step, position: { lat: 38.7075, lng: -9.1364 } };
             if (step.title === "Tour de Belém") return { ...step, position: { lat: 38.6916, lng: -9.2159 } };
             break;
+          case "Sur les rails du Tram 28":
+            if (step.title === "Praça Martim Moniz") return { ...step, position: { lat: 38.7157, lng: -9.1365 } };
+            if (step.title === "Graça") return { ...step, position: { lat: 38.7164, lng: -9.1307 } };
+            if (step.title === "Alfama") return { ...step, position: { lat: 38.7117, lng: -9.1332 } };
+            if (step.title === "Baixa-Chiado") return { ...step, position: { lat: 38.7106, lng: -9.1390 } };
+            break;
+          case "Saveurs portugaises":
+            if (step.title === "Mercado da Ribeira") return { ...step, position: { lat: 38.7067, lng: -9.1463 } };
+            if (step.title === "Pastéis de Belém") return { ...step, position: { lat: 38.6975, lng: -9.2032 } };
+            if (step.title === "Cervejaria Ramiro") return { ...step, position: { lat: 38.7208, lng: -9.1355 } };
+            if (step.title === "Ginjinha") return { ...step, position: { lat: 38.7147, lng: -9.1394 } };
+            break;
+          case "Sur les pas de César":
+            if (step.title === "Colisée") return { ...step, position: { lat: 41.8902, lng: 12.4922 } };
+            if (step.title === "Arc de Constantin") return { ...step, position: { lat: 41.8898, lng: 12.4910 } };
+            if (step.title === "Forum Romain") return { ...step, position: { lat: 41.8925, lng: 12.4853 } };
+            if (step.title === "Mont Palatin") return { ...step, position: { lat: 41.8892, lng: 12.4875 } };
+            break;
+          case "Rome baroque":
+            if (step.title === "Fontaine de Trevi") return { ...step, position: { lat: 41.9009, lng: 12.4833 } };
+            if (step.title === "Panthéon") return { ...step, position: { lat: 41.8986, lng: 12.4769 } };
+            if (step.title === "Place Navone") return { ...step, position: { lat: 41.8992, lng: 12.4730 } };
+            if (step.title === "Escaliers de la Trinité des Monts") return { ...step, position: { lat: 41.9060, lng: 12.4833 } };
+            break;
+          case "Vatican et spiritualité":
+            if (step.title === "Place Saint-Pierre") return { ...step, position: { lat: 41.9022, lng: 12.4567 } };
+            if (step.title === "Musées du Vatican") return { ...step, position: { lat: 41.9067, lng: 12.4526 } };
+            if (step.title === "Basilique Saint-Pierre") return { ...step, position: { lat: 41.9022, lng: 12.4533 } };
+            if (step.title === "Château Saint-Ange") return { ...step, position: { lat: 41.9031, lng: 12.4663 } };
+            break;
         }
         return step;
       });

@@ -28,6 +28,15 @@ const CustomWalkForm = ({ onGenerate, startLocation, endLocation, setShowMap, ro
       return;
     }
 
+    if (routeType === "point-to-point" && !endLocation) {
+      toast({
+        title: "Point d'arrivée manquant",
+        description: "Veuillez sélectionner un point d'arrivée sur la carte",
+        variant: "destructive"
+      });
+      return;
+    }
+
     const steps = generateStepsForType(type, startLocation, duration);
     
     if (startLocation) {
@@ -38,11 +47,11 @@ const CustomWalkForm = ({ onGenerate, startLocation, endLocation, setShowMap, ro
         position: startLocation
       });
 
-      // Ajout du point d'arrivée identique au point de départ pour une boucle
+      // Ajout du point d'arrivée selon le type de parcours
       if (routeType === "loop") {
         steps.push({
           title: "Point d'arrivée",
-          description: "Fin du parcours",
+          description: "Fin du parcours (retour au point de départ)",
           duration: "0min",
           position: startLocation
         });
@@ -103,8 +112,7 @@ const CustomWalkForm = ({ onGenerate, startLocation, endLocation, setShowMap, ro
             <label className="block text-sm font-medium text-gray-700 mb-2">Type de parcours</label>
             <select 
               value={routeType}
-              disabled
-              className="w-full p-2 border rounded-lg bg-gray-100"
+              className="w-full p-2 border rounded-lg"
             >
               <option value="loop">Boucle</option>
               <option value="point-to-point">Point à point</option>

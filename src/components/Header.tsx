@@ -1,6 +1,7 @@
 import { Menu, X, User } from "lucide-react";
 import { useState } from "react";
 import { Link } from "react-router-dom";
+import LocationSelector from "./LocationSelector";
 
 const Header = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -22,11 +23,18 @@ const Header = () => {
             <span className="text-2xl font-display text-text">StepInTheCity</span>
           </Link>
           
+          <div className="hidden md:block">
+            <LocationSelector />
+          </div>
+          
           <button onClick={() => setIsOpen(!isOpen)} className="flex items-center">
             {isOpen ? <X /> : <Menu />}
           </button>
 
           <nav className={`${isOpen ? 'block' : 'hidden'} absolute top-full left-0 w-full bg-white shadow-lg`}>
+            <div className="md:hidden">
+              <LocationSelector />
+            </div>
             <ul className="flex flex-col gap-4 p-4">
               <li>
                 <Link 

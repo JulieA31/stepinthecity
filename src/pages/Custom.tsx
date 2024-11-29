@@ -9,15 +9,7 @@ const Custom = () => {
   return (
     <div className="min-h-screen bg-secondary pt-20">
       <div className="container mx-auto px-4 py-8">
-        <div className="flex items-center justify-center mb-12">
-          <img 
-            src="https://images.unsplash.com/photo-1486312338219-ce68d2c6f44d" 
-            alt="Walking person logo" 
-            className="w-24 h-24 object-cover rounded-full border-4 border-sage"
-          />
-        </div>
-
-        <h1 className="text-4xl font-display text-text mb-8">Créez votre parcours</h1>
+        <h1 className="text-4xl font-display text-text mb-8 text-center">Créez votre parcours</h1>
         
         <div className="card mb-8">
           <div className="p-6">

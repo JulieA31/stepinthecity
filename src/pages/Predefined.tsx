@@ -1,15 +1,13 @@
 import { useState } from "react";
-import { useLocation } from "react-router-dom";
 import WalkDetailsDialog from "@/components/WalkDetailsDialog";
 import WalkCard from "@/components/WalkCard";
 import { getImageForWalk } from "@/utils/walkImages";
 import { lisbonneHistoriqueSteps, tramSteps, saveursSteps, victorHugoSteps } from "@/data/walkSteps";
+import { touristicCities, cityItineraries } from "@/components/LocationSelector";
 
 const Predefined = () => {
   const [audioEnabled, setAudioEnabled] = useState<{ [key: string]: boolean }>({});
   const [selectedWalk, setSelectedWalk] = useState<any | null>(null);
-  const location = useLocation();
-  const { city, itineraries } = location.state || { city: "Paris", itineraries: [] };
 
   const toggleAudio = (title: string) => {
     setAudioEnabled(prev => ({
@@ -31,21 +29,36 @@ const Predefined = () => {
   return (
     <div className="min-h-screen bg-secondary pt-20">
       <div className="container mx-auto px-4 py-8">
-        <h1 className="text-4xl font-display text-text mb-8">Parcours prédéfinis à {city}</h1>
+        <h1 className="text-4xl font-display text-text mb-8">Tous les parcours prédéfinis</h1>
         
-        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-          {itineraries.map((walk: any, index: number) => (
-            <WalkCard
-              key={index}
-              walk={walk}
-              audioEnabled={audioEnabled[walk.title]}
-              onAudioToggle={toggleAudio}
-              onClick={() => setSelectedWalk(walk)}
-              getImageForWalk={getImageForWalk}
-              city={city}
-            />
-          ))}
-        </div>
+        {Object.entries(touristicCities).map(([country, cities]) => (
+          <div key={country} className="mb-12">
+            <h2 className="text-3xl font-display text-text mb-6">{country}</h2>
+            {cities.map(city => {
+              const itineraries = cityItineraries[city as keyof typeof cityItineraries];
+              if (!itineraries) return null;
+              
+              return (
+                <div key={city} className="mb-8">
+                  <h3 className="text-2xl font-display text-text mb-4">{city}</h3>
+                  <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+                    {itineraries.map((walk: any, index: number) => (
+                      <WalkCard
+                        key={index}
+                        walk={walk}
+                        audioEnabled={audioEnabled[walk.title]}
+                        onAudioToggle={toggleAudio}
+                        onClick={() => setSelectedWalk(walk)}
+                        getImageForWalk={getImageForWalk}
+                        city={city}
+                      />
+                    ))}
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        ))}
 
         <WalkDetailsDialog
           walk={selectedWalk}

@@ -29,7 +29,7 @@ const Header = () => {
       title: "Déconnexion réussie",
       description: "À bientôt !",
     });
-    navigate("/login");
+    navigate("/");
   };
 
   if (location.pathname === "/login") return null;
@@ -45,21 +45,23 @@ const Header = () => {
           
           <div className="flex items-center gap-4">
             <nav className="hidden lg:flex items-center gap-4">
-              {isAuthenticated && (
-                <>
-                  <Link to="/custom" className="text-text hover:text-primary transition-colors">
-                    Parcours personnalisé
-                  </Link>
-                  <Link to="/predefined" className="text-text hover:text-primary transition-colors">
-                    Parcours prédéfinis
-                  </Link>
-                  <button
-                    onClick={handleLogout}
-                    className="text-text hover:text-primary transition-colors"
-                  >
-                    Déconnexion
-                  </button>
-                </>
+              <Link to="/custom" className="text-text hover:text-primary transition-colors">
+                Parcours personnalisé
+              </Link>
+              <Link to="/predefined" className="text-text hover:text-primary transition-colors">
+                Parcours prédéfinis
+              </Link>
+              {isAuthenticated ? (
+                <button
+                  onClick={handleLogout}
+                  className="text-text hover:text-primary transition-colors"
+                >
+                  Déconnexion
+                </button>
+              ) : (
+                <Link to="/login" className="text-text hover:text-primary transition-colors">
+                  Connexion
+                </Link>
               )}
             </nav>
             
@@ -75,32 +77,38 @@ const Header = () => {
           {isMenuOpen && (
             <nav className="absolute top-full right-0 w-64 bg-white shadow-lg rounded-lg mt-2 py-4 z-50">
               <div className="flex flex-col items-start px-4">
-                {isAuthenticated && (
-                  <>
-                    <Link 
-                      to="/custom" 
-                      className="w-full text-left py-2 text-text hover:text-primary transition-colors"
-                      onClick={() => setIsMenuOpen(false)}
-                    >
-                      Parcours personnalisé
-                    </Link>
-                    <Link 
-                      to="/predefined" 
-                      className="w-full text-left py-2 text-text hover:text-primary transition-colors"
-                      onClick={() => setIsMenuOpen(false)}
-                    >
-                      Parcours prédéfinis
-                    </Link>
-                    <button
-                      onClick={() => {
-                        handleLogout();
-                        setIsMenuOpen(false);
-                      }}
-                      className="w-full text-left py-2 text-text hover:text-primary transition-colors"
-                    >
-                      Déconnexion
-                    </button>
-                  </>
+                <Link 
+                  to="/custom" 
+                  className="w-full text-left py-2 text-text hover:text-primary transition-colors"
+                  onClick={() => setIsMenuOpen(false)}
+                >
+                  Parcours personnalisé
+                </Link>
+                <Link 
+                  to="/predefined" 
+                  className="w-full text-left py-2 text-text hover:text-primary transition-colors"
+                  onClick={() => setIsMenuOpen(false)}
+                >
+                  Parcours prédéfinis
+                </Link>
+                {isAuthenticated ? (
+                  <button
+                    onClick={() => {
+                      handleLogout();
+                      setIsMenuOpen(false);
+                    }}
+                    className="w-full text-left py-2 text-text hover:text-primary transition-colors"
+                  >
+                    Déconnexion
+                  </button>
+                ) : (
+                  <Link
+                    to="/login"
+                    className="w-full text-left py-2 text-text hover:text-primary transition-colors"
+                    onClick={() => setIsMenuOpen(false)}
+                  >
+                    Connexion
+                  </Link>
                 )}
               </div>
             </nav>

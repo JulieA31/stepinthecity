@@ -1,4 +1,4 @@
-import { Menu, X, User } from "lucide-react";
+import { Menu, X, User, Globe } from "lucide-react";
 import { useState } from "react";
 import { Link } from "react-router-dom";
 
@@ -9,7 +9,10 @@ const Header = () => {
     <header className="bg-white shadow-sm fixed w-full top-0 z-50">
       <div className="container mx-auto px-4 py-4">
         <div className="flex justify-between items-center">
-          <Link to="/" className="text-2xl font-display text-text">BaladIA</Link>
+          <Link to="/" className="flex items-center gap-2 text-text">
+            <Globe size={24} />
+            <span className="text-2xl font-sans text-text">Balad.IA</span>
+          </Link>
           
           <button onClick={() => setIsOpen(!isOpen)} className="md:hidden">
             {isOpen ? <X /> : <Menu />}

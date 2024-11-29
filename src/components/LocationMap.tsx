@@ -20,6 +20,7 @@ const LocationMap = ({ open, onOpenChange, onLocationSelect }: LocationMapProps)
   const [directions, setDirections] = useState<google.maps.DirectionsResult | null>(null);
   const [map, setMap] = useState<google.maps.Map | null>(null);
   const [marker, setMarker] = useState<google.maps.Marker | null>(null);
+  const [userMarker, setUserMarker] = useState<google.maps.Marker | null>(null);
 
   useEffect(() => {
     if (navigator.geolocation) {
@@ -30,13 +31,35 @@ const LocationMap = ({ open, onOpenChange, onLocationSelect }: LocationMapProps)
             lng: pos.coords.longitude
           };
           setPosition(newPosition);
+          
+          // Create user position marker when map is available
+          if (map && open) {
+            if (userMarker) {
+              userMarker.setMap(null);
+            }
+            const newUserMarker = new google.maps.Marker({
+              map,
+              position: newPosition,
+              icon: {
+                path: google.maps.SymbolPath.CIRCLE,
+                scale: 10,
+                fillColor: "#4285F4",
+                fillOpacity: 1,
+                strokeColor: "#FFFFFF",
+                strokeWeight: 2,
+              },
+              title: "Votre position"
+            });
+            setUserMarker(newUserMarker);
+            map.setCenter(newPosition);
+          }
         },
         (error) => {
           console.error("Erreur de géolocalisation:", error);
         }
       );
     }
-  }, []);
+  }, [map, open]);
 
   const handleMapClick = useCallback((e: google.maps.MapMouseEvent) => {
     if (e.latLng && map) {
@@ -46,15 +69,14 @@ const LocationMap = ({ open, onOpenChange, onLocationSelect }: LocationMapProps)
       };
       setSelectedPosition(newPosition);
 
-      // Clear existing marker
       if (marker) {
         marker.setMap(null);
       }
 
-      // Create new marker
       const newMarker = new google.maps.Marker({
         map,
-        position: newPosition
+        position: newPosition,
+        animation: google.maps.Animation.DROP
       });
       setMarker(newMarker);
 

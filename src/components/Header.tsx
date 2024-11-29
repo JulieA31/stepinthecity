@@ -11,7 +11,7 @@ const Header = () => {
         <div className="flex justify-between items-center">
           <Link to="/" className="flex items-center gap-2 text-text">
             <Globe size={24} />
-            <span className="text-2xl font-sans text-text">Balad.IA</span>
+            <span className="text-2xl font-display text-text">Balad.IA</span>
           </Link>
           
           <button onClick={() => setIsOpen(!isOpen)} className="md:hidden">

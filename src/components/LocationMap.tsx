@@ -21,9 +21,10 @@ const LocationMap = ({ open, onOpenChange, onLocationSelect }: LocationMapProps)
   const [map, setMap] = useState<google.maps.Map | null>(null);
   const [marker, setMarker] = useState<google.maps.Marker | null>(null);
   const [userMarker, setUserMarker] = useState<google.maps.Marker | null>(null);
+  const [isLoaded, setIsLoaded] = useState(false);
 
   useEffect(() => {
-    if (navigator.geolocation) {
+    if (navigator.geolocation && isLoaded && map && open) {
       navigator.geolocation.getCurrentPosition(
         (pos) => {
           const newPosition = {
@@ -32,37 +33,35 @@ const LocationMap = ({ open, onOpenChange, onLocationSelect }: LocationMapProps)
           };
           setPosition(newPosition);
           
-          // Create user position marker when map is available
-          if (map && open) {
-            if (userMarker) {
-              userMarker.setMap(null);
-            }
-            const newUserMarker = new google.maps.Marker({
-              map,
-              position: newPosition,
-              icon: {
-                path: google.maps.SymbolPath.CIRCLE,
-                scale: 10,
-                fillColor: "#4285F4",
-                fillOpacity: 1,
-                strokeColor: "#FFFFFF",
-                strokeWeight: 2,
-              },
-              title: "Votre position"
-            });
-            setUserMarker(newUserMarker);
-            map.setCenter(newPosition);
+          if (userMarker) {
+            userMarker.setMap(null);
           }
+
+          const newUserMarker = new window.google.maps.Marker({
+            map,
+            position: newPosition,
+            icon: {
+              path: window.google.maps.SymbolPath.CIRCLE,
+              scale: 10,
+              fillColor: "#4285F4",
+              fillOpacity: 1,
+              strokeColor: "#FFFFFF",
+              strokeWeight: 2,
+            },
+            title: "Votre position"
+          });
+          setUserMarker(newUserMarker);
+          map.setCenter(newPosition);
         },
         (error) => {
           console.error("Erreur de géolocalisation:", error);
         }
       );
     }
-  }, [map, open]);
+  }, [map, open, isLoaded]);
 
   const handleMapClick = useCallback((e: google.maps.MapMouseEvent) => {
-    if (e.latLng && map) {
+    if (e.latLng && map && isLoaded) {
       const newPosition = {
         lat: e.latLng.lat(),
         lng: e.latLng.lng()
@@ -73,22 +72,22 @@ const LocationMap = ({ open, onOpenChange, onLocationSelect }: LocationMapProps)
         marker.setMap(null);
       }
 
-      const newMarker = new google.maps.Marker({
+      const newMarker = new window.google.maps.Marker({
         map,
         position: newPosition,
-        animation: google.maps.Animation.DROP
+        animation: window.google.maps.Animation.DROP
       });
       setMarker(newMarker);
 
-      const directionsService = new google.maps.DirectionsService();
+      const directionsService = new window.google.maps.DirectionsService();
       directionsService.route(
         {
           origin: position,
           destination: newPosition,
-          travelMode: google.maps.TravelMode.WALKING
+          travelMode: window.google.maps.TravelMode.WALKING
         },
         (result, status) => {
-          if (status === google.maps.DirectionsStatus.OK) {
+          if (status === window.google.maps.DirectionsStatus.OK) {
             setDirections(result);
           } else {
             console.error("Erreur lors du calcul de l'itinéraire:", status);
@@ -96,7 +95,7 @@ const LocationMap = ({ open, onOpenChange, onLocationSelect }: LocationMapProps)
         }
       );
     }
-  }, [position, map, marker]);
+  }, [position, map, marker, isLoaded]);
 
   const handleConfirm = () => {
     if (selectedPosition) {
@@ -110,7 +109,10 @@ const LocationMap = ({ open, onOpenChange, onLocationSelect }: LocationMapProps)
       <DialogContent className="sm:max-w-[800px] h-[600px]">
         <DialogTitle>Sélectionnez un emplacement</DialogTitle>
         <div className="h-[500px] relative">
-          <LoadScript googleMapsApiKey={GOOGLE_MAPS_API_KEY}>
+          <LoadScript 
+            googleMapsApiKey={GOOGLE_MAPS_API_KEY}
+            onLoad={() => setIsLoaded(true)}
+          >
             <GoogleMap
               mapContainerStyle={{ width: "100%", height: "100%" }}
               center={position}

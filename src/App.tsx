@@ -7,6 +7,7 @@ import Index from "./pages/Index";
 import Custom from "./pages/Custom";
 import Predefined from "./pages/Predefined";
 import Header from "./components/Header";
+import Login from "./pages/Login";
 
 const queryClient = new QueryClient();
 
@@ -21,6 +22,7 @@ const App = () => (
           <Route path="/" element={<Index />} />
           <Route path="/custom" element={<Custom />} />
           <Route path="/predefined" element={<Predefined />} />
+          <Route path="/login" element={<Login />} />
         </Routes>
       </BrowserRouter>
     </TooltipProvider>

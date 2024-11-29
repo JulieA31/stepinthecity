@@ -6,7 +6,6 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Index from "./pages/Index";
 import Custom from "./pages/Custom";
 import Predefined from "./pages/Predefined";
-import Login from "./pages/Login";
 import Header from "./components/Header";
 
 const queryClient = new QueryClient();
@@ -19,7 +18,6 @@ const App = () => (
       <BrowserRouter>
         <Header />
         <Routes>
-          <Route path="/login" element={<Login />} />
           <Route path="/" element={<Index />} />
           <Route path="/custom" element={<Custom />} />
           <Route path="/predefined" element={<Predefined />} />

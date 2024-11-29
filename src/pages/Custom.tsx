@@ -4,10 +4,10 @@ import { Clock, MapPin, Users, Filter, Repeat, Navigation2, Volume2 } from "luci
 const Custom = () => {
   const [duration, setDuration] = useState("1h");
   const [type, setType] = useState("all");
-  const [routeType, setRouteType] = useState("loop");
+  const [routeType, setRouteType] = useState("loop"); // "loop" or "point-to-point"
 
   return (
-    <div className="min-h-screen bg-secondary pt-24">
+    <div className="min-h-screen bg-secondary pt-20">
       <div className="container mx-auto px-4 py-8">
         <h1 className="text-4xl font-display text-text mb-8 text-center">Créez votre parcours</h1>
         

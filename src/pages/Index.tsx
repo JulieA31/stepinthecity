@@ -15,7 +15,6 @@ const Index = () => {
             alt="Illustration d'une rue urbaine avec lampadaires et bâtiments roses"
             className="w-full h-64 object-cover rounded-lg shadow-md mb-4"
           />
-          <p className="text-lg mt-2 text-gray-600">Explorez la ville autrement</p>
         </div>
       </header>
 

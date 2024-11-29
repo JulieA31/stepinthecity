@@ -11,9 +11,9 @@ const Index = () => {
             <h1 className="text-4xl font-display text-text">Balad.IA</h1>
           </div>
           <img 
-            src="https://images.unsplash.com/photo-1501854140801-50d01698950b"
-            alt="Vue aérienne de montagnes verdoyantes"
-            className="w-full h-48 object-cover rounded-lg shadow-md mb-4"
+            src="/lovable-uploads/cf7da931-623b-442f-b18a-62ba82e479fe.png"
+            alt="Illustration d'une rue urbaine avec lampadaires et bâtiments roses"
+            className="w-full h-64 object-cover rounded-lg shadow-md mb-4"
           />
           <p className="text-lg mt-2 text-gray-600">Explorez la ville autrement</p>
         </div>

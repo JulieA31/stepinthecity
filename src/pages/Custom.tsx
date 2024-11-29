@@ -15,6 +15,7 @@ const Custom = () => {
   const [endLocation, setEndLocation] = useState<{ lat: number; lng: number } | null>(null);
   const [generatedSteps, setGeneratedSteps] = useState<Step[]>([]);
   const [isMapVisible, setIsMapVisible] = useState(false);
+  const [totalDuration, setTotalDuration] = useState(0);
 
   const { isLoaded } = useJsApiLoader({
     id: 'google-map-script',
@@ -25,12 +26,6 @@ const Custom = () => {
     setGeneratedSteps(steps);
     setIsMapVisible(true);
   };
-
-  // Calculer la durée totale
-  const totalDuration = generatedSteps.reduce((total, step) => {
-    const duration = step.duration.replace('min', '');
-    return total + parseInt(duration);
-  }, 0);
 
   return (
     <div className="min-h-screen bg-secondary pt-20">
@@ -54,6 +49,7 @@ const Custom = () => {
                   steps={generatedSteps}
                   walkTitle="Parcours personnalisé"
                   isLoaded={isLoaded}
+                  onRouteCalculated={setTotalDuration}
                 />
               ) : (
                 <div className="h-full flex items-center justify-center">

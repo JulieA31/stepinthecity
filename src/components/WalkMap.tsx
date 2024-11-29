@@ -8,9 +8,10 @@ interface WalkMapProps {
   steps: Step[];
   walkTitle: string;
   isLoaded: boolean;
+  onRouteCalculated?: (durationInMinutes: number) => void;
 }
 
-const WalkMap = ({ steps, walkTitle, isLoaded }: WalkMapProps) => {
+const WalkMap = ({ steps, walkTitle, isLoaded, onRouteCalculated }: WalkMapProps) => {
   const [directions, setDirections] = useState<google.maps.DirectionsResult | null>(null);
   const [center, setCenter] = useState<google.maps.LatLngLiteral>({ lat: 48.8566, lng: 2.3522 });
   const [map, setMap] = useState<google.maps.Map | null>(null);
@@ -49,10 +50,20 @@ const WalkMap = ({ steps, walkTitle, isLoaded }: WalkMapProps) => {
       );
       setDirections(result);
       setCenter(origin);
+
+      // Calculer la durée totale en minutes à partir des données de l'itinéraire
+      if (result.routes[0] && onRouteCalculated) {
+        const totalDurationInSeconds = result.routes[0].legs.reduce(
+          (total, leg) => total + (leg.duration?.value || 0),
+          0
+        );
+        const totalDurationInMinutes = Math.round(totalDurationInSeconds / 60);
+        onRouteCalculated(totalDurationInMinutes);
+      }
     } catch (error) {
       console.error("Error calculating route:", error);
     }
-  }, [steps]);
+  }, [steps, onRouteCalculated]);
 
   useEffect(() => {
     if (steps.length > 0) {

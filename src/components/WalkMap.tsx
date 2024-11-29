@@ -1,4 +1,4 @@
-import { GoogleMap, DirectionsRenderer } from "@react-google-maps/api";
+import { GoogleMap, DirectionsRenderer, MarkerF } from "@react-google-maps/api";
 import { useCallback, useEffect, useState } from "react";
 import { Step } from "@/types/walk";
 import { calculateDirectionsRoute } from "@/utils/mapUtils";
@@ -81,6 +81,20 @@ const WalkMap = ({ steps, walkTitle, isLoaded }: WalkMapProps) => {
       }}
     >
       {directions && <DirectionsRenderer directions={directions} />}
+      {steps.map((step, index) => 
+        step.position && (
+          <MarkerF
+            key={index}
+            position={step.position}
+            label={{
+              text: (index + 1).toString(),
+              color: "white",
+              fontWeight: "bold"
+            }}
+            title={`${step.title} (${step.duration})`}
+          />
+        )
+      )}
     </GoogleMap>
   );
 };

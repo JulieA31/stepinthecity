@@ -1,0 +1,67 @@
+import { MapPin, Clock, Users } from "lucide-react";
+
+const walks = [
+  {
+    title: "Sur les pas de Victor Hugo",
+    duration: "2h30",
+    difficulty: "Facile",
+    image: "https://images.unsplash.com/photo-1500673922987-e212871fec22",
+    description: "Découvrez les lieux qui ont inspiré les plus grandes œuvres de Victor Hugo"
+  },
+  {
+    title: "Les classiques de Paris",
+    duration: "3h",
+    difficulty: "Moyen",
+    image: "https://images.unsplash.com/photo-1465146344425-f00d5f5c8f07",
+    description: "Tour Eiffel, Louvre, Notre-Dame... Les incontournables de Paris"
+  },
+  {
+    title: "Balade gastronomique",
+    duration: "2h",
+    difficulty: "Facile",
+    image: "https://images.unsplash.com/photo-1499856871958-5b9627545d1a",
+    description: "Découvrez les meilleures adresses culinaires de la capitale"
+  }
+];
+
+const Predefined = () => {
+  return (
+    <div className="min-h-screen bg-secondary pt-20">
+      <div className="container mx-auto px-4 py-8">
+        <h1 className="text-4xl font-display text-text mb-8">Parcours prédéfinis à Paris</h1>
+        
+        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+          {walks.map((walk, index) => (
+            <div key={index} className="card hover:scale-105 transition-transform duration-200">
+              <img 
+                src={walk.image} 
+                alt={walk.title}
+                className="w-full h-48 object-cover rounded-t-xl"
+              />
+              <div className="p-6">
+                <h2 className="text-2xl font-display text-text mb-4">{walk.title}</h2>
+                <p className="text-gray-600 mb-4">{walk.description}</p>
+                <div className="flex items-center gap-4 text-sm text-gray-500">
+                  <div className="flex items-center gap-1">
+                    <Clock size={16} />
+                    {walk.duration}
+                  </div>
+                  <div className="flex items-center gap-1">
+                    <Users size={16} />
+                    {walk.difficulty}
+                  </div>
+                  <div className="flex items-center gap-1">
+                    <MapPin size={16} />
+                    Paris
+                  </div>
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export default Predefined;

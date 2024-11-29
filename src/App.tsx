@@ -4,6 +4,9 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Index from "./pages/Index";
+import Custom from "./pages/Custom";
+import Predefined from "./pages/Predefined";
+import Header from "./components/Header";
 
 const queryClient = new QueryClient();
 
@@ -13,10 +16,11 @@ const App = () => (
       <Toaster />
       <Sonner />
       <BrowserRouter>
+        <Header />
         <Routes>
           <Route path="/" element={<Index />} />
-          <Route path="/custom" element={<div>Page en construction</div>} />
-          <Route path="/predefined" element={<div>Page en construction</div>} />
+          <Route path="/custom" element={<Custom />} />
+          <Route path="/predefined" element={<Predefined />} />
         </Routes>
       </BrowserRouter>
     </TooltipProvider>

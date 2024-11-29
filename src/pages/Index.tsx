@@ -10,17 +10,15 @@ const Index = () => {
             <LampFloor className="w-6 h-6 text-primary" />
             <h1 className="text-4xl font-display text-text">StepInTheCity</h1>
           </div>
-          <div className="relative">
+          <div>
             <img 
               src="/lovable-uploads/fd183326-fb36-4fca-88df-47ac0310f4c7.png"
               alt="Illustration urbaine avec des personnes marchant dans la ville et des arbres roses"
-              className="w-full h-80 object-contain bg-white rounded-lg shadow-md mb-4"
+              className="w-full h-80 object-contain bg-white rounded-lg shadow-md"
             />
-            <div className="absolute inset-0 flex items-center justify-center px-4">
-              <h2 className="font-script text-4xl md:text-6xl text-text drop-shadow-[0_2px_2px_rgba(255,255,255,0.8)] text-center">
-                Explorez la Ville Autrement
-              </h2>
-            </div>
+            <h2 className="font-sans text-4xl md:text-6xl text-text tracking-wider uppercase mt-6 mb-8" style={{ letterSpacing: '0.15em' }}>
+              Explore la ville autrement
+            </h2>
           </div>
         </div>
       </header>

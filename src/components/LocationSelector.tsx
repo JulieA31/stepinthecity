@@ -9,7 +9,7 @@ import {
 import { MapPin, Clock, Users } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 
-export const touristicCities = {
+const touristicCities = {
   France: ["Paris", "Nice", "Lyon", "Bordeaux", "Marseille"],
   Italy: ["Rome", "Venice", "Florence", "Milan", "Naples"],
   Spain: ["Barcelona", "Madrid", "Seville", "Valencia", "Granada"],
@@ -17,7 +17,7 @@ export const touristicCities = {
   Portugal: ["Lisbon", "Porto"],
 };
 
-export const cityItineraries = {
+const cityItineraries = {
   Paris: [
     {
       title: "Sur les pas de Victor Hugo",

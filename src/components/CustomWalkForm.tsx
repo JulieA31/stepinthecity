@@ -37,7 +37,7 @@ const CustomWalkForm = ({ onGenerate, startLocation, endLocation, setShowMap, ro
       return;
     }
 
-    const steps = generateStepsForType(type, startLocation);
+    const steps = generateStepsForType(type, startLocation, duration);
     
     if (startLocation) {
       steps.unshift({

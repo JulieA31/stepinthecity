@@ -37,7 +37,7 @@ const Predefined = () => {
       // Paris
       "Sur les pas de Victor Hugo": "/lovable-uploads/00ff1698-cc1b-43bb-be54-594a21634a90.png",
       "Les classiques de Paris": "/lovable-uploads/84b16743-6931-4157-9ce5-f52dc2c22cbd.png",
-      "Balade gastronomique": "https://images.unsplash.com/photo-1465379944081-7f47de8d74ac",
+      "Balade gastronomique": "/lovable-uploads/d47de2a6-5b1a-40bd-86da-20acfad3f35a.png",
       // Lisbonne
       "Lisbonne historique": "https://images.unsplash.com/photo-1485833077593-4278bba3f11f",
       "Sur les rails du Tram 28": "https://images.unsplash.com/photo-1438565434616-3ef039228b15",

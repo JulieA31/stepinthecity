@@ -3,13 +3,18 @@ import LocationSelector from "@/components/LocationSelector";
 
 const Index = () => {
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-gray-50 pt-20">
       <div className="container mx-auto px-4 py-8">
         <div className="max-w-4xl mx-auto">
-          <h1 className="text-4xl font-bold text-center mb-8">
-            Découvrez des parcours uniques
+          <h1 className="text-4xl md:text-5xl font-display font-bold text-center mb-8 text-text">
+            Découvrez votre ville autrement
           </h1>
+          <p className="text-xl text-center text-gray-600 mb-12">
+            Explorez des parcours uniques et créez vos propres aventures urbaines
+          </p>
+          
           <LocationSelector />
+          
           <div className="mt-12 grid grid-cols-1 md:grid-cols-2 gap-8">
             <Link
               to="/all-walks"
@@ -23,13 +28,14 @@ const Index = () => {
                 />
                 <h2 className="text-2xl font-display">Explorer</h2>
               </div>
-              <p className="text-gray-600">
-                Découvrez tous nos parcours disponibles par pays.
+              <p className="text-gray-600 mb-6">
+                Découvrez tous nos parcours disponibles et laissez-vous guider à travers les plus beaux endroits de la ville.
               </p>
-              <button className="btn-primary mt-6 w-full">
+              <button className="btn-primary w-full">
                 Explorer
               </button>
             </Link>
+            
             <Link
               to="/custom"
               className="block bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow p-6"
@@ -42,10 +48,10 @@ const Index = () => {
                 />
                 <h2 className="text-2xl font-display">Itinéraire Personnalisé</h2>
               </div>
-              <p className="text-gray-600">
-                Créez votre parcours idéal en fonction de vos préférences.
+              <p className="text-gray-600 mb-6">
+                Créez votre parcours idéal en fonction de vos centres d'intérêt et du temps dont vous disposez.
               </p>
-              <button className="btn-primary mt-6 w-full">
+              <button className="btn-primary w-full">
                 Commencer
               </button>
             </Link>

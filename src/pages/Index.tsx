@@ -17,7 +17,7 @@ const Index = () => {
             
             <button 
               onClick={() => setIsMenuOpen(!isMenuOpen)}
-              className="md:hidden"
+              className="cursor-pointer"
               aria-label="Toggle menu"
             >
               {isMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
@@ -25,9 +25,9 @@ const Index = () => {
 
             <nav className={`${
               isMenuOpen ? 'flex' : 'hidden'
-            } md:flex absolute md:relative top-full left-0 w-full md:w-auto 
-            bg-white md:bg-transparent shadow-lg md:shadow-none flex-col md:flex-row 
-            items-center gap-4 p-4 md:p-0 z-50`}>
+            } absolute top-full left-0 w-full 
+            bg-white shadow-lg flex-col 
+            items-center gap-4 p-4 z-50`}>
               <Link to="/custom" className="text-text hover:text-primary transition-colors">
                 Parcours personnalisé
               </Link>

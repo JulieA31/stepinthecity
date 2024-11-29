@@ -2,6 +2,7 @@ import { useState, useEffect, useCallback } from "react";
 import { GoogleMap, LoadScript, DirectionsRenderer } from "@react-google-maps/api";
 import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
+import { useToast } from "@/components/ui/use-toast";
 
 const GOOGLE_MAPS_API_KEY = "AIzaSyC806xlYYv2CYq2euqLnD4_cMrKrUTZGNI";
 
@@ -22,6 +23,7 @@ const LocationMap = ({ open, onOpenChange, onLocationSelect }: LocationMapProps)
   const [marker, setMarker] = useState<google.maps.Marker | null>(null);
   const [userMarker, setUserMarker] = useState<google.maps.Marker | null>(null);
   const [isLoaded, setIsLoaded] = useState(false);
+  const { toast } = useToast();
 
   useEffect(() => {
     if (navigator.geolocation && isLoaded && map && open) {
@@ -55,6 +57,11 @@ const LocationMap = ({ open, onOpenChange, onLocationSelect }: LocationMapProps)
         },
         (error) => {
           console.error("Erreur de géolocalisation:", error);
+          toast({
+            title: "Erreur de géolocalisation",
+            description: "Impossible d'obtenir votre position actuelle",
+            variant: "destructive",
+          });
         }
       );
     }
@@ -91,6 +98,11 @@ const LocationMap = ({ open, onOpenChange, onLocationSelect }: LocationMapProps)
             setDirections(result);
           } else {
             console.error("Erreur lors du calcul de l'itinéraire:", status);
+            toast({
+              title: "Erreur de calcul d'itinéraire",
+              description: "Impossible de calculer l'itinéraire vers ce point",
+              variant: "destructive",
+            });
           }
         }
       );
@@ -100,7 +112,17 @@ const LocationMap = ({ open, onOpenChange, onLocationSelect }: LocationMapProps)
   const handleConfirm = () => {
     if (selectedPosition) {
       onLocationSelect(selectedPosition.lat, selectedPosition.lng);
+      toast({
+        title: "Position confirmée",
+        description: "La position a été enregistrée avec succès",
+      });
       onOpenChange(false);
+    } else {
+      toast({
+        title: "Aucune position sélectionnée",
+        description: "Veuillez cliquer sur la carte pour sélectionner une position",
+        variant: "destructive",
+      });
     }
   };
 

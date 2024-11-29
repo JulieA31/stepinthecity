@@ -57,7 +57,13 @@ const CustomWalkForm = ({ onGenerate, startLocation, endLocation, setShowMap, ro
       });
     }
 
+    console.log("Steps generated:", steps); // Ajout d'un log pour déboguer
     onGenerate(steps);
+    
+    toast({
+      title: "Parcours généré",
+      description: "Votre parcours personnalisé a été généré avec succès !",
+    });
   };
 
   return (

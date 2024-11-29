@@ -1,4 +1,4 @@
-import { MapPin, Clock, Compass } from "lucide-react";
+import { MapPin, Clock, Compass, Globe } from "lucide-react";
 import { Link } from "react-router-dom";
 
 const Index = () => {
@@ -6,7 +6,15 @@ const Index = () => {
     <div className="min-h-screen bg-secondary">
       <header className="bg-white shadow-sm">
         <div className="container mx-auto px-4 py-6">
-          <h1 className="text-4xl font-display text-text">BaladIA</h1>
+          <div className="flex items-center gap-2 mb-4">
+            <Globe className="w-6 h-6 text-primary" />
+            <h1 className="text-4xl font-display text-text">Balad.IA</h1>
+          </div>
+          <img 
+            src="https://images.unsplash.com/photo-1501854140801-50d01698950b"
+            alt="Vue aérienne de montagnes verdoyantes"
+            className="w-full h-48 object-cover rounded-lg shadow-md mb-4"
+          />
           <p className="text-lg mt-2 text-gray-600">Explorez la ville autrement</p>
         </div>
       </header>

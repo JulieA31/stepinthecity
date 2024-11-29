@@ -9,6 +9,7 @@ import { LoadScript } from "@react-google-maps/api";
 import { useState } from "react";
 import WalkMap from "./WalkMap";
 import { Step, Walk } from "@/types/walk";
+import { classiquesParisSteps } from "@/data/walks/paris";
 
 const GOOGLE_MAPS_API_KEY = "AIzaSyC806xlYYv2CYq2euqLnD4_cMrKrUTZGNI";
 
@@ -31,7 +32,10 @@ const WalkDetailsDialog = ({
 
   if (!walk) return null;
 
-  const steps = getStepsForWalk(walk.title);
+  // Utiliser directement classiquesParisSteps si c'est le bon parcours
+  const steps = walk.title === "Les classiques de Paris" 
+    ? classiquesParisSteps 
+    : getStepsForWalk(walk.title);
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>

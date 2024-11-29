@@ -44,6 +44,18 @@ export const getStepPosition = (step: Step, walkTitle: string): google.maps.LatL
       "Basilique Saint-Pierre": { lat: 41.9022, lng: 12.4533 },
       "Château Saint-Ange": { lat: 41.9031, lng: 12.4663 }
     },
+    "Les classiques de Paris": {
+      "Tour Eiffel": { lat: 48.8584, lng: 2.2945 },
+      "Arc de Triomphe": { lat: 48.8738, lng: 2.2950 },
+      "Musée du Louvre": { lat: 48.8606, lng: 2.3376 },
+      "Jardin des Tuileries": { lat: 48.8634, lng: 2.3275 }
+    },
+    "Balade gastronomique": {
+      "Marché d'Aligre": { lat: 48.8494, lng: 2.3783 },
+      "Rue Montorgueil": { lat: 48.8647, lng: 2.3475 },
+      "Le Marais Gourmand": { lat: 48.8597, lng: 2.3622 },
+      "Saint-Germain-des-Prés": { lat: 48.8539, lng: 2.3338 }
+    }
   };
 
   return positions[walkTitle]?.[step.title];

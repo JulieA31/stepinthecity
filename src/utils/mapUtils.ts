@@ -8,6 +8,12 @@ export const getStepPosition = (step: Step, walkTitle: string): google.maps.LatL
       "Panthéon": { lat: 48.8462, lng: 2.3464 },
       "Café Procope": { lat: 48.8527, lng: 2.3394 }
     },
+    "Les classiques de Paris": {
+      "Tour Eiffel": { lat: 48.8584, lng: 2.2945 },
+      "Arc de Triomphe": { lat: 48.8738, lng: 2.2950 },
+      "Musée du Louvre": { lat: 48.8606, lng: 2.3376 },
+      "Jardin des Tuileries": { lat: 48.8634, lng: 2.3275 }
+    },
     "Lisbonne historique": {
       "Château São Jorge": { lat: 38.7139, lng: -9.1334 },
       "Cathédrale de Lisbonne": { lat: 38.7098, lng: -9.1325 },
@@ -43,12 +49,6 @@ export const getStepPosition = (step: Step, walkTitle: string): google.maps.LatL
       "Musées du Vatican": { lat: 41.9067, lng: 12.4526 },
       "Basilique Saint-Pierre": { lat: 41.9022, lng: 12.4533 },
       "Château Saint-Ange": { lat: 41.9031, lng: 12.4663 }
-    },
-    "Les classiques de Paris": {
-      "Tour Eiffel": { lat: 48.8584, lng: 2.2945 },
-      "Arc de Triomphe": { lat: 48.8738, lng: 2.2950 },
-      "Musée du Louvre": { lat: 48.8606, lng: 2.3376 },
-      "Jardin des Tuileries": { lat: 48.8634, lng: 2.3275 }
     },
     "Balade gastronomique": {
       "Marché d'Aligre": { lat: 48.8494, lng: 2.3783 },

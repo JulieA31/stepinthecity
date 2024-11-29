@@ -77,7 +77,7 @@ const WalkDetailsDialog = ({
 
             <div className="space-y-6">
               <h3 className="text-xl font-semibold">Étapes du parcours</h3>
-              {steps.map((step, index) => (
+              {steps && steps.map((step, index) => (
                 <div key={index} className="border-l-2 border-primary pl-4">
                   <h4 className="text-lg font-medium mb-2">{step.title}</h4>
                   <p className="text-gray-600 mb-2">{step.description}</p>

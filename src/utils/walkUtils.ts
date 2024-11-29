@@ -1,7 +1,7 @@
 import { Step } from "@/types/walk";
 
-const getNearbyPoints = (location: { lat: number; lng: number }, type: string): Step[] => {
-  // Points d'intérêt autour de la position donnée selon le type
+const generatePointsOfInterest = (type: string, center: { lat: number; lng: number }): Step[] => {
+  const radius = 0.005; // Environ 500m
   const points: { [key: string]: Step[] } = {
     historical: [
       {
@@ -9,48 +9,48 @@ const getNearbyPoints = (location: { lat: number; lng: number }, type: string): 
         description: "Un lieu chargé d'histoire",
         duration: "45min",
         position: {
-          lat: location.lat + 0.002,
-          lng: location.lng + 0.002
+          lat: center.lat + radius * Math.cos(Math.PI / 4),
+          lng: center.lng + radius * Math.sin(Math.PI / 4)
         }
       },
       {
         title: "Site archéologique",
-        description: "Découverte des vestiges",
-        duration: "45min",
+        description: "Vestiges anciens",
+        duration: "30min",
         position: {
-          lat: location.lat - 0.002,
-          lng: location.lng + 0.003
+          lat: center.lat + radius * Math.cos(3 * Math.PI / 4),
+          lng: center.lng + radius * Math.sin(3 * Math.PI / 4)
         }
       }
     ],
     cultural: [
       {
-        title: "Musée",
-        description: "Collections remarquables",
+        title: "Musée local",
+        description: "Collections d'art et d'histoire",
         duration: "1h",
         position: {
-          lat: location.lat + 0.003,
-          lng: location.lng - 0.002
+          lat: center.lat + radius * Math.cos(Math.PI / 3),
+          lng: center.lng + radius * Math.sin(Math.PI / 3)
         }
       },
       {
         title: "Galerie d'art",
-        description: "Art contemporain",
+        description: "Expositions contemporaines",
         duration: "45min",
         position: {
-          lat: location.lat - 0.001,
-          lng: location.lng + 0.002
+          lat: center.lat + radius * Math.cos(2 * Math.PI / 3),
+          lng: center.lng + radius * Math.sin(2 * Math.PI / 3)
         }
       }
     ],
     nature: [
       {
-        title: "Parc",
-        description: "Espace vert paisible",
-        duration: "45min",
+        title: "Parc municipal",
+        description: "Espace vert et détente",
+        duration: "30min",
         position: {
-          lat: location.lat + 0.001,
-          lng: location.lng + 0.001
+          lat: center.lat + radius * Math.cos(Math.PI / 6),
+          lng: center.lng + radius * Math.sin(Math.PI / 6)
         }
       },
       {
@@ -58,45 +58,40 @@ const getNearbyPoints = (location: { lat: number; lng: number }, type: string): 
         description: "Collection de plantes",
         duration: "45min",
         position: {
-          lat: location.lat - 0.002,
-          lng: location.lng - 0.001
+          lat: center.lat + radius * Math.cos(5 * Math.PI / 6),
+          lng: center.lng + radius * Math.sin(5 * Math.PI / 6)
         }
       }
     ],
     food: [
       {
-        title: "Marché local",
-        description: "Produits frais et locaux",
-        duration: "45min",
+        title: "Restaurant local",
+        description: "Cuisine traditionnelle",
+        duration: "1h",
         position: {
-          lat: location.lat + 0.002,
-          lng: location.lng - 0.002
+          lat: center.lat + radius * Math.cos(Math.PI / 2),
+          lng: center.lng + radius * Math.sin(Math.PI / 2)
         }
       },
       {
-        title: "Restaurant traditionnel",
-        description: "Cuisine locale",
-        duration: "1h",
+        title: "Marché couvert",
+        description: "Produits frais et locaux",
+        duration: "45min",
         position: {
-          lat: location.lat - 0.001,
-          lng: location.lng - 0.003
+          lat: center.lat + radius * Math.cos(3 * Math.PI / 2),
+          lng: center.lng + radius * Math.sin(3 * Math.PI / 2)
         }
       }
     ]
   };
 
+  if (type === "all") {
+    return Object.values(points).flat().slice(0, 3);
+  }
+
   return points[type] || [];
 };
 
 export const generateStepsForType = (type: string, startLocation: { lat: number; lng: number }): Step[] => {
-  if (type === "all") {
-    return [
-      ...getNearbyPoints(startLocation, "historical"),
-      ...getNearbyPoints(startLocation, "cultural"),
-      ...getNearbyPoints(startLocation, "nature"),
-      ...getNearbyPoints(startLocation, "food")
-    ].slice(0, 4); // Limite à 4 points d'intérêt
-  }
-  
-  return getNearbyPoints(startLocation, type);
+  return generatePointsOfInterest(type, startLocation);
 };

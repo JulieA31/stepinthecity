@@ -17,7 +17,6 @@ const WalkCard = ({ walk, audioEnabled, onAudioToggle, onClick, getImageForWalk,
   const { toast } = useToast();
 
   useEffect(() => {
-    // Cleanup function to stop audio when component unmounts
     return () => {
       if (audioRef.current) {
         audioRef.current.pause();
@@ -29,8 +28,14 @@ const WalkCard = ({ walk, audioEnabled, onAudioToggle, onClick, getImageForWalk,
   const handleAudioToggle = async (e: React.MouseEvent) => {
     e.stopPropagation();
     
-    const formattedTitle = walk.title.toLowerCase().replace(/ /g, '-');
-    const audioPath = `/audio/${formattedTitle}.mp3`;
+    let audioPath;
+    if (walk.title === "Sur les pas de César") {
+      audioPath = '/audio/sur-les-pas-de-jules-cesar.mp3';
+    } else {
+      const formattedTitle = walk.title.toLowerCase().replace(/ /g, '-');
+      audioPath = `/audio/${formattedTitle}.mp3`;
+    }
+    
     console.log('Tentative de lecture audio:', audioPath);
     
     if (!audioRef.current) {

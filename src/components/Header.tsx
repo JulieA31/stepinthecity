@@ -1,4 +1,4 @@
-import { Menu, X, User, Globe } from "lucide-react";
+import { Menu, X, User, LampFloor } from "lucide-react";
 import { useState } from "react";
 import { Link } from "react-router-dom";
 
@@ -10,7 +10,7 @@ const Header = () => {
       <div className="container mx-auto px-4 py-4">
         <div className="flex justify-between items-center">
           <Link to="/" className="flex items-center gap-2 text-text">
-            <Globe size={24} />
+            <LampFloor size={24} />
             <span className="text-2xl font-display text-text">Balad.IA</span>
           </Link>
           

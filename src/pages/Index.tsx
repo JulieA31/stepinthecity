@@ -1,4 +1,4 @@
-import { MapPin, Clock, Compass, Globe } from "lucide-react";
+import { LampFloor, Clock, Compass, MapPin } from "lucide-react";
 import { Link } from "react-router-dom";
 
 const Index = () => {
@@ -7,7 +7,7 @@ const Index = () => {
       <header className="bg-white shadow-sm">
         <div className="container mx-auto px-4 py-6">
           <div className="flex items-center gap-2 mb-4">
-            <Globe className="w-6 h-6 text-primary" />
+            <LampFloor className="w-6 h-6 text-primary" />
             <h1 className="text-4xl font-display text-text">Balad.IA</h1>
           </div>
           <div className="relative">
@@ -17,7 +17,7 @@ const Index = () => {
               className="w-full h-64 object-cover rounded-lg shadow-md mb-4"
             />
             <div className="absolute inset-0 flex items-center justify-center">
-              <h2 className="font-avallon text-4xl md:text-5xl text-white drop-shadow-[0_2px_2px_rgba(0,0,0,0.8)]">
+              <h2 className="font-script text-4xl md:text-6xl text-white drop-shadow-[0_2px_2px_rgba(0,0,0,0.8)]">
                 Explorez la Ville Autrement
               </h2>
             </div>

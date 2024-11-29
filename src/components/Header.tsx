@@ -5,6 +5,10 @@ import { Link } from "react-router-dom";
 const Header = () => {
   const [isOpen, setIsOpen] = useState(false);
 
+  const handleNavClick = () => {
+    setIsOpen(false);
+  };
+
   return (
     <header className="bg-white shadow-sm fixed w-full top-0 z-50">
       <div className="container mx-auto px-4 py-4">
@@ -25,17 +29,29 @@ const Header = () => {
           <nav className={`${isOpen ? 'block' : 'hidden'} absolute top-full left-0 w-full bg-white shadow-lg md:shadow-none md:block md:static md:w-auto`}>
             <ul className="flex flex-col md:flex-row gap-4 p-4 md:p-0">
               <li>
-                <Link to="/custom" className="text-text hover:text-primary transition-colors">
+                <Link 
+                  to="/custom" 
+                  className="text-text hover:text-primary transition-colors block text-center md:text-left"
+                  onClick={handleNavClick}
+                >
                   Parcours personnalisé
                 </Link>
               </li>
               <li>
-                <Link to="/predefined" className="text-text hover:text-primary transition-colors">
+                <Link 
+                  to="/predefined" 
+                  className="text-text hover:text-primary transition-colors block text-center md:text-left"
+                  onClick={handleNavClick}
+                >
                   Parcours prédéfinis
                 </Link>
               </li>
               <li>
-                <Link to="/login" className="flex items-center gap-2 text-text hover:text-primary transition-colors">
+                <Link 
+                  to="/login" 
+                  className="flex items-center gap-2 text-text hover:text-primary transition-colors justify-center md:justify-start"
+                  onClick={handleNavClick}
+                >
                   <User size={18} />
                   Connexion
                 </Link>

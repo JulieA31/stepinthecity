@@ -16,6 +16,7 @@ const Custom = () => {
   const [isMapVisible, setIsMapVisible] = useState(false);
 
   const handleGenerateSteps = (steps: Step[]) => {
+    console.log("Steps received in Custom:", steps);
     setGeneratedSteps(steps);
     setIsMapVisible(true);
   };
@@ -33,8 +34,8 @@ const Custom = () => {
           routeType={routeType}
         />
 
-        {isMapVisible && (
-          <div className="h-[600px] relative mt-8">
+        {isMapVisible && generatedSteps.length > 0 && (
+          <div className="h-[600px] relative mt-8 rounded-lg overflow-hidden shadow-lg">
             <LoadScript googleMapsApiKey={GOOGLE_MAPS_API_KEY}>
               <WalkMap
                 steps={generatedSteps}

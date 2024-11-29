@@ -10,6 +10,12 @@ const Header = () => {
     setIsOpen(false);
   };
 
+  // Fonction vide pour gérer la sélection de ville dans le header
+  const handleCitySelect = (city: string) => {
+    // Dans le header, nous n'avons pas besoin de gérer la sélection
+    // car c'est uniquement utilisé dans la page Predefined
+  };
+
   return (
     <header className="bg-white shadow-sm fixed w-full top-0 z-50">
       <div className="container mx-auto px-4 py-4">
@@ -24,7 +30,7 @@ const Header = () => {
           </Link>
           
           <div className="hidden md:block">
-            <LocationSelector />
+            <LocationSelector onCitySelect={handleCitySelect} />
           </div>
           
           <button onClick={() => setIsOpen(!isOpen)} className="flex items-center">
@@ -33,7 +39,7 @@ const Header = () => {
 
           <nav className={`${isOpen ? 'block' : 'hidden'} absolute top-full left-0 w-full bg-white shadow-lg`}>
             <div className="md:hidden">
-              <LocationSelector />
+              <LocationSelector onCitySelect={handleCitySelect} />
             </div>
             <ul className="flex flex-col gap-4 p-4">
               <li>

@@ -19,15 +19,15 @@ export default {
     },
     extend: {
       colors: {
-        primary: "#8B9D83",  // Sage green
-        secondary: "#F5F5DC",
-        accent: "#FF7F50",
-        text: "#2F4F4F",
-        background: "#FFFFFF",
-        sage: {
-          light: "#CED4CA",
-          DEFAULT: "#8B9D83",
-          dark: "#5C6B55",
+        primary: "#FF69B4",  // Rose vif
+        secondary: "#F8F9FA", // Gris très clair
+        accent: "#FF1493",    // Rose plus foncé
+        text: "#2D3436",      // Presque noir
+        background: "#FFFFFF", // Blanc
+        theme: {
+          light: "#FFB6C1",   // Rose clair
+          DEFAULT: "#FF69B4", // Rose medium
+          dark: "#FF1493",    // Rose foncé
         }
       },
       fontFamily: {

@@ -40,7 +40,7 @@ const Predefined = () => {
       "Balade gastronomique": "/lovable-uploads/d47de2a6-5b1a-40bd-86da-20acfad3f35a.png",
       // Lisbonne
       "Lisbonne historique": "https://images.unsplash.com/photo-1485833077593-4278bba3f11f",
-      "Sur les rails du Tram 28": "https://images.unsplash.com/photo-1438565434616-3ef039228b15",
+      "Sur les rails du Tram 28": "/lovable-uploads/ae74de2f-fbb8-4777-bf21-bfbe98673652.png",
       "Saveurs portugaises": "https://images.unsplash.com/photo-1441057206919-63d19fac2369",
       // Porto
       "Route des vins": "https://images.unsplash.com/photo-1469041797191-50ace28483c3",

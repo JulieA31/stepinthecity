@@ -41,14 +41,6 @@ const Predefined = () => {
   return (
     <div className="min-h-screen bg-secondary pt-20">
       <div className="container mx-auto px-4 py-8">
-        <div className="flex items-center justify-center mb-12">
-          <img 
-            src="https://images.unsplash.com/photo-1486312338219-ce68d2c6f44d" 
-            alt="Walking person logo" 
-            className="w-24 h-24 object-cover rounded-full border-4 border-sage"
-          />
-        </div>
-
         <h1 className="text-4xl font-display text-text mb-8">Parcours prédéfinis à Paris</h1>
         
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">

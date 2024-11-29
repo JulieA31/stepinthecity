@@ -68,21 +68,21 @@ const Index = () => {
                   <div className="w-12 h-12 bg-accent/10 rounded-full flex items-center justify-center mx-auto mb-4">
                     <span className="text-accent font-bold">1</span>
                   </div>
-                  <h3 className="font-semibold mb-2">Choisissez votre style</h3>
+                  <h3 className="font-semibold mb-2">Choisis ton style</h3>
                   <p className="text-gray-600">Sélectionne le type de balade qui te correspond</p>
                 </div>
                 <div className="text-center">
                   <div className="w-12 h-12 bg-accent/10 rounded-full flex items-center justify-center mx-auto mb-4">
                     <span className="text-accent font-bold">2</span>
                   </div>
-                  <h3 className="font-semibold mb-2">Personnalisez</h3>
-                  <p className="text-gray-600">Ajustez la durée et les points d'intérêt</p>
+                  <h3 className="font-semibold mb-2">Personnalise</h3>
+                  <p className="text-gray-600">Ajuste la durée et les points d'intérêt</p>
                 </div>
                 <div className="text-center">
                   <div className="w-12 h-12 bg-accent/10 rounded-full flex items-center justify-center mx-auto mb-4">
                     <span className="text-accent font-bold">3</span>
                   </div>
-                  <h3 className="font-semibold mb-2">Explorez</h3>
+                  <h3 className="font-semibold mb-2">Explore</h3>
                   <p className="text-gray-600">Laisse-toi guider à travers la ville</p>
                 </div>
               </div>

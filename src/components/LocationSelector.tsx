@@ -6,10 +6,10 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { MapPin, Clock, Users } from "lucide-react";
+import { MapPin } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 
-const touristicCities = {
+export const touristicCities = {
   France: ["Paris", "Nice", "Lyon", "Bordeaux", "Marseille"],
   Italy: ["Rome", "Venice", "Florence", "Milan", "Naples"],
   Spain: ["Barcelona", "Madrid", "Seville", "Valencia", "Granada"],
@@ -17,7 +17,7 @@ const touristicCities = {
   Portugal: ["Lisbon", "Porto"],
 };
 
-const cityItineraries = {
+export const cityItineraries = {
   Paris: [
     {
       title: "Sur les pas de Victor Hugo",

@@ -35,7 +35,7 @@ const Predefined = () => {
   const getImageForWalk = (title: string) => {
     const imageMap: { [key: string]: string } = {
       // Paris
-      "Sur les pas de Victor Hugo": "https://images.unsplash.com/photo-1472396961693-142e6e269027",
+      "Sur les pas de Victor Hugo": "/lovable-uploads/00ff1698-cc1b-43bb-be54-594a21634a90.png",
       "Les classiques de Paris": "https://images.unsplash.com/photo-1498936178812-4b2e558d2937",
       "Balade gastronomique": "https://images.unsplash.com/photo-1465379944081-7f47de8d74ac",
       // Lisbonne

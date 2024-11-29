@@ -34,6 +34,7 @@ export default {
         sans: ["Inter", "sans-serif"],
         display: ["Playfair Display", "serif"],
         script: ["Dancing Script", "cursive"],
+        bigelow: ["Bigelow Rules", "cursive"],
       },
       keyframes: {
         "fade-up": {

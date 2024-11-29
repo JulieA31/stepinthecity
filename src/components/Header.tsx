@@ -19,7 +19,7 @@ const Header = () => {
               alt="Silhouette Charlie Chaplin"
               className="w-8 h-8 object-contain"
             />
-            <span className="text-2xl font-display text-text">Balad.IA</span>
+            <span className="text-2xl font-display text-text">StepInTheCity</span>
           </Link>
           
           <button onClick={() => setIsOpen(!isOpen)} className="flex items-center">

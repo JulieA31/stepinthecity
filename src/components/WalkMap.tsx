@@ -66,11 +66,6 @@ const WalkMap = ({ steps, walkTitle, isLoaded }: WalkMapProps) => {
         <div>
           <MarkerF
             position={step.position!}
-            label={{
-              text: `${index + 1}`,
-              color: "white",
-              className: "font-bold"
-            }}
             options={{
               label: {
                 text: `${index + 1}`,

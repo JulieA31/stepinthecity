@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import WalkDetailsDialog from "@/components/WalkDetailsDialog";
 import WalkCard from "@/components/WalkCard";
 import { getImageForWalk } from "@/utils/walkImages";
@@ -12,20 +12,23 @@ import {
   vaticanSteps 
 } from "@/data/walkSteps";
 import { touristicCities, cityItineraries } from "@/components/LocationSelector";
-import LocationSelector from "@/components/LocationSelector";
-
-const countryFlags: { [key: string]: string } = {
-  France: "🇫🇷",
-  Italy: "🇮🇹",
-  Spain: "🇪🇸",
-  "United Kingdom": "🇬🇧",
-  Portugal: "🇵🇹"
-};
 
 const Predefined = () => {
   const [audioEnabled, setAudioEnabled] = useState<{ [key: string]: boolean }>({});
   const [selectedWalk, setSelectedWalk] = useState<any | null>(null);
   const [selectedCity, setSelectedCity] = useState<string>("");
+
+  useEffect(() => {
+    const handleCitySelected = (event: CustomEvent<string>) => {
+      setSelectedCity(event.detail);
+    };
+
+    window.addEventListener('citySelected', handleCitySelected as EventListener);
+
+    return () => {
+      window.removeEventListener('citySelected', handleCitySelected as EventListener);
+    };
+  }, []);
 
   const toggleAudio = (title: string) => {
     setAudioEnabled(prev => ({
@@ -45,10 +48,6 @@ const Predefined = () => {
       "Vatican et spiritualité": vaticanSteps
     };
     return stepsMap[title] || [];
-  };
-
-  const handleCitySelect = (city: string) => {
-    setSelectedCity(city);
   };
 
   const renderWalks = () => {
@@ -118,8 +117,6 @@ const Predefined = () => {
       <div className="container mx-auto px-4 py-8">
         <h1 className="text-4xl font-display text-text mb-8">Tous les parcours prédéfinis</h1>
         
-        <LocationSelector onCitySelect={handleCitySelect} />
-        
         <div className="mt-8">
           {renderWalks()}
         </div>
@@ -134,6 +131,14 @@ const Predefined = () => {
       </div>
     </div>
   );
+};
+
+const countryFlags: { [key: string]: string } = {
+  France: "🇫🇷",
+  Italy: "🇮🇹",
+  Spain: "🇪🇸",
+  "United Kingdom": "🇬🇧",
+  Portugal: "🇵🇹"
 };
 
 export default Predefined;

@@ -1,20 +1,24 @@
 import { Menu, X, User } from "lucide-react";
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import LocationSelector from "./LocationSelector";
 
 const Header = () => {
   const [isOpen, setIsOpen] = useState(false);
+  const location = useLocation();
 
   const handleNavClick = () => {
     setIsOpen(false);
   };
 
-  // Fonction vide pour gérer la sélection de ville dans le header
   const handleCitySelect = (city: string) => {
-    // Dans le header, nous n'avons pas besoin de gérer la sélection
-    // car c'est uniquement utilisé dans la page Predefined
+    // Dispatch un événement personnalisé pour la sélection de ville
+    const event = new CustomEvent('citySelected', { detail: city });
+    window.dispatchEvent(event);
   };
+
+  // N'affiche le sélecteur que sur la page des parcours prédéfinis
+  const showLocationSelector = location.pathname === '/predefined';
 
   return (
     <header className="bg-white shadow-sm fixed w-full top-0 z-50">
@@ -29,18 +33,22 @@ const Header = () => {
             <span className="text-2xl font-display text-text">StepInTheCity</span>
           </Link>
           
-          <div className="hidden md:block">
-            <LocationSelector onCitySelect={handleCitySelect} />
-          </div>
+          {showLocationSelector && (
+            <div className="hidden md:block">
+              <LocationSelector onCitySelect={handleCitySelect} />
+            </div>
+          )}
           
           <button onClick={() => setIsOpen(!isOpen)} className="flex items-center">
             {isOpen ? <X /> : <Menu />}
           </button>
 
           <nav className={`${isOpen ? 'block' : 'hidden'} absolute top-full left-0 w-full bg-white shadow-lg`}>
-            <div className="md:hidden">
-              <LocationSelector onCitySelect={handleCitySelect} />
-            </div>
+            {showLocationSelector && (
+              <div className="md:hidden">
+                <LocationSelector onCitySelect={handleCitySelect} />
+              </div>
+            )}
             <ul className="flex flex-col gap-4 p-4">
               <li>
                 <Link 

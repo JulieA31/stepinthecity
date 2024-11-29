@@ -24,22 +24,22 @@ export const victorHugoSteps = [
 export const classiquesParisSteps = [
   {
     title: "Tour Eiffel",
-    description: "Commencez par l'emblème de Paris. Montez au sommet pour une vue imprenable sur la ville lumière.",
+    description: "Commencez votre journée par l'emblème de Paris. Montez au sommet pour une vue panoramique époustouflante sur la ville. Profitez du Champ de Mars pour une pause détente ou un pique-nique avec vue sur la Dame de Fer.",
     duration: "1h30"
   },
   {
     title: "Arc de Triomphe",
-    description: "Admirez ce monument historique et profitez de la vue sur les Champs-Élysées depuis son sommet.",
+    description: "Remontez les Champs-Élysées jusqu'à ce monument historique. Grimpez au sommet pour admirer la vue sur la plus belle avenue du monde et les 12 avenues qui en rayonnent. Un point de vue unique sur Paris et son organisation en étoile.",
     duration: "45min"
   },
   {
     title: "Musée du Louvre",
-    description: "Visitez le plus grand musée d'art au monde. Ne manquez pas la Joconde et la Vénus de Milo.",
+    description: "Explorez le plus grand musée d'art au monde dans l'ancien palais des rois de France. Découvrez ses chefs-d'œuvre incontournables : la Joconde, la Vénus de Milo, la Victoire de Samothrace. Admirez également l'architecture du palais et la pyramide de verre.",
     duration: "2h"
   },
   {
     title: "Jardin des Tuileries",
-    description: "Promenez-vous dans ce magnifique jardin à la française entre le Louvre et la place de la Concorde.",
+    description: "Terminez votre parcours par une promenade relaxante dans ce magnifique jardin à la française. Profitez des bassins, des statues et du calme de ce poumon vert en plein cœur de Paris. En été, ne manquez pas la grande roue et la fête foraine.",
     duration: "30min"
   }
 ];

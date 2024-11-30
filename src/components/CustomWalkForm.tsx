@@ -27,9 +27,10 @@ const CustomWalkForm = ({
   const [duration, setDuration] = useState("60");
   const [type, setType] = useState("all");
   const [actualDuration, setActualDuration] = useState<number | null>(null);
+  const [isGenerating, setIsGenerating] = useState(false);
   const { toast } = useToast();
 
-  const handleGenerate = () => {
+  const handleGenerate = async () => {
     if (!startLocation) {
       toast({
         title: "Point de départ manquant",
@@ -48,20 +49,31 @@ const CustomWalkForm = ({
       return;
     }
 
-    const steps = generateRoute({
-      startLocation,
-      endLocation,
-      duration,
-      type,
-      routeType
-    });
+    setIsGenerating(true);
+    try {
+      const steps = await generateRoute({
+        startLocation,
+        endLocation,
+        duration,
+        type,
+        routeType
+      });
 
-    onGenerate(steps, parseInt(duration));
-    
-    toast({
-      title: "Parcours généré",
-      description: "Votre parcours personnalisé a été généré avec succès !",
-    });
+      onGenerate(steps, parseInt(duration));
+      
+      toast({
+        title: "Parcours généré",
+        description: "Votre parcours personnalisé a été généré avec succès !",
+      });
+    } catch (error) {
+      toast({
+        title: "Erreur",
+        description: "Une erreur est survenue lors de la génération du parcours",
+        variant: "destructive"
+      });
+    } finally {
+      setIsGenerating(false);
+    }
   };
 
   return (
@@ -135,8 +147,9 @@ const CustomWalkForm = ({
         <Button 
           className="mt-8 w-full"
           onClick={handleGenerate}
+          disabled={isGenerating}
         >
-          Générer mon parcours
+          {isGenerating ? "Génération en cours..." : "Générer mon parcours"}
         </Button>
       </div>
     </div>

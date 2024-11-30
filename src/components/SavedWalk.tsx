@@ -1,7 +1,7 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
-import { Trash2 } from "lucide-react";
+import { Trash2, MapPin, Image } from "lucide-react";
 import WalkMemories from "./WalkMemories";
 import AddMemoryForm from "./AddMemoryForm";
 import { SavedWalk as SavedWalkType, WalkMemory } from "@/types/walk";
@@ -118,11 +118,14 @@ const SavedWalk = ({ walk, memories, onDelete, onAddMemory }: SavedWalkProps) =>
             </DialogHeader>
             <div className="space-y-6">
               <div>
-                <h3 className="text-lg font-semibold mb-2">Ville</h3>
+                <div className="flex items-center gap-2 mb-2">
+                  <MapPin className="h-5 w-5 text-primary" />
+                  <h3 className="text-lg font-semibold">Ville</h3>
+                </div>
                 <p>{formatCityName(walk.city)}</p>
               </div>
               
-              {steps.length > 0 && (
+              {steps && steps.length > 0 && (
                 <div>
                   <h3 className="text-lg font-semibold mb-4">Étapes du parcours</h3>
                   <div className="space-y-4">
@@ -138,7 +141,10 @@ const SavedWalk = ({ walk, memories, onDelete, onAddMemory }: SavedWalkProps) =>
               )}
 
               <div>
-                <h3 className="text-lg font-semibold mb-4">Mes Souvenirs</h3>
+                <div className="flex items-center gap-2 mb-4">
+                  <Image className="h-5 w-5 text-primary" />
+                  <h3 className="text-lg font-semibold">Mes Souvenirs</h3>
+                </div>
                 <WalkMemories 
                   memories={memories} 
                   onDeleteMemory={handleDeleteMemory}

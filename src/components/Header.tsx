@@ -128,7 +128,7 @@ const Header = () => {
                 ) : (
                   <Link to="/login" onClick={() => setIsOpen(false)}>
                     <Button variant="default" className="w-full">
-                      Se connecter
+                      Se connecter / S'inscrire
                     </Button>
                   </Link>
                 )}

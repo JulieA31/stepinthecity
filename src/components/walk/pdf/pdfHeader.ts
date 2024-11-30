@@ -20,9 +20,9 @@ export const addHeader = async (pdf: jsPDF, walkTitle: string, pageWidth: number
       reader.readAsDataURL(blob);
     });
 
-    // Dimensions du logo dans le bandeau (25% plus grand)
-    const logoHeight = 12.5;
-    const logoWidth = 25;
+    // Dimensions du logo dans le bandeau (réduites de 15%)
+    const logoHeight = 10.625;
+    const logoWidth = 21.25;
     const logoX = 5;
     const logoY = 2.5;
 
@@ -66,6 +66,7 @@ export const addHeader = async (pdf: jsPDF, walkTitle: string, pageWidth: number
     pdf.addImage(base64data, "JPEG", xPosition, 20, imageWidth, imageHeight);
     
     return 20 + imageHeight + 15; // Retourne la position Y après l'image
+    
   } catch (error) {
     console.error("Error adding header image:", error);
     return margin + 25;

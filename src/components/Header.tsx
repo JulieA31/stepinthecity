@@ -8,10 +8,12 @@ import {
   SheetContent,
   SheetTrigger,
 } from "@/components/ui/sheet";
+import { useToast } from "./ui/use-toast";
 
 const Header = () => {
   const location = useLocation();
   const navigate = useNavigate();
+  const { toast } = useToast();
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
 
@@ -36,6 +38,19 @@ const Header = () => {
     setIsOpen(false);
   };
 
+  const handleCarnetClick = () => {
+    if (!isLoggedIn) {
+      toast({
+        title: "Connexion requise",
+        description: "Veuillez vous connecter pour accéder à votre carnet de route",
+      });
+      navigate("/login");
+    } else {
+      navigate("/my-walks");
+    }
+    setIsOpen(false);
+  };
+
   const NavLinks = () => (
     <>
       <Link
@@ -56,17 +71,14 @@ const Header = () => {
       >
         Parcours personnalisé
       </Link>
-      {isLoggedIn && (
-        <Link
-          to="/my-walks"
-          onClick={() => setIsOpen(false)}
-          className={`text-sm font-medium transition-colors hover:text-primary ${
-            location.pathname === "/my-walks" ? "text-primary" : "text-muted-foreground"
-          }`}
-        >
-          Mon Carnet de Route
-        </Link>
-      )}
+      <button
+        onClick={handleCarnetClick}
+        className={`text-sm font-medium transition-colors hover:text-primary text-left ${
+          location.pathname === "/my-walks" ? "text-primary" : "text-muted-foreground"
+        }`}
+      >
+        Mon Carnet de Route
+      </button>
     </>
   );
 
@@ -78,23 +90,8 @@ const Header = () => {
             StepInTheCity
           </Link>
 
-          {/* Desktop Navigation */}
-          <nav className="hidden md:flex items-center gap-6">
-            <NavLinks />
-            {isLoggedIn ? (
-              <Button variant="ghost" size="icon" onClick={handleLogout}>
-                <LogOut className="h-5 w-5" />
-              </Button>
-            ) : (
-              <Link to="/login">
-                <Button variant="default">Se connecter</Button>
-              </Link>
-            )}
-          </nav>
-
-          {/* Mobile Navigation */}
           <Sheet open={isOpen} onOpenChange={setIsOpen}>
-            <SheetTrigger asChild className="md:hidden">
+            <SheetTrigger asChild>
               <Button variant="ghost" size="icon">
                 {isOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
               </Button>

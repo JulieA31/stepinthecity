@@ -57,7 +57,6 @@ const WalkDetailsDialog = ({
         return;
       }
 
-      // Vérifier si le parcours est déjà enregistré
       const { data: existingWalks } = await supabase
         .from('saved_walks')
         .select()
@@ -72,7 +71,6 @@ const WalkDetailsDialog = ({
         return;
       }
 
-      // Enregistrer le parcours
       const { error } = await supabase
         .from('saved_walks')
         .insert({
@@ -102,8 +100,15 @@ const WalkDetailsDialog = ({
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent className="max-w-3xl max-h-[90vh] overflow-hidden flex flex-col">
-        <DialogHeader>
+        <DialogHeader className="flex flex-row items-center justify-between">
           <DialogTitle className="text-2xl font-display">{walk.title}</DialogTitle>
+          <Button
+            onClick={handleSaveWalk}
+            disabled={isSaving}
+            className="bg-primary hover:bg-accent text-white"
+          >
+            {isSaving ? "Enregistrement..." : "Enregistrer dans mon Carnet"}
+          </Button>
         </DialogHeader>
         
         <div className="flex-1 overflow-y-auto pr-2">
@@ -115,16 +120,7 @@ const WalkDetailsDialog = ({
           />
           
           <div className="mt-4">
-            <div className="flex justify-between items-start mb-6">
-              <p className="text-gray-600 flex-1">{walk.description}</p>
-              <Button
-                onClick={handleSaveWalk}
-                disabled={isSaving}
-                className="ml-4 whitespace-nowrap"
-              >
-                {isSaving ? "Enregistrement..." : "Enregistrer dans mon Carnet"}
-              </Button>
-            </div>
+            <p className="text-gray-600 mb-6">{walk.description}</p>
             
             <div className="flex items-center gap-6 mb-8">
               <div className="flex items-center gap-2">

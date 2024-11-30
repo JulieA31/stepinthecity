@@ -128,7 +128,6 @@ const SavedWalk = ({ walk, memories, onDelete, onAddMemory }: SavedWalkProps) =>
                 alt={walk.walk_title}
                 className="w-full h-48 object-cover rounded-lg"
               />
-              <p className="text-gray-600 mt-2">{formatCityName(walk.city)}</p>
             </div>
           </DialogTrigger>
           <DialogContent className="max-w-3xl max-h-[90vh] overflow-y-auto">

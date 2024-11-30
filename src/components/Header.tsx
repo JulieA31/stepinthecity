@@ -101,7 +101,7 @@ const Header = () => {
         <div className="flex items-center justify-between h-20">
           <Link to="/" className="flex items-center">
             <img 
-              src="/lovable-uploads/66c4410e-d31b-462f-990d-3093a59b9eb1.png" 
+              src="/lovable-uploads/c01d0f07-fb3e-4dde-90c1-97228ca5dba5.png" 
               alt="Step In The City Logo" 
               className="h-16 w-auto"
             />

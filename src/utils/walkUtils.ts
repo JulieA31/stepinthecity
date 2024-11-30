@@ -2,7 +2,6 @@ import { Step } from "@/types/walk";
 
 const generatePointsOfInterest = (type: string, center: { lat: number; lng: number }, duration: string): Step[] => {
   // Convertir la durée en nombre de points d'intérêt
-  // On réduit le nombre de points pour laisser de la marge pour la marche entre les points
   const pointsCount = {
     "30": 2,  // 30 minutes
     "60": 3,  // 1 heure
@@ -19,115 +18,62 @@ const generatePointsOfInterest = (type: string, center: { lat: number; lng: numb
   };
   
   const radius = radiusMap[duration as keyof typeof radiusMap] || 0.015;
-  
-  // Points d'intérêt par ville (basé sur les coordonnées du centre)
-  const cityPOIs: { [key: string]: any } = {
-    // Toulouse (approximativement 43.6045, 1.4440)
-    "toulouse": {
-      historical: [
-        {
-          title: "Capitole de Toulouse",
-          description: "Hôtel de ville historique et théâtre",
-          duration: "45min",
-          position: { lat: 43.6045, lng: 1.4440 }
-        },
-        {
-          title: "Basilique Saint-Sernin",
-          description: "Plus grande église romane d'Europe",
-          duration: "30min",
-          position: { lat: 43.6088, lng: 1.4417 }
-        },
-        {
-          title: "Couvent des Jacobins",
-          description: "Chef d'œuvre de l'art gothique",
-          duration: "40min",
-          position: { lat: 43.6033, lng: 1.4402 }
-        },
-        {
-          title: "Musée des Augustins",
-          description: "Musée des Beaux-Arts",
-          duration: "1h",
-          position: { lat: 43.6003, lng: 1.4467 }
-        }
-      ],
-      cultural: [
-        {
-          title: "Musée des Abattoirs",
-          description: "Art moderne et contemporain",
-          duration: "1h",
-          position: { lat: 43.5989, lng: 1.4308 }
-        },
-        {
-          title: "Théâtre du Capitole",
-          description: "Opéra national",
-          duration: "45min",
-          position: { lat: 43.6043, lng: 1.4437 }
-        },
-        {
-          title: "Halle de La Machine",
-          description: "Machines géantes et spectaculaires",
-          duration: "1h30",
-          position: { lat: 43.5717, lng: 1.4778 }
-        }
-      ],
-      nature: [
-        {
-          title: "Jardin des Plantes",
-          description: "Plus grand jardin public de Toulouse",
-          duration: "45min",
-          position: { lat: 43.5923, lng: 1.4503 }
-        },
-        {
-          title: "Prairie des Filtres",
-          description: "Parc en bord de Garonne",
-          duration: "30min",
-          position: { lat: 43.5977, lng: 1.4397 }
-        },
-        {
-          title: "Jardin Royal",
-          description: "Jardin historique",
-          duration: "30min",
-          position: { lat: 43.5954, lng: 1.4515 }
-        }
-      ],
-      food: [
-        {
-          title: "Marché Victor Hugo",
-          description: "Plus grand marché couvert",
-          duration: "45min",
-          position: { lat: 43.6024, lng: 1.4453 }
-        },
-        {
-          title: "Quartier des Carmes",
-          description: "Restaurants et épiceries fines",
-          duration: "1h",
-          position: { lat: 43.5977, lng: 1.4453 }
-        }
-      ]
+
+  // Points d'intérêt historiques pour Toulouse
+  const historicalPOIs = [
+    {
+      title: "Basilique Saint-Sernin",
+      description: "Plus grande église romane d'Europe",
+      duration: "30min",
+      position: { lat: 43.6088, lng: 1.4417 },
+      imageUrl: "/placeholder.svg"
+    },
+    {
+      title: "Capitole de Toulouse",
+      description: "Hôtel de ville historique et théâtre",
+      duration: "45min",
+      position: { lat: 43.6045, lng: 1.4440 },
+      imageUrl: "/placeholder.svg"
+    },
+    {
+      title: "Couvent des Jacobins",
+      description: "Chef d'œuvre de l'art gothique",
+      duration: "40min",
+      position: { lat: 43.6033, lng: 1.4402 },
+      imageUrl: "/placeholder.svg"
+    },
+    {
+      title: "Cathédrale Saint-Étienne",
+      description: "Cathédrale gothique méridionale",
+      duration: "35min",
+      position: { lat: 43.6004, lng: 1.4442 },
+      imageUrl: "/placeholder.svg"
+    },
+    {
+      title: "Église Notre-Dame de la Dalbade",
+      description: "Église gothique avec portail Renaissance",
+      duration: "25min",
+      position: { lat: 43.5989, lng: 1.4428 },
+      imageUrl: "/placeholder.svg"
     }
-    // Ajoutez d'autres villes ici avec leurs points d'intérêt
+  ];
+
+  // Filtrer les points selon le type
+  let availablePoints = type === "historical" ? historicalPOIs : historicalPOIs;
+
+  // Calculer la distance par rapport au centre
+  const calculateDistance = (point: { position: { lat: number; lng: number } }) => {
+    const dlat = point.position.lat - center.lat;
+    const dlng = point.position.lng - center.lng;
+    return Math.sqrt(dlat * dlat + dlng * dlng);
   };
 
-  // Déterminer la ville en fonction des coordonnées
-  const city = "toulouse"; // Pour l'instant fixé à Toulouse, à rendre dynamique plus tard
-
-  // Sélectionner les points d'intérêt en fonction du type
-  let availablePoints = type === "all" 
-    ? Object.values(cityPOIs[city]).flat()
-    : cityPOIs[city][type] || [];
-
-  // Si pas assez de points pour le type spécifique, compléter avec d'autres types
-  if (availablePoints.length < pointsCount) {
-    const otherPoints = Object.values(cityPOIs[city])
-      .flat()
-      .filter(point => !availablePoints.includes(point));
-    availablePoints = [...availablePoints, ...otherPoints];
-  }
-
-  // Sélectionner aléatoirement le nombre de points requis
-  return availablePoints
-    .sort(() => Math.random() - 0.5)
+  // Trier les points par distance et sélectionner les plus proches
+  const sortedPoints = availablePoints
+    .sort((a, b) => calculateDistance(a) - calculateDistance(b))
     .slice(0, pointsCount);
+
+  return sortedPoints;
 };
 
 export const generateStepsForType = (type: string, startLocation: { lat: number; lng: number }, duration: string): Step[] => {

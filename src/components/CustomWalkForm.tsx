@@ -1,10 +1,11 @@
 import { useState } from "react";
-import { Clock, MapPin, Users, Filter, Repeat, Navigation2 } from "lucide-react";
+import { MapPin, Navigation2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Step } from "@/types/walk";
 import { useToast } from "@/components/ui/use-toast";
-import { generateStepsForType } from "@/utils/walkUtils";
+import { generateRoute } from "@/utils/routeGenerator";
 import { Alert, AlertDescription } from "@/components/ui/alert";
+import { FormOptions } from "./FormOptions";
 
 interface CustomWalkFormProps {
   onGenerate: (steps: Step[], targetDuration: number) => void;
@@ -15,20 +16,18 @@ interface CustomWalkFormProps {
   setRouteType: (type: string) => void;
 }
 
-const CustomWalkForm = ({ onGenerate, startLocation, endLocation, setShowMap, routeType, setRouteType }: CustomWalkFormProps) => {
+const CustomWalkForm = ({ 
+  onGenerate, 
+  startLocation, 
+  endLocation, 
+  setShowMap, 
+  routeType, 
+  setRouteType 
+}: CustomWalkFormProps) => {
   const [duration, setDuration] = useState("60");
   const [type, setType] = useState("all");
   const [actualDuration, setActualDuration] = useState<number | null>(null);
   const { toast } = useToast();
-
-  const getMaxDuration = (selectedDuration: string): number => {
-    const durationMap: { [key: string]: number } = {
-      "60": 70,   // 1 heure -> max 70 minutes
-      "120": 140, // 2 heures -> max 140 minutes
-      "180": 190  // 3 heures -> max 190 minutes
-    };
-    return durationMap[selectedDuration] || parseInt(selectedDuration) + 10;
-  };
 
   const handleGenerate = () => {
     if (!startLocation) {
@@ -49,32 +48,13 @@ const CustomWalkForm = ({ onGenerate, startLocation, endLocation, setShowMap, ro
       return;
     }
 
-    const steps = generateStepsForType(type, startLocation, duration);
-    
-    if (startLocation) {
-      steps.unshift({
-        title: "Point de départ",
-        description: "Début du parcours",
-        duration: "0min",
-        position: startLocation
-      });
-
-      if (routeType === "loop") {
-        steps.push({
-          title: "Point d'arrivée",
-          description: "Fin du parcours (retour au point de départ)",
-          duration: "0min",
-          position: startLocation
-        });
-      } else if (routeType === "point-to-point" && endLocation) {
-        steps.push({
-          title: "Point d'arrivée",
-          description: "Fin du parcours",
-          duration: "0min",
-          position: endLocation
-        });
-      }
-    }
+    const steps = generateRoute({
+      startLocation,
+      endLocation,
+      duration,
+      type,
+      routeType
+    });
 
     onGenerate(steps, parseInt(duration));
     
@@ -84,25 +64,14 @@ const CustomWalkForm = ({ onGenerate, startLocation, endLocation, setShowMap, ro
     });
   };
 
-  const handleRouteCalculated = (calculatedDuration: number) => {
-    setActualDuration(calculatedDuration);
-    const maxDuration = getMaxDuration(duration);
-    
-    if (calculatedDuration > maxDuration) {
-      toast({
-        title: "Attention",
-        description: `Le parcours généré dure ${calculatedDuration} minutes, ce qui dépasse la durée maximale autorisée de ${maxDuration} minutes.`,
-        variant: "destructive"
-      });
-    }
-  };
-
   return (
     <div className="card mb-8">
       <div className="p-6">
-        <h2 className="text-2xl font-display text-text mb-6">Critères de personnalisation</h2>
+        <h2 className="text-2xl font-display text-text mb-6">
+          Critères de personnalisation
+        </h2>
         
-        {actualDuration && actualDuration > getMaxDuration(duration) && (
+        {actualDuration && actualDuration > parseInt(duration) + 10 && (
           <Alert variant="destructive" className="mb-6">
             <AlertDescription>
               ⚠️ Ce parcours dure {actualDuration} minutes, soit {actualDuration - parseInt(duration)} minutes de plus que la durée souhaitée.
@@ -110,50 +79,20 @@ const CustomWalkForm = ({ onGenerate, startLocation, endLocation, setShowMap, ro
           </Alert>
         )}
         
-        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <FormOptions
+          duration={duration}
+          setDuration={setDuration}
+          type={type}
+          setType={setType}
+          routeType={routeType}
+          setRouteType={setRouteType}
+        />
+        
+        <div className="grid md:grid-cols-2 gap-6 mt-6">
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">Durée</label>
-            <select 
-              value={duration}
-              onChange={(e) => setDuration(e.target.value)}
-              className="w-full p-2 border rounded-lg"
-            >
-              <option value="30">30 minutes</option>
-              <option value="60">1 heure</option>
-              <option value="120">2 heures</option>
-              <option value="180">3 heures</option>
-            </select>
-          </div>
-          
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">Thème du parcours</label>
-            <select 
-              value={type}
-              onChange={(e) => setType(e.target.value)}
-              className="w-full p-2 border rounded-lg"
-            >
-              <option value="all">Tous les types</option>
-              <option value="historical">Historique</option>
-              <option value="cultural">Culturel</option>
-              <option value="nature">Nature</option>
-              <option value="food">Gastronomie</option>
-            </select>
-          </div>
-
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">Type de parcours</label>
-            <select 
-              value={routeType}
-              onChange={(e) => setRouteType(e.target.value)}
-              className="w-full p-2 border rounded-lg"
-            >
-              <option value="loop">Boucle</option>
-              <option value="point-to-point">Point à point</option>
-            </select>
-          </div>
-          
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">Point de départ</label>
+            <label className="block text-sm font-medium text-gray-700 mb-2">
+              Point de départ
+            </label>
             <Button
               variant="outline"
               className="w-full flex items-center justify-center gap-2"
@@ -171,7 +110,9 @@ const CustomWalkForm = ({ onGenerate, startLocation, endLocation, setShowMap, ro
 
           {routeType === "point-to-point" && (
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">Point d'arrivée</label>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                Point d'arrivée
+              </label>
               <Button
                 variant="outline"
                 className="w-full flex items-center justify-center gap-2"

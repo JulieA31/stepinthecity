@@ -59,11 +59,11 @@ export const generatePlacesForType = async (
     
     const searchPromises = placeTypes.map(type => 
       new Promise<google.maps.places.PlaceResult[]>((resolve, reject) => {
-        const request = {
+        const request: google.maps.places.PlaceSearchRequest = {
           location: new google.maps.LatLng(location.lat, location.lng),
           radius: Math.min(targetDuration * 40, 2000), // Rayon basé sur la durée (max 2km)
-          type: type as google.maps.places.PlaceType,
-          rankBy: google.maps.places.RankBy.RATING
+          type: type as google.maps.places.LocationType,
+          rankBy: google.maps.places.RankBy.DISTANCE
         };
 
         service.nearbySearch(request, (results, status) => {

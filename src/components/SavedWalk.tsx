@@ -5,6 +5,8 @@ import { Trash2 } from "lucide-react";
 import WalkMemories from "./WalkMemories";
 import AddMemoryForm from "./AddMemoryForm";
 import { SavedWalk as SavedWalkType, WalkMemory } from "@/types/walk";
+import { useToast } from "./ui/use-toast";
+import { supabase } from "@/integrations/supabase/client";
 
 interface SavedWalkProps {
   walk: SavedWalkType;
@@ -20,6 +22,32 @@ interface SavedWalkProps {
 }
 
 const SavedWalk = ({ walk, memories, onDelete, onAddMemory }: SavedWalkProps) => {
+  const { toast } = useToast();
+
+  const handleDeleteMemory = async (memoryId: string) => {
+    const { error } = await supabase
+      .from('walk_memories')
+      .delete()
+      .eq('id', memoryId);
+
+    if (error) {
+      toast({
+        title: "Erreur",
+        description: "Impossible de supprimer le souvenir",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    toast({
+      title: "Succès",
+      description: "Souvenir supprimé avec succès",
+    });
+
+    // Refresh the page to update the memories list
+    window.location.reload();
+  };
+
   return (
     <Card className="overflow-hidden">
       <CardHeader className="flex flex-row items-center justify-between">
@@ -35,7 +63,10 @@ const SavedWalk = ({ walk, memories, onDelete, onAddMemory }: SavedWalkProps) =>
       <CardContent>
         <p className="text-gray-600 mb-4">{walk.city}</p>
         
-        <WalkMemories memories={memories} />
+        <WalkMemories 
+          memories={memories} 
+          onDeleteMemory={handleDeleteMemory}
+        />
 
         <Dialog>
           <DialogTrigger asChild>

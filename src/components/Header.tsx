@@ -98,12 +98,12 @@ const Header = () => {
   return (
     <header className="fixed top-0 left-0 right-0 z-50 bg-background border-b">
       <div className="container mx-auto px-4">
-        <div className="flex items-center justify-between h-16">
+        <div className="flex items-center justify-between h-20">
           <Link to="/" className="flex items-center">
             <img 
               src="/lovable-uploads/66c4410e-d31b-462f-990d-3093a59b9eb1.png" 
               alt="Step In The City Logo" 
-              className="h-12 w-auto"
+              className="h-16 w-auto"
             />
           </Link>
 

@@ -4,6 +4,9 @@ import { useToast } from "@/components/ui/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { SavedWalk, WalkMemory } from "@/types/walk";
 import ShareButton from "./ShareButton";
+import jsPDF from "jspdf";
+import { format } from "date-fns";
+import { fr } from "date-fns/locale";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -85,10 +88,97 @@ const PhotoAlbum = ({ walk, memories }: PhotoAlbumProps) => {
   };
 
   const handleExportPDF = async () => {
-    toast({
-      title: "Info",
-      description: "Le téléchargement en PDF sera bientôt disponible",
-    });
+    try {
+      toast({
+        title: "Génération du PDF",
+        description: "Le PDF est en cours de génération...",
+      });
+
+      // Create a new PDF document
+      const pdf = new jsPDF({
+        orientation: "portrait",
+        unit: "mm",
+        format: "a4",
+      });
+
+      // Add title
+      pdf.setFontSize(24);
+      pdf.text(walk.walk_title, 20, 20);
+
+      // Add city and date
+      pdf.setFontSize(14);
+      const date = format(new Date(walk.created_at), "d MMMM yyyy", { locale: fr });
+      pdf.text(`${walk.city} - ${date}`, 20, 30);
+
+      let yPosition = 50;
+
+      // Add memories
+      for (let i = 0; i < memories.length; i++) {
+        const memory = memories[i];
+
+        // Add some spacing between memories
+        if (i > 0) {
+          yPosition += 10;
+        }
+
+        // Check if we need a new page
+        if (yPosition > 250) {
+          pdf.addPage();
+          yPosition = 20;
+        }
+
+        try {
+          // Convert image URL to base64
+          const response = await fetch(memory.photo_url);
+          const blob = await response.blob();
+          const reader = new FileReader();
+
+          await new Promise((resolve) => {
+            reader.onloadend = async () => {
+              const base64data = reader.result as string;
+              
+              // Add image
+              pdf.addImage(
+                base64data,
+                "JPEG",
+                20,
+                yPosition,
+                170,
+                100
+              );
+
+              // Add description if exists
+              if (memory.description) {
+                pdf.setFontSize(12);
+                pdf.text(memory.description, 20, yPosition + 110);
+              }
+
+              yPosition += 120;
+              resolve(null);
+            };
+            reader.readAsDataURL(blob);
+          });
+        } catch (error) {
+          console.error("Error processing image:", error);
+          continue;
+        }
+      }
+
+      // Save the PDF
+      pdf.save(`Album_${walk.walk_title}.pdf`);
+
+      toast({
+        title: "Succès",
+        description: "Le PDF a été généré avec succès",
+      });
+    } catch (error) {
+      console.error("Error generating PDF:", error);
+      toast({
+        title: "Erreur",
+        description: "Une erreur est survenue lors de la génération du PDF",
+        variant: "destructive",
+      });
+    }
   };
 
   return (

@@ -98,19 +98,19 @@ const Header = () => {
   return (
     <header className="fixed top-0 left-0 right-0 z-50 bg-background border-b">
       <div className="container mx-auto px-4">
-        <div className="flex items-center justify-between h-20">
+        <div className="flex items-center justify-between h-16">
           <Link to="/" className="flex items-center">
             <img 
               src="/lovable-uploads/1d570795-c96a-447c-a27a-1b240ba72131.png" 
               alt="Step In The City Logo" 
-              className="h-16 w-auto"
+              className="h-12 w-auto"
             />
           </Link>
 
           <Sheet open={isOpen} onOpenChange={setIsOpen}>
             <SheetTrigger asChild>
-              <Button variant="ghost" size="icon">
-                {isOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
+              <Button variant="ghost" size="icon" className="h-10 w-10 md:h-12 md:w-12">
+                {isOpen ? <X className="h-6 w-6 md:h-8 md:w-8" /> : <Menu className="h-6 w-6 md:h-8 md:w-8" />}
               </Button>
             </SheetTrigger>
             <SheetContent side="right" className="w-[80%] sm:w-[385px]">

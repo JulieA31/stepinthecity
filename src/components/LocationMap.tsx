@@ -4,7 +4,6 @@ import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/components/ui/use-toast";
 import MapMarkers from "./map/MapMarkers";
-import { useGeolocation } from "./map/useGeolocation";
 
 const GOOGLE_MAPS_API_KEY = "AIzaSyC806xlYYv2CYq2euqLnD4_cMrKrUTZGNI";
 
@@ -16,7 +15,6 @@ interface LocationMapProps {
 
 const LocationMap = ({ open, onOpenChange, onLocationSelect }: LocationMapProps) => {
   const [selectedPosition, setSelectedPosition] = useState<google.maps.LatLngLiteral | null>(null);
-  const [directions, setDirections] = useState<google.maps.DirectionsResult | null>(null);
   const [map, setMap] = useState<google.maps.Map | null>(null);
   const { toast } = useToast();
 
@@ -25,51 +23,55 @@ const LocationMap = ({ open, onOpenChange, onLocationSelect }: LocationMapProps)
     googleMapsApiKey: GOOGLE_MAPS_API_KEY
   });
 
-  const position = useGeolocation(isLoaded, map, open);
-
-  useEffect(() => {
-    if (!open) {
-      setDirections(null);
-      setSelectedPosition(null);
-    }
-  }, [open]);
-
-  const calculateRoute = useCallback((destination: google.maps.LatLngLiteral) => {
-    if (!isLoaded || !window.google || !map || !position) return;
-
-    const directionsService = new window.google.maps.DirectionsService();
-    directionsService.route(
-      {
-        origin: position,
-        destination: destination,
-        travelMode: window.google.maps.TravelMode.WALKING
-      },
-      (result, status) => {
-        if (status === window.google.maps.DirectionsStatus.OK) {
-          setDirections(result);
-        } else {
-          console.error("Erreur lors du calcul de l'itinéraire:", status);
+  const getCurrentPosition = useCallback(() => {
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(
+        (position) => {
+          const pos = {
+            lat: position.coords.latitude,
+            lng: position.coords.longitude,
+          };
+          setSelectedPosition(pos);
+          if (map) {
+            map.panTo(pos);
+            map.setZoom(15);
+          }
           toast({
-            title: "Erreur de calcul d'itinéraire",
-            description: "Impossible de calculer l'itinéraire vers ce point",
+            title: "Position trouvée",
+            description: "Votre position a été localisée avec succès",
+          });
+        },
+        (error) => {
+          console.error("Erreur de géolocalisation:", error);
+          toast({
+            title: "Erreur de géolocalisation",
+            description: "Impossible d'obtenir votre position actuelle",
             variant: "destructive",
           });
+        },
+        {
+          enableHighAccuracy: true,
+          timeout: 5000,
+          maximumAge: 0
         }
-      }
-    );
-  }, [position, isLoaded, map, toast]);
+      );
+    }
+  }, [map, toast]);
 
-  const handleMapClick = useCallback((e: google.maps.MapMouseEvent) => {
-    if (e.latLng && map) {
-      const clickedPosition = {
+  useEffect(() => {
+    if (open) {
+      getCurrentPosition();
+    }
+  }, [open, getCurrentPosition]);
+
+  const handleMarkerDrag = useCallback((e: google.maps.MapMouseEvent) => {
+    if (e.latLng) {
+      setSelectedPosition({
         lat: e.latLng.lat(),
         lng: e.latLng.lng()
-      };
-      
-      setSelectedPosition(clickedPosition);
-      calculateRoute(clickedPosition);
+      });
     }
-  }, [map, calculateRoute]);
+  }, []);
 
   const handleConfirm = () => {
     if (selectedPosition) {
@@ -79,30 +81,24 @@ const LocationMap = ({ open, onOpenChange, onLocationSelect }: LocationMapProps)
         title: "Position confirmée",
         description: "La position a été enregistrée avec succès",
       });
-    } else {
-      toast({
-        title: "Aucune position sélectionnée",
-        description: "Veuillez cliquer sur la carte pour sélectionner une position",
-        variant: "destructive",
-      });
     }
   };
 
   if (!isLoaded) {
-    return <div>Loading...</div>;
+    return <div>Chargement...</div>;
   }
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="sm:max-w-[800px] h-[600px]">
-        <DialogTitle>Sélectionnez un emplacement</DialogTitle>
+        <DialogTitle>Sélectionnez votre position</DialogTitle>
         <div className="h-[500px] relative">
           <GoogleMap
             mapContainerStyle={{ width: "100%", height: "100%" }}
-            center={position}
+            center={selectedPosition || { lat: 48.8566, lng: 2.3522 }}
             zoom={15}
-            onClick={handleMapClick}
             onLoad={setMap}
+            onClick={handleMarkerDrag}
             options={{
               gestureHandling: 'greedy',
               disableDoubleClickZoom: true,
@@ -114,19 +110,18 @@ const LocationMap = ({ open, onOpenChange, onLocationSelect }: LocationMapProps)
             }}
           >
             <MapMarkers
-              position={position}
               selectedPosition={selectedPosition}
-              setSelectedPosition={setSelectedPosition}
+              onMarkerDragEnd={handleMarkerDrag}
             />
-            {directions && <DirectionsRenderer directions={directions} options={{ suppressMarkers: true }} />}
           </GoogleMap>
-          <Button
-            className="absolute bottom-4 right-4 z-[1000]"
-            onClick={handleConfirm}
-            disabled={!selectedPosition}
-          >
-            Confirmer la position
-          </Button>
+          {selectedPosition && (
+            <Button
+              className="absolute bottom-4 right-4 z-[1000]"
+              onClick={handleConfirm}
+            >
+              Confirmer la position
+            </Button>
+          )}
         </div>
       </DialogContent>
     </Dialog>

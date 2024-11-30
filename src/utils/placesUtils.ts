@@ -20,7 +20,6 @@ const getPlaceTypesByTheme = (theme: string): string[] => {
 };
 
 const getDurationByDistance = (distance: number): number => {
-  // Vitesse moyenne de marche : 5km/h soit environ 80m/min
   return Math.round(distance / 80);
 };
 
@@ -38,18 +37,26 @@ const getStepsCountByDuration = (duration: number): number => {
   return 5;
 };
 
-export const generatePlacesForType = async (
-  location: google.maps.LatLngLiteral,
-  themeType: string,
-  duration: string,
-): Promise<Step[]> => {
+export const generateRoute = async ({
+  startLocation,
+  endLocation,
+  duration,
+  type,
+  routeType
+}: {
+  startLocation: google.maps.LatLngLiteral;
+  endLocation?: google.maps.LatLngLiteral | null;
+  duration: string;
+  type: string;
+  routeType: string;
+}): Promise<Step[]> => {
   const targetDuration = parseInt(duration);
-  const placeTypes = getPlaceTypesByTheme(themeType);
+  const placeTypes = getPlaceTypesByTheme(type);
   const desiredStepsCount = getStepsCountByDuration(targetDuration);
 
   console.log("Generating places with parameters:", {
-    location,
-    themeType,
+    location: startLocation,
+    type,
     duration,
     placeTypes,
     desiredStepsCount
@@ -66,10 +73,10 @@ export const generatePlacesForType = async (
     const service = new google.maps.places.PlacesService(document.createElement('div'));
     
     const searchPromises = placeTypes.map(type => 
-      new Promise<google.maps.places.PlaceResult[]>((resolve, reject) => {
+      new Promise<google.maps.places.PlaceResult[]>((resolve) => {
         const request: google.maps.places.PlaceSearchRequest = {
-          location: new google.maps.LatLng(location.lat, location.lng),
-          radius: Math.min(targetDuration * 40, 2000), // Rayon basé sur la durée (max 2km)
+          location: new google.maps.LatLng(startLocation.lat, startLocation.lng),
+          radius: Math.min(targetDuration * 80, 3000), // Augmenté le rayon max à 3km
           type: type,
           rankBy: google.maps.places.RankBy.DISTANCE
         };
@@ -78,9 +85,11 @@ export const generatePlacesForType = async (
           console.log(`Search results for type ${type}:`, { status, resultsCount: results?.length });
           if (status === google.maps.places.PlacesServiceStatus.OK && results) {
             resolve(results);
+          } else if (status === google.maps.places.PlacesServiceStatus.ZERO_RESULTS) {
+            resolve([]);
           } else {
             console.warn(`No results for type ${type}:`, status);
-            resolve([]); // En cas d'erreur, on continue avec un tableau vide
+            resolve([]);
           }
         });
       })
@@ -103,9 +112,13 @@ export const generatePlacesForType = async (
 
     console.log("Sorted and filtered places:", sortedPlaces.length);
 
+    if (sortedPlaces.length === 0) {
+      throw new Error("Aucun lieu trouvé dans cette zone");
+    }
+
     const steps: Step[] = await Promise.all(
       sortedPlaces.map(async place => {
-        const placeDetails = await new Promise<google.maps.places.PlaceResult>((resolve, reject) => {
+        const placeDetails = await new Promise<google.maps.places.PlaceResult>((resolve) => {
           service.getDetails(
             { placeId: place.place_id!, fields: ['formatted_address', 'opening_hours', 'price_level'] },
             (result, status) => {
@@ -133,8 +146,8 @@ export const generatePlacesForType = async (
           description,
           duration: `${stepDuration}min`,
           position: {
-            lat: place.geometry?.location?.lat() || location.lat,
-            lng: place.geometry?.location?.lng() || location.lng
+            lat: place.geometry?.location?.lat() || startLocation.lat,
+            lng: place.geometry?.location?.lng() || startLocation.lng
           }
         };
       })
@@ -142,9 +155,12 @@ export const generatePlacesForType = async (
 
     console.log("Final generated steps:", steps.length);
 
+    if (steps.length === 0) {
+      throw new Error("Impossible de générer un parcours dans cette zone");
+    }
+
     const totalDuration = calculateTotalDuration(steps);
     if (Math.abs(totalDuration - targetDuration) > 10) {
-      // Ajuster les durées proportionnellement
       const ratio = targetDuration / totalDuration;
       steps.forEach(step => {
         const currentDuration = parseInt(step.duration);

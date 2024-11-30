@@ -40,9 +40,11 @@ export const generatePDF = async (walk: SavedWalk, memories: WalkMemory[]): Prom
 
     // Configuration initiale
     const pageWidth = pdf.internal.pageSize.width;
+    const pageHeight = pdf.internal.pageSize.height;
     const margin = 20;
     const contentWidth = pageWidth - (2 * margin);
     const maxImageWidth = contentWidth * 0.8; // 80% de la largeur du contenu
+    const maxCoverHeight = pageHeight * 0.25; // 25% de la hauteur de la page
     let yPosition = margin;
 
     // Ajout de l'image de couverture
@@ -64,8 +66,14 @@ export const generatePDF = async (walk: SavedWalk, memories: WalkMemory[]): Prom
       });
       
       const aspectRatio = img.height / img.width;
-      const imageWidth = Math.min(maxImageWidth, contentWidth);
-      const imageHeight = imageWidth * aspectRatio;
+      let imageWidth = Math.min(maxImageWidth, contentWidth);
+      let imageHeight = imageWidth * aspectRatio;
+
+      // Si la hauteur dépasse maxCoverHeight, on ajuste la largeur proportionnellement
+      if (imageHeight > maxCoverHeight) {
+        imageHeight = maxCoverHeight;
+        imageWidth = imageHeight / aspectRatio;
+      }
 
       pdf.addImage(base64data, "JPEG", margin, yPosition, imageWidth, imageHeight);
       yPosition += imageHeight + 15;

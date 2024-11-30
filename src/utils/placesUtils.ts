@@ -47,6 +47,14 @@ export const generatePlacesForType = async (
   const placeTypes = getPlaceTypesByTheme(themeType);
   const desiredStepsCount = getStepsCountByDuration(targetDuration);
 
+  console.log("Generating places with parameters:", {
+    location,
+    themeType,
+    duration,
+    placeTypes,
+    desiredStepsCount
+  });
+
   try {
     const loader = new Loader({
       apiKey: GOOGLE_MAPS_API_KEY,
@@ -62,14 +70,16 @@ export const generatePlacesForType = async (
         const request: google.maps.places.PlaceSearchRequest = {
           location: new google.maps.LatLng(location.lat, location.lng),
           radius: Math.min(targetDuration * 40, 2000), // Rayon basé sur la durée (max 2km)
-          type: type as string,
+          type: type,
           rankBy: google.maps.places.RankBy.DISTANCE
         };
 
         service.nearbySearch(request, (results, status) => {
+          console.log(`Search results for type ${type}:`, { status, resultsCount: results?.length });
           if (status === google.maps.places.PlacesServiceStatus.OK && results) {
             resolve(results);
           } else {
+            console.warn(`No results for type ${type}:`, status);
             resolve([]); // En cas d'erreur, on continue avec un tableau vide
           }
         });
@@ -77,6 +87,8 @@ export const generatePlacesForType = async (
     );
 
     const allResults = await Promise.all(searchPromises);
+    console.log("All search results completed:", allResults.map(r => r.length));
+    
     const uniquePlaces = new Map<string, google.maps.places.PlaceResult>();
     
     allResults.flat().forEach(place => {
@@ -88,6 +100,8 @@ export const generatePlacesForType = async (
     const sortedPlaces = Array.from(uniquePlaces.values())
       .sort((a, b) => (b.rating || 0) - (a.rating || 0))
       .slice(0, desiredStepsCount);
+
+    console.log("Sorted and filtered places:", sortedPlaces.length);
 
     const steps: Step[] = await Promise.all(
       sortedPlaces.map(async place => {
@@ -126,6 +140,8 @@ export const generatePlacesForType = async (
       })
     );
 
+    console.log("Final generated steps:", steps.length);
+
     const totalDuration = calculateTotalDuration(steps);
     if (Math.abs(totalDuration - targetDuration) > 10) {
       // Ajuster les durées proportionnellement
@@ -138,7 +154,7 @@ export const generatePlacesForType = async (
 
     return steps;
   } catch (error) {
-    console.error("Erreur lors de la recherche des lieux:", error);
-    return [];
+    console.error("Erreur lors de la génération des lieux:", error);
+    throw error;
   }
 };

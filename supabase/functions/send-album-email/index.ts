@@ -20,12 +20,19 @@ const handler = async (req: Request): Promise<Response> => {
     return new Response(null, { headers: corsHeaders });
   }
 
-  try {
-    const { to, subject, pdfBase64, albumTitle } = await req.json() as EmailRequest;
+  if (!RESEND_API_KEY) {
+    console.error("RESEND_API_KEY is not configured in environment variables");
+    return new Response(
+      JSON.stringify({ error: "Email service is not properly configured" }),
+      {
+        status: 500,
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+      }
+    );
+  }
 
-    if (!RESEND_API_KEY) {
-      throw new Error("RESEND_API_KEY is not configured");
-    }
+  try {
+    const { to, subject, pdfBase64, albumTitle } = (await req.json()) as EmailRequest;
 
     const res = await fetch("https://api.resend.com/emails", {
       method: "POST",

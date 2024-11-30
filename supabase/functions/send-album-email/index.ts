@@ -34,7 +34,7 @@ const handler = async (req: Request): Promise<Response> => {
         Authorization: `Bearer ${RESEND_API_KEY}`,
       },
       body: JSON.stringify({
-        from: "Lovable <onboarding@resend.dev>",
+        from: "Step in the City <hello@stepinthecity.me>",
         to,
         subject,
         html: `<p>Voici votre album photo "${albumTitle}" en pièce jointe.</p>`,
@@ -49,17 +49,19 @@ const handler = async (req: Request): Promise<Response> => {
 
     if (!res.ok) {
       const error = await res.text();
-      console.error("Error from Resend API:", error);
-      throw new Error(error);
+      console.error("Resend API error:", error);
+      return new Response(JSON.stringify({ error }), {
+        status: res.status,
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
     }
 
     const data = await res.json();
-    console.log("Email sent successfully:", data);
-
     return new Response(JSON.stringify(data), {
       status: 200,
       headers: { ...corsHeaders, "Content-Type": "application/json" },
     });
+
   } catch (error: any) {
     console.error("Error in send-album-email function:", error);
     return new Response(JSON.stringify({ error: error.message }), {

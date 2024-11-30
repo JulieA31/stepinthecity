@@ -107,34 +107,58 @@ const Header = () => {
             />
           </Link>
 
-          <Sheet open={isOpen} onOpenChange={setIsOpen}>
-            <SheetTrigger asChild>
-              <Button variant="ghost" size="icon" className="h-16 w-16 md:h-[4.4rem] md:w-[4.4rem]">
-                {isOpen ? <X className="h-10 w-10 md:h-12 md:w-12" /> : <Menu className="h-10 w-10 md:h-12 md:w-12" />}
+          {/* Menu desktop */}
+          <nav className="hidden md:flex items-center gap-8">
+            <NavLinks />
+            {isLoggedIn ? (
+              <Button 
+                variant="ghost" 
+                className="flex items-center gap-2" 
+                onClick={handleLogout}
+              >
+                <LogOut className="h-4 w-4" />
+                Se déconnecter
               </Button>
-            </SheetTrigger>
-            <SheetContent side="right" className="w-[80%] sm:w-[385px]">
-              <nav className="flex flex-col gap-4 mt-8">
-                <NavLinks />
-                {isLoggedIn ? (
-                  <Button 
-                    variant="ghost" 
-                    className="justify-start px-2" 
-                    onClick={handleLogout}
-                  >
-                    <LogOut className="h-5 w-5 mr-2" />
-                    Se déconnecter
-                  </Button>
-                ) : (
-                  <Link to="/login" onClick={() => setIsOpen(false)}>
-                    <Button variant="default" className="w-full">
-                      Se connecter / S'inscrire
+            ) : (
+              <Link to="/login">
+                <Button variant="default">
+                  Se connecter / S'inscrire
+                </Button>
+              </Link>
+            )}
+          </nav>
+
+          {/* Menu mobile */}
+          <div className="md:hidden">
+            <Sheet open={isOpen} onOpenChange={setIsOpen}>
+              <SheetTrigger asChild>
+                <Button variant="ghost" size="icon" className="h-16 w-16">
+                  {isOpen ? <X className="h-10 w-10" /> : <Menu className="h-10 w-10" />}
+                </Button>
+              </SheetTrigger>
+              <SheetContent side="right" className="w-[80%] sm:w-[385px]">
+                <nav className="flex flex-col gap-4 mt-8">
+                  <NavLinks />
+                  {isLoggedIn ? (
+                    <Button 
+                      variant="ghost" 
+                      className="justify-start px-2" 
+                      onClick={handleLogout}
+                    >
+                      <LogOut className="h-5 w-5 mr-2" />
+                      Se déconnecter
                     </Button>
-                  </Link>
-                )}
-              </nav>
-            </SheetContent>
-          </Sheet>
+                  ) : (
+                    <Link to="/login" onClick={() => setIsOpen(false)}>
+                      <Button variant="default" className="w-full">
+                        Se connecter / S'inscrire
+                      </Button>
+                    </Link>
+                  )}
+                </nav>
+              </SheetContent>
+            </Sheet>
+          </div>
         </div>
       </div>
     </header>

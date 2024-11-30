@@ -30,19 +30,6 @@ const formatCityName = (city: string) => {
   return cityMap[city.toLowerCase()] || city;
 };
 
-// Fonction pour charger la police Playfair Display
-const loadPlayfairDisplayFont = async () => {
-  const response = await fetch('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&display=swap');
-  const css = await response.text();
-  const fontUrl = css.match(/url\((.*?)\)/)?.[1];
-  if (fontUrl) {
-    const fontResponse = await fetch(fontUrl);
-    const fontArrayBuffer = await fontResponse.arrayBuffer();
-    return fontArrayBuffer;
-  }
-  return null;
-};
-
 export const generatePDF = async (walk: SavedWalk, memories: WalkMemory[]): Promise<string | null> => {
   try {
     const pdf = new jsPDF({
@@ -50,13 +37,6 @@ export const generatePDF = async (walk: SavedWalk, memories: WalkMemory[]): Prom
       unit: "mm",
       format: "a4",
     });
-
-    // Ajout de la police Playfair Display
-    const fontData = await loadPlayfairDisplayFont();
-    if (fontData) {
-      pdf.addFont(fontData, "PlayfairDisplay", "normal");
-      pdf.setFont("PlayfairDisplay");
-    }
 
     // Configuration initiale
     const pageWidth = pdf.internal.pageSize.width;
@@ -109,11 +89,9 @@ export const generatePDF = async (walk: SavedWalk, memories: WalkMemory[]): Prom
           yPosition = margin;
         }
 
-        pdf.setFont("PlayfairDisplay", "bold");
         pdf.text(step.title, margin, yPosition);
         yPosition += 6;
 
-        pdf.setFont("PlayfairDisplay", "normal");
         const descriptionLines = pdf.splitTextToSize(step.description, contentWidth);
         pdf.text(descriptionLines, margin, yPosition);
         yPosition += (6 * descriptionLines.length);

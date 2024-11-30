@@ -1,7 +1,7 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
-import { Facebook, Instagram, Share2, Trash2, Share } from "lucide-react";
+import { Facebook, Instagram, Share2, Trash2, Share, Download } from "lucide-react";
 import WalkMemories from "./WalkMemories";
 import AddMemoryForm from "./AddMemoryForm";
 import { SavedWalk as SavedWalkType, WalkMemory } from "@/types/walk";
@@ -14,6 +14,8 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { format } from "date-fns";
+import { fr } from "date-fns/locale";
 
 interface SavedWalkProps {
   walk: SavedWalkType;
@@ -109,12 +111,123 @@ const SavedWalk = ({ walk, memories, onDelete, onAddMemory }: SavedWalkProps) =>
     setIsDialogOpen(false);
   };
 
+  const generatePhotoAlbum = async () => {
+    try {
+      const formattedDate = format(new Date(walk.created_at), "d MMMM yyyy", { locale: fr });
+      
+      // Create a new window for the photo album
+      const albumWindow = window.open('', '_blank');
+      if (!albumWindow) {
+        toast({
+          title: "Erreur",
+          description: "Impossible d'ouvrir la fenêtre de l'album photo. Veuillez autoriser les popups.",
+          variant: "destructive",
+        });
+        return;
+      }
+
+      // Generate the HTML content for the album
+      const albumContent = `
+        <!DOCTYPE html>
+        <html>
+          <head>
+            <title>Album Photo - ${walk.walk_title}</title>
+            <meta charset="UTF-8">
+            <style>
+              body {
+                font-family: system-ui, -apple-system, sans-serif;
+                max-width: 1200px;
+                margin: 0 auto;
+                padding: 2rem;
+                background: #f5f5f5;
+              }
+              .header {
+                text-align: center;
+                margin-bottom: 2rem;
+                padding: 2rem;
+                background: white;
+                border-radius: 8px;
+                box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+              }
+              .title {
+                font-size: 2.5rem;
+                color: #1a1a1a;
+                margin-bottom: 0.5rem;
+              }
+              .subtitle {
+                color: #666;
+                font-size: 1.2rem;
+              }
+              .memories-grid {
+                display: grid;
+                grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+                gap: 2rem;
+              }
+              .memory-card {
+                background: white;
+                border-radius: 8px;
+                overflow: hidden;
+                box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+              }
+              .memory-image {
+                width: 100%;
+                height: 300px;
+                object-fit: cover;
+              }
+              .memory-description {
+                padding: 1rem;
+                color: #666;
+              }
+            </style>
+          </head>
+          <body>
+            <div class="header">
+              <h1 class="title">${walk.walk_title}</h1>
+              <p class="subtitle">${formatCityName(walk.city)} - ${formattedDate}</p>
+            </div>
+            <div class="memories-grid">
+              ${memories.map(memory => `
+                <div class="memory-card">
+                  <img src="${memory.photo_url}" alt="Souvenir" class="memory-image">
+                  ${memory.description ? `<p class="memory-description">${memory.description}</p>` : ''}
+                </div>
+              `).join('')}
+            </div>
+          </body>
+        </html>
+      `;
+
+      // Write the content to the new window
+      albumWindow.document.write(albumContent);
+      albumWindow.document.close();
+
+      toast({
+        title: "Succès",
+        description: "Album photo généré avec succès",
+      });
+    } catch (error) {
+      toast({
+        title: "Erreur",
+        description: "Impossible de générer l'album photo",
+        variant: "destructive",
+      });
+    }
+  };
+
   return (
     <Card className="overflow-hidden">
       <CardHeader className="space-y-4">
         <div className="flex flex-row items-center justify-between">
           <CardTitle className="text-xl">{walk.walk_title}</CardTitle>
           <div className="flex items-center gap-2">
+            <Button
+              variant="ghost"
+              size="icon"
+              onClick={generatePhotoAlbum}
+              title="Générer l'album photo"
+            >
+              <Download className="h-5 w-5" />
+            </Button>
             <ShareButton walk={walk} />
             <Button
               variant="ghost"

@@ -19,6 +19,7 @@ export interface SavedWalk {
   walk_title: string;
   city: string;
   created_at: string;
+  photo_url?: string;
 }
 
 export interface WalkMemory {

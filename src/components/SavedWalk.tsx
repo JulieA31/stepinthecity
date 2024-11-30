@@ -7,6 +7,7 @@ import AddMemoryForm from "./AddMemoryForm";
 import { SavedWalk as SavedWalkType, WalkMemory } from "@/types/walk";
 import { useToast } from "./ui/use-toast";
 import { supabase } from "@/integrations/supabase/client";
+import { useState } from "react";
 
 interface SavedWalkProps {
   walk: SavedWalkType;
@@ -23,6 +24,7 @@ interface SavedWalkProps {
 
 const SavedWalk = ({ walk, memories, onDelete, onAddMemory }: SavedWalkProps) => {
   const { toast } = useToast();
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
 
   const handleDeleteMemory = async (memoryId: string) => {
     const { error } = await supabase
@@ -48,6 +50,11 @@ const SavedWalk = ({ walk, memories, onDelete, onAddMemory }: SavedWalkProps) =>
     window.location.reload();
   };
 
+  const handleAddMemoryAndClose = async () => {
+    await onAddMemory.handleAddMemory();
+    setIsDialogOpen(false);
+  };
+
   return (
     <Card className="overflow-hidden">
       <CardHeader className="flex flex-row items-center justify-between">
@@ -61,6 +68,15 @@ const SavedWalk = ({ walk, memories, onDelete, onAddMemory }: SavedWalkProps) =>
         </Button>
       </CardHeader>
       <CardContent>
+        {walk.photo_url && (
+          <div className="mb-4">
+            <img
+              src={walk.photo_url}
+              alt={walk.walk_title}
+              className="w-full h-48 object-cover rounded-lg"
+            />
+          </div>
+        )}
         <p className="text-gray-600 mb-4">{walk.city}</p>
         
         <WalkMemories 
@@ -68,12 +84,15 @@ const SavedWalk = ({ walk, memories, onDelete, onAddMemory }: SavedWalkProps) =>
           onDeleteMemory={handleDeleteMemory}
         />
 
-        <Dialog>
+        <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
           <DialogTrigger asChild>
             <Button
               className="w-full mt-4"
               variant="outline"
-              onClick={() => onAddMemory.setSelectedWalk(walk.id)}
+              onClick={() => {
+                onAddMemory.setSelectedWalk(walk.id);
+                setIsDialogOpen(true);
+              }}
             >
               Ajouter un souvenir
             </Button>
@@ -97,7 +116,7 @@ const SavedWalk = ({ walk, memories, onDelete, onAddMemory }: SavedWalkProps) =>
                   description: value,
                 })
               }
-              onSubmit={onAddMemory.handleAddMemory}
+              onSubmit={handleAddMemoryAndClose}
               description={onAddMemory.newMemory.description}
             />
           </DialogContent>

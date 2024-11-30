@@ -20,17 +20,19 @@ const Login = ({ onClose }: LoginProps) => {
   const [isLogin, setIsLogin] = useState(true);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
   const { toast } = useToast();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setIsLoading(true);
 
     try {
       if (isLogin) {
         const { data, error } = await supabase.auth.signInWithPassword({
-          email,
-          password,
+          email: email.trim(),
+          password: password.trim(),
         });
 
         if (error) throw error;
@@ -48,9 +50,18 @@ const Login = ({ onClose }: LoginProps) => {
           }
         }
       } else {
+        if (password.length < 6) {
+          toast({
+            variant: "destructive",
+            title: "Erreur",
+            description: "Le mot de passe doit contenir au moins 6 caractères",
+          });
+          return;
+        }
+
         const { data, error } = await supabase.auth.signUp({
-          email,
-          password,
+          email: email.trim(),
+          password: password.trim(),
           options: {
             data: {
               username: email.split("@")[0],
@@ -70,11 +81,21 @@ const Login = ({ onClose }: LoginProps) => {
         }
       }
     } catch (error: any) {
+      let errorMessage = "Une erreur est survenue";
+      
+      if (error.message === "Invalid login credentials") {
+        errorMessage = "Email ou mot de passe incorrect";
+      } else if (error.message.includes("Email not confirmed")) {
+        errorMessage = "Veuillez confirmer votre email avant de vous connecter";
+      }
+
       toast({
         variant: "destructive",
         title: "Erreur",
-        description: error.message,
+        description: errorMessage,
       });
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -102,6 +123,7 @@ const Login = ({ onClose }: LoginProps) => {
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               required
+              disabled={isLoading}
             />
           </div>
 
@@ -116,11 +138,12 @@ const Login = ({ onClose }: LoginProps) => {
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               required
+              disabled={isLoading}
             />
           </div>
 
-          <Button type="submit" className="w-full">
-            {isLogin ? "Se connecter" : "Créer un compte"}
+          <Button type="submit" className="w-full" disabled={isLoading}>
+            {isLoading ? "Chargement..." : isLogin ? "Se connecter" : "Créer un compte"}
           </Button>
 
           <Button
@@ -128,6 +151,7 @@ const Login = ({ onClose }: LoginProps) => {
             variant="link"
             className="w-full"
             onClick={() => setIsLogin(!isLogin)}
+            disabled={isLoading}
           >
             {isLogin
               ? "Pas encore de compte ? Créez-en un"

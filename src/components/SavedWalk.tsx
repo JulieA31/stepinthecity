@@ -1,7 +1,7 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
-import { Facebook, Instagram, Pinterest, Share2, Trash2 } from "lucide-react";
+import { Facebook, Instagram, Share2, Trash2, Share } from "lucide-react";
 import WalkMemories from "./WalkMemories";
 import AddMemoryForm from "./AddMemoryForm";
 import { SavedWalk as SavedWalkType, WalkMemory } from "@/types/walk";
@@ -69,7 +69,7 @@ const ShareButton = ({ walk }: { walk: SavedWalkType }) => {
           Instagram
         </DropdownMenuItem>
         <DropdownMenuItem onClick={() => handleShare('pinterest')}>
-          <Pinterest className="h-4 w-4 mr-2" />
+          <Share className="h-4 w-4 mr-2" />
           Pinterest
         </DropdownMenuItem>
       </DropdownMenuContent>

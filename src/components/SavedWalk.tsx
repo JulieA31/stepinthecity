@@ -46,7 +46,6 @@ const SavedWalk = ({ walk, memories, onDelete, onAddMemory }: SavedWalkProps) =>
       description: "Souvenir supprimé avec succès",
     });
 
-    // Refresh the page to update the memories list
     window.location.reload();
   };
 
@@ -57,19 +56,19 @@ const SavedWalk = ({ walk, memories, onDelete, onAddMemory }: SavedWalkProps) =>
 
   return (
     <Card className="overflow-hidden">
-      <CardHeader className="flex flex-row items-center justify-between">
-        <CardTitle className="text-xl">{walk.walk_title}</CardTitle>
-        <Button
-          variant="ghost"
-          size="icon"
-          onClick={() => onDelete(walk.id)}
-        >
-          <Trash2 className="h-5 w-5" />
-        </Button>
-      </CardHeader>
-      <CardContent>
+      <CardHeader className="space-y-4">
+        <div className="flex flex-row items-center justify-between">
+          <CardTitle className="text-xl">{walk.walk_title}</CardTitle>
+          <Button
+            variant="ghost"
+            size="icon"
+            onClick={() => onDelete(walk.id)}
+          >
+            <Trash2 className="h-5 w-5" />
+          </Button>
+        </div>
         {walk.photo_url && (
-          <div className="mb-4">
+          <div>
             <img
               src={walk.photo_url}
               alt={walk.walk_title}
@@ -77,6 +76,8 @@ const SavedWalk = ({ walk, memories, onDelete, onAddMemory }: SavedWalkProps) =>
             />
           </div>
         )}
+      </CardHeader>
+      <CardContent>
         <p className="text-gray-600 mb-4">{walk.city}</p>
         
         <WalkMemories 

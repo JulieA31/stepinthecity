@@ -14,9 +14,11 @@ const Album = () => {
     const fetchAlbum = async () => {
       if (!id) return;
 
+      // First, get the album and associated walk
       const { data: album } = await supabase
         .from('photo_albums')
         .select(`
+          saved_walk_id,
           saved_walks (
             id,
             walk_title,
@@ -30,10 +32,11 @@ const Album = () => {
       if (album?.saved_walks) {
         setWalk(album.saved_walks as SavedWalk);
 
+        // Then, fetch the memories associated with this walk
         const { data: walkMemories } = await supabase
           .from('walk_memories')
           .select('*')
-          .eq('saved_walk_id', album.saved_walks.id)
+          .eq('saved_walk_id', album.saved_walk_id)
           .order('created_at', { ascending: false });
 
         if (walkMemories) {

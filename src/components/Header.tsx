@@ -98,7 +98,7 @@ const Header = () => {
   return (
     <header className="fixed top-0 left-0 right-0 z-50 bg-background border-b h-[11rem]">
       <div className="container mx-auto px-4">
-        <div className="flex items-center justify-between h-full">
+        <div className="flex items-end justify-between h-full pb-2">
           <Link to="/" className="flex items-center">
             <img 
               src="/lovable-uploads/1d570795-c96a-447c-a27a-1b240ba72131.png" 

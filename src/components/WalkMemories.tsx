@@ -20,7 +20,6 @@ const WalkMemories = ({ memories, onDeleteMemory }: WalkMemoriesProps) => {
 
   return (
     <div className="space-y-4">
-      <h3 className="text-lg font-semibold">Mes Souvenirs</h3>
       <div className="grid gap-4">
         {memories.map((memory) => (
           <div key={memory.id} className="relative group">

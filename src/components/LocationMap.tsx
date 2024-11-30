@@ -36,10 +36,6 @@ const LocationMap = ({ open, onOpenChange, onLocationSelect }: LocationMapProps)
             map.panTo(pos);
             map.setZoom(15);
           }
-          toast({
-            title: "Position trouvée",
-            description: "Votre position a été localisée avec succès",
-          });
         },
         (error) => {
           console.error("Erreur de géolocalisation:", error);

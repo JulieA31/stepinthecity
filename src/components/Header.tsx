@@ -109,7 +109,7 @@ const Header = () => {
 
           <Sheet open={isOpen} onOpenChange={setIsOpen}>
             <SheetTrigger asChild>
-              <Button variant="ghost" size="icon" className="h-14 w-14 md:h-16 md:w-16">
+              <Button variant="ghost" size="icon" className="h-16 w-16 md:h-[4.4rem] md:w-[4.4rem]">
                 {isOpen ? <X className="h-10 w-10 md:h-12 md:w-12" /> : <Menu className="h-10 w-10 md:h-12 md:w-12" />}
               </Button>
             </SheetTrigger>

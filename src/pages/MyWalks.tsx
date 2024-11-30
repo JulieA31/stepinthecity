@@ -157,7 +157,14 @@ const MyWalks = () => {
   return (
     <div className="min-h-screen bg-secondary pt-20">
       <div className="container mx-auto px-4 py-8">
-        <h1 className="text-4xl font-display text-text mb-8">Mon Carnet de Route</h1>
+        <div className="flex flex-col items-center mb-12">
+          <img 
+            src="/lovable-uploads/e1718b7c-7427-41d8-b0a2-f25469f32728.png" 
+            alt="Illustration de personnes en balade"
+            className="w-full max-w-2xl mb-8 rounded-lg"
+          />
+          <h1 className="text-4xl font-display text-text text-center">Mon Carnet de Route</h1>
+        </div>
         
         <section>
           <h2 className="text-2xl font-display text-text mb-6">Mes Parcours</h2>

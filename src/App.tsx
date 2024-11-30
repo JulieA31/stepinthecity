@@ -8,6 +8,7 @@ import Custom from "./pages/Custom";
 import Predefined from "./pages/Predefined";
 import Header from "./components/Header";
 import Login from "./pages/Login";
+import MyWalks from "./pages/MyWalks";
 
 const queryClient = new QueryClient();
 
@@ -23,6 +24,7 @@ const App = () => (
           <Route path="/custom" element={<Custom />} />
           <Route path="/predefined" element={<Predefined />} />
           <Route path="/login" element={<Login />} />
+          <Route path="/my-walks" element={<MyWalks />} />
         </Routes>
       </BrowserRouter>
     </TooltipProvider>

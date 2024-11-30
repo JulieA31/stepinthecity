@@ -27,6 +27,65 @@ export type Database = {
         }
         Relationships: []
       }
+      saved_walks: {
+        Row: {
+          city: string
+          created_at: string
+          id: string
+          user_id: string
+          walk_title: string
+        }
+        Insert: {
+          city: string
+          created_at?: string
+          id?: string
+          user_id: string
+          walk_title: string
+        }
+        Update: {
+          city?: string
+          created_at?: string
+          id?: string
+          user_id?: string
+          walk_title?: string
+        }
+        Relationships: []
+      }
+      walk_memories: {
+        Row: {
+          created_at: string
+          description: string | null
+          id: string
+          photo_url: string
+          saved_walk_id: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          description?: string | null
+          id?: string
+          photo_url: string
+          saved_walk_id: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          description?: string | null
+          id?: string
+          photo_url?: string
+          saved_walk_id?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "walk_memories_saved_walk_id_fkey"
+            columns: ["saved_walk_id"]
+            isOneToOne: false
+            referencedRelation: "saved_walks"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
     }
     Views: {
       [_ in never]: never

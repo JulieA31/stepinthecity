@@ -1,93 +1,78 @@
-import { Menu, X, User } from "lucide-react";
-import { useState } from "react";
-import { Link, useLocation } from "react-router-dom";
-import LocationSelector from "./LocationSelector";
+import { Link, useLocation, useNavigate } from "react-router-dom";
+import { Button } from "@/components/ui/button";
+import { useEffect, useState } from "react";
+import { supabase } from "@/integrations/supabase/client";
+import { LogOut } from "lucide-react";
 
 const Header = () => {
-  const [isOpen, setIsOpen] = useState(false);
   const location = useLocation();
+  const navigate = useNavigate();
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
 
-  const handleNavClick = () => {
-    setIsOpen(false);
+  useEffect(() => {
+    const checkUser = async () => {
+      const { data: { session } } = await supabase.auth.getSession();
+      setIsLoggedIn(!!session);
+    };
+
+    checkUser();
+
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
+      setIsLoggedIn(!!session);
+    });
+
+    return () => subscription.unsubscribe();
+  }, []);
+
+  const handleLogout = async () => {
+    await supabase.auth.signOut();
+    navigate("/login");
   };
-
-  const handleCitySelect = (city: string) => {
-    if (city) {
-      const event = new CustomEvent('citySelected', { detail: city });
-      window.dispatchEvent(event);
-      setIsOpen(false);
-    }
-  };
-
-  const showLocationSelector = location.pathname === '/predefined';
 
   return (
-    <header className="bg-white shadow-sm fixed w-full top-0 z-50">
-      <div className="container mx-auto px-4 py-4">
-        <div className="flex justify-between items-center relative">
-          <Link to="/" className="flex items-center gap-2 text-text">
-            <img 
-              src="/lovable-uploads/18a323e4-8732-4bd7-8a15-069876a74b4a.png" 
-              alt="Silhouette Charlie Chaplin"
-              className="w-8 h-8 object-contain"
-            />
-            <span className="text-2xl font-display text-text">StepInTheCity</span>
+    <header className="fixed top-0 left-0 right-0 z-50 bg-background border-b">
+      <div className="container mx-auto px-4">
+        <div className="flex items-center justify-between h-16">
+          <Link to="/" className="text-xl font-display">
+            StepInTheCity
           </Link>
-          
-          {showLocationSelector && (
-            <div className="hidden md:block">
-              <LocationSelector onCitySelect={handleCitySelect} />
-            </div>
-          )}
-          
-          <button 
-            onClick={() => setIsOpen(!isOpen)} 
-            className="flex items-center"
-            aria-label="Toggle menu"
-          >
-            {isOpen ? <X /> : <Menu />}
-          </button>
 
-          <nav 
-            className={`${
-              isOpen ? 'block' : 'hidden'
-            } absolute top-full left-0 w-full bg-white shadow-lg mt-4`}
-          >
-            {showLocationSelector && (
-              <div className="p-4 border-b border-gray-100">
-                <LocationSelector onCitySelect={handleCitySelect} />
-              </div>
+          <nav className="flex items-center gap-6">
+            <Link
+              to="/predefined"
+              className={`text-sm font-medium transition-colors hover:text-primary ${
+                location.pathname === "/predefined" ? "text-primary" : "text-muted-foreground"
+              }`}
+            >
+              Parcours prédéfinis
+            </Link>
+            <Link
+              to="/custom"
+              className={`text-sm font-medium transition-colors hover:text-primary ${
+                location.pathname === "/custom" ? "text-primary" : "text-muted-foreground"
+              }`}
+            >
+              Parcours personnalisé
+            </Link>
+            {isLoggedIn && (
+              <Link
+                to="/my-walks"
+                className={`text-sm font-medium transition-colors hover:text-primary ${
+                  location.pathname === "/my-walks" ? "text-primary" : "text-muted-foreground"
+                }`}
+              >
+                Mon Carnet de Route
+              </Link>
             )}
-            <ul className="flex flex-col p-4">
-              <li className="py-2">
-                <Link 
-                  to="/custom" 
-                  className="text-text hover:text-primary transition-colors block"
-                  onClick={handleNavClick}
-                >
-                  Parcours personnalisé
-                </Link>
-              </li>
-              <li className="py-2">
-                <Link 
-                  to="/predefined" 
-                  className="text-text hover:text-primary transition-colors block"
-                  onClick={handleNavClick}
-                >
-                  Parcours prédéfinis
-                </Link>
-              </li>
-              <li className="py-2">
-                <Link 
-                  to="/login" 
-                  className="flex items-center gap-2 text-text hover:text-primary transition-colors"
-                  onClick={handleNavClick}
-                >
-                  <User size={18} />
-                  Connexion
-                </Link>
-              </li>
-            </ul>
+            {isLoggedIn ? (
+              <Button variant="ghost" size="icon" onClick={handleLogout}>
+                <LogOut className="h-5 w-5" />
+              </Button>
+            ) : (
+              <Link to="/login">
+                <Button variant="default">Se connecter</Button>
+              </Link>
+            )}
           </nav>
         </div>
       </div>

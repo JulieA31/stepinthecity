@@ -12,19 +12,7 @@ import PhotoAlbum from "./walk/PhotoAlbum";
 import { classiquesParisSteps, baladeGastronomiqueSteps } from "@/data/walks/paris";
 import { lisbonneHistoriqueSteps, tramSteps, saveursSteps } from "@/data/walks/lisbonne";
 import { romeAntiqueSteps, romeBaroqueSteps, vaticanSteps } from "@/data/walks/rome";
-
-interface SavedWalkProps {
-  walk: SavedWalkType;
-  memories: WalkMemory[];
-  onDelete: (id: string) => void;
-  onAddMemory: {
-    selectedWalk: string | null;
-    setSelectedWalk: (id: string | null) => void;
-    newMemory: { description: string; file: File | null };
-    setNewMemory: (memory: { description: string; file: File | null }) => void;
-    handleAddMemory: () => void;
-  };
-}
+import { getImageForWalk } from "@/utils/walkImages";
 
 const formatCityName = (city: string) => {
   const cityMap: { [key: string]: string } = {
@@ -102,13 +90,11 @@ const SavedWalk = ({ walk, memories, onDelete, onAddMemory }: SavedWalkProps) =>
         <Dialog open={isDetailsOpen} onOpenChange={setIsDetailsOpen}>
           <DialogTrigger asChild>
             <div className="cursor-pointer">
-              {walk.photo_url && (
-                <img
-                  src={walk.photo_url}
-                  alt={walk.walk_title}
-                  className="w-full h-48 object-cover rounded-lg"
-                />
-              )}
+              <img
+                src={getImageForWalk(walk.walk_title)}
+                alt={walk.walk_title}
+                className="w-full h-48 object-cover rounded-lg"
+              />
               <p className="text-gray-600 mt-2">{formatCityName(walk.city)}</p>
             </div>
           </DialogTrigger>
@@ -117,6 +103,12 @@ const SavedWalk = ({ walk, memories, onDelete, onAddMemory }: SavedWalkProps) =>
               <DialogTitle className="text-2xl font-semibold">{walk.walk_title}</DialogTitle>
             </DialogHeader>
             <div className="space-y-6">
+              <img
+                src={getImageForWalk(walk.walk_title)}
+                alt={walk.walk_title}
+                className="w-full h-64 object-cover rounded-lg"
+              />
+              
               <div>
                 <div className="flex items-center gap-2 mb-2">
                   <MapPin className="h-5 w-5 text-primary" />

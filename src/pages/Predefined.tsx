@@ -12,23 +12,12 @@ import {
   vaticanSteps 
 } from "@/data/walkSteps";
 import { touristicCities, cityItineraries } from "@/components/LocationSelector";
+import LocationSelector from "@/components/LocationSelector";
 
 const Predefined = () => {
   const [audioEnabled, setAudioEnabled] = useState<{ [key: string]: boolean }>({});
   const [selectedWalk, setSelectedWalk] = useState<any | null>(null);
   const [selectedCity, setSelectedCity] = useState<string>("");
-
-  useEffect(() => {
-    const handleCitySelected = (event: CustomEvent<string>) => {
-      setSelectedCity(event.detail);
-    };
-
-    window.addEventListener('citySelected', handleCitySelected as EventListener);
-
-    return () => {
-      window.removeEventListener('citySelected', handleCitySelected as EventListener);
-    };
-  }, []);
 
   const toggleAudio = (title: string) => {
     setAudioEnabled(prev => ({
@@ -50,9 +39,13 @@ const Predefined = () => {
     return stepsMap[title] || [];
   };
 
+  const handleCitySelect = (city: string) => {
+    setSelectedCity(city);
+  };
+
   const renderWalks = () => {
     if (selectedCity) {
-      const itineraries = cityItineraries[selectedCity as keyof typeof cityItineraries];
+      const itineraries = cityItineraries[selectedCity];
       if (!itineraries) return null;
 
       return (
@@ -84,7 +77,7 @@ const Predefined = () => {
               {country}
             </h2>
             {cities.map(city => {
-              const itineraries = cityItineraries[city as keyof typeof cityItineraries];
+              const itineraries = cityItineraries[city];
               if (!itineraries) return null;
               
               return (
@@ -117,6 +110,10 @@ const Predefined = () => {
       <div className="container mx-auto px-4 py-8">
         <h1 className="text-4xl font-display text-text mb-8">Tous les parcours prédéfinis</h1>
         
+        <div className="mb-8">
+          <LocationSelector onCitySelect={handleCitySelect} />
+        </div>
+
         <div className="mt-8">
           {renderWalks()}
         </div>

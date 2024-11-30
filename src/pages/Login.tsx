@@ -2,7 +2,6 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { X } from "lucide-react";
 import { useToast } from "@/components/ui/use-toast";
 import {
   Dialog,
@@ -90,15 +89,6 @@ const Login = ({ onClose }: LoginProps) => {
               : "Créez votre compte pour accéder à plus de fonctionnalités"}
           </DialogDescription>
         </DialogHeader>
-
-        <Button
-          variant="ghost"
-          size="icon"
-          className="absolute right-4 top-4"
-          onClick={onClose || (() => navigate(-1))}
-        >
-          <X className="h-4 w-4" />
-        </Button>
 
         <form onSubmit={handleSubmit} className="space-y-4">
           <div className="space-y-2">

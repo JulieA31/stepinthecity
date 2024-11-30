@@ -30,7 +30,7 @@ const Index = () => {
                 className="cursor-pointer"
                 aria-label="Toggle menu"
               >
-                {isMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
+                {isMenuOpen ? <X className="w-8 h-8" /> : <Menu className="w-8 h-8" />}
               </button>
             </div>
 
@@ -62,7 +62,7 @@ const Index = () => {
             <img 
               src="/lovable-uploads/fd183326-fb36-4fca-88df-47ac0310f4c7.png"
               alt="Illustration urbaine avec des personnes marchant dans la ville et des arbres roses"
-              className="w-full h-80 object-contain bg-white rounded-lg shadow-md mx-auto"
+              className="w-full h-96 object-contain bg-white rounded-lg shadow-md mx-auto"
             />
             <h2 className="font-bigelow text-5xl md:text-7xl text-text mt-6 mb-8">
               Explore la ville autrement

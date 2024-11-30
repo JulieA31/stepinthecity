@@ -28,7 +28,7 @@ const Custom = () => {
   return (
     <div className="min-h-screen bg-secondary pt-20">
       <div className="container mx-auto px-4 py-8">
-        <h1 className="text-4xl font-display text-text mb-8 text-center">Créez votre parcours</h1>
+        <h1 className="text-4xl font-display text-text mb-8 text-center">Crées ton parcours</h1>
         
         <CustomWalkForm
           onGenerate={handleGenerateSteps}

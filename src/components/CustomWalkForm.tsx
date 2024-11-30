@@ -71,13 +71,15 @@ const CustomWalkForm = ({
           Critères de personnalisation
         </h2>
         
-        {actualDuration && actualDuration > parseInt(duration) + 10 && (
-          <Alert variant="destructive" className="mb-6">
-            <AlertDescription>
-              ⚠️ Ce parcours dure {actualDuration} minutes, soit {actualDuration - parseInt(duration)} minutes de plus que la durée souhaitée.
-            </AlertDescription>
-          </Alert>
-        )}
+        <div className="mb-6">
+          {actualDuration && actualDuration > parseInt(duration) + 10 && (
+            <Alert variant="destructive" className="transform-none">
+              <AlertDescription>
+                ⚠️ Ce parcours dure {actualDuration} minutes, soit {actualDuration - parseInt(duration)} minutes de plus que la durée souhaitée.
+              </AlertDescription>
+            </Alert>
+          )}
+        </div>
         
         <FormOptions
           duration={duration}

@@ -20,7 +20,8 @@ const LocationMap = ({ open, onOpenChange, onLocationSelect }: LocationMapProps)
   const [selectedPosition, setSelectedPosition] = useState<google.maps.LatLngLiteral | null>(null);
   const [directions, setDirections] = useState<google.maps.DirectionsResult | null>(null);
   const [map, setMap] = useState<google.maps.Map | null>(null);
-  const [markers, setMarkers] = useState<google.maps.Marker[]>([]);
+  const [currentMarker, setCurrentMarker] = useState<google.maps.Marker | null>(null);
+  const [selectedMarker, setSelectedMarker] = useState<google.maps.Marker | null>(null);
   const { toast } = useToast();
 
   const { isLoaded } = useJsApiLoader({
@@ -37,9 +38,14 @@ const LocationMap = ({ open, onOpenChange, onLocationSelect }: LocationMapProps)
             lng: pos.coords.longitude
           };
           setPosition(newPosition);
-          setSelectedPosition(newPosition); // Définir la position actuelle comme position sélectionnée
+          setSelectedPosition(newPosition);
           map.setCenter(newPosition);
           
+          // Supprimer l'ancien marqueur de position actuelle s'il existe
+          if (currentMarker) {
+            currentMarker.setMap(null);
+          }
+
           const userMarker = new window.google.maps.Marker({
             map,
             position: newPosition,
@@ -51,15 +57,12 @@ const LocationMap = ({ open, onOpenChange, onLocationSelect }: LocationMapProps)
               strokeColor: "#FFFFFF",
               strokeWeight: 2,
             },
-            title: "Votre position"
+            title: "Votre position",
+            optimized: true
           });
 
-          userMarker.addListener('click', () => {
-            setSelectedPosition(newPosition);
-            calculateRoute(newPosition);
-          });
-
-          setMarkers(prev => [...prev, userMarker]);
+          setCurrentMarker(userMarker);
+          calculateRoute(newPosition);
         },
         (error) => {
           console.error("Erreur de géolocalisation:", error);
@@ -68,6 +71,11 @@ const LocationMap = ({ open, onOpenChange, onLocationSelect }: LocationMapProps)
             description: "Impossible d'obtenir votre position actuelle",
             variant: "destructive",
           });
+        },
+        {
+          enableHighAccuracy: true,
+          timeout: 5000,
+          maximumAge: 0
         }
       );
     }
@@ -106,25 +114,23 @@ const LocationMap = ({ open, onOpenChange, onLocationSelect }: LocationMapProps)
       };
       setSelectedPosition(clickedPosition);
 
-      // Clear existing markers except user position marker
-      markers.forEach(marker => {
-        if (marker.getTitle() !== "Votre position") {
-          marker.setMap(null);
-        }
-      });
-      setMarkers(markers.filter(marker => marker.getTitle() === "Votre position"));
+      // Supprimer l'ancien marqueur sélectionné s'il existe
+      if (selectedMarker) {
+        selectedMarker.setMap(null);
+      }
 
-      // Add new marker
+      // Ajouter le nouveau marqueur
       const newMarker = new window.google.maps.Marker({
         map,
         position: clickedPosition,
-        animation: window.google.maps.Animation.DROP
+        animation: window.google.maps.Animation.DROP,
+        optimized: true
       });
-      setMarkers(prev => [...prev, newMarker]);
-
+      
+      setSelectedMarker(newMarker);
       calculateRoute(clickedPosition);
     }
-  }, [position, map, isLoaded, markers, calculateRoute]);
+  }, [map, isLoaded, selectedMarker, calculateRoute]);
 
   const handleConfirm = () => {
     if (selectedPosition) {
@@ -158,8 +164,15 @@ const LocationMap = ({ open, onOpenChange, onLocationSelect }: LocationMapProps)
             zoom={13}
             onClick={handleMapClick}
             onLoad={setMap}
+            options={{
+              gestureHandling: 'greedy',
+              disableDoubleClickZoom: true,
+              streetViewControl: false,
+              mapTypeControl: false,
+              fullscreenControl: true,
+            }}
           >
-            {directions && <DirectionsRenderer directions={directions} />}
+            {directions && <DirectionsRenderer directions={directions} options={{ suppressMarkers: true }} />}
           </GoogleMap>
           <Button
             className="absolute bottom-4 right-4 z-[1000]"

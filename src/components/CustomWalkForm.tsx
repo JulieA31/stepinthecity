@@ -71,7 +71,7 @@ const CustomWalkForm = ({
           Critères de personnalisation
         </h2>
         
-        <div className="mb-6">
+        <div className="mb-6 transform-none">
           {actualDuration && actualDuration > parseInt(duration) + 10 && (
             <Alert variant="destructive" className="transform-none">
               <AlertDescription>

@@ -29,26 +29,50 @@ const LocationMap = ({ open, onOpenChange, onLocationSelect }: LocationMapProps)
     googleMapsApiKey: GOOGLE_MAPS_API_KEY
   });
 
+  const clearMarkers = useCallback(() => {
+    if (currentMarker) {
+      currentMarker.setMap(null);
+      setCurrentMarker(null);
+    }
+    if (selectedMarker) {
+      selectedMarker.setMap(null);
+      setSelectedMarker(null);
+    }
+  }, [currentMarker, selectedMarker]);
+
+  useEffect(() => {
+    if (!open) {
+      clearMarkers();
+      setDirections(null);
+    }
+  }, [open, clearMarkers]);
+
   useEffect(() => {
     if (navigator.geolocation && isLoaded && map && open && window.google) {
-      navigator.geolocation.getCurrentPosition(
-        (pos) => {
-          const newPosition = {
-            lat: pos.coords.latitude,
-            lng: pos.coords.longitude
-          };
-          setPosition(newPosition);
-          setSelectedPosition(newPosition);
-          map.setCenter(newPosition);
-          
-          // Supprimer l'ancien marqueur de position actuelle s'il existe
-          if (currentMarker) {
-            currentMarker.setMap(null);
-          }
+      const geoOptions = {
+        enableHighAccuracy: true,
+        timeout: 10000,
+        maximumAge: 0
+      };
+
+      const geoSuccess = (pos: GeolocationPosition) => {
+        clearMarkers();
+        
+        const newPosition = {
+          lat: pos.coords.latitude,
+          lng: pos.coords.longitude
+        };
+        
+        setPosition(newPosition);
+        setSelectedPosition(newPosition);
+        
+        if (map) {
+          map.panTo(newPosition);
+          map.setZoom(15);
 
           const userMarker = new window.google.maps.Marker({
-            map,
             position: newPosition,
+            map,
             icon: {
               path: window.google.maps.SymbolPath.CIRCLE,
               scale: 10,
@@ -58,31 +82,29 @@ const LocationMap = ({ open, onOpenChange, onLocationSelect }: LocationMapProps)
               strokeWeight: 2,
             },
             title: "Votre position",
-            optimized: true
+            optimized: true,
+            clickable: false
           });
 
           setCurrentMarker(userMarker);
-          calculateRoute(newPosition);
-        },
-        (error) => {
-          console.error("Erreur de géolocalisation:", error);
-          toast({
-            title: "Erreur de géolocalisation",
-            description: "Impossible d'obtenir votre position actuelle",
-            variant: "destructive",
-          });
-        },
-        {
-          enableHighAccuracy: true,
-          timeout: 5000,
-          maximumAge: 0
         }
-      );
+      };
+
+      const geoError = (error: GeolocationPositionError) => {
+        console.error("Erreur de géolocalisation:", error);
+        toast({
+          title: "Erreur de géolocalisation",
+          description: "Impossible d'obtenir votre position actuelle avec précision",
+          variant: "destructive",
+        });
+      };
+
+      navigator.geolocation.getCurrentPosition(geoSuccess, geoError, geoOptions);
     }
-  }, [map, open, isLoaded]);
+  }, [map, open, isLoaded, clearMarkers]);
 
   const calculateRoute = useCallback((destination: google.maps.LatLngLiteral) => {
-    if (!isLoaded || !window.google || !map) return;
+    if (!isLoaded || !window.google || !map || !position) return;
 
     const directionsService = new window.google.maps.DirectionsService();
     directionsService.route(
@@ -112,19 +134,19 @@ const LocationMap = ({ open, onOpenChange, onLocationSelect }: LocationMapProps)
         lat: e.latLng.lat(),
         lng: e.latLng.lng()
       };
+      
       setSelectedPosition(clickedPosition);
-
-      // Supprimer l'ancien marqueur sélectionné s'il existe
+      
       if (selectedMarker) {
         selectedMarker.setMap(null);
       }
 
-      // Ajouter le nouveau marqueur
       const newMarker = new window.google.maps.Marker({
-        map,
         position: clickedPosition,
+        map,
         animation: window.google.maps.Animation.DROP,
-        optimized: true
+        optimized: true,
+        clickable: false
       });
       
       setSelectedMarker(newMarker);
@@ -135,11 +157,11 @@ const LocationMap = ({ open, onOpenChange, onLocationSelect }: LocationMapProps)
   const handleConfirm = () => {
     if (selectedPosition) {
       onLocationSelect(selectedPosition.lat, selectedPosition.lng);
+      onOpenChange(false);
       toast({
         title: "Position confirmée",
         description: "La position a été enregistrée avec succès",
       });
-      onOpenChange(false);
     } else {
       toast({
         title: "Aucune position sélectionnée",
@@ -155,13 +177,13 @@ const LocationMap = ({ open, onOpenChange, onLocationSelect }: LocationMapProps)
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-[800px] h-[600px]">
+      <DialogContent className="sm:max-w-[800px] h-[600px] transform-none">
         <DialogTitle>Sélectionnez un emplacement</DialogTitle>
         <div className="h-[500px] relative">
           <GoogleMap
             mapContainerStyle={{ width: "100%", height: "100%" }}
             center={position}
-            zoom={13}
+            zoom={15}
             onClick={handleMapClick}
             onLoad={setMap}
             options={{
@@ -170,6 +192,8 @@ const LocationMap = ({ open, onOpenChange, onLocationSelect }: LocationMapProps)
               streetViewControl: false,
               mapTypeControl: false,
               fullscreenControl: true,
+              zoomControl: true,
+              clickableIcons: false,
             }}
           >
             {directions && <DirectionsRenderer directions={directions} options={{ suppressMarkers: true }} />}

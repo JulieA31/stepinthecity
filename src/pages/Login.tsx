@@ -13,7 +13,11 @@ import {
 } from "@/components/ui/dialog";
 import { supabase } from "@/integrations/supabase/client";
 
-const Login = () => {
+interface LoginProps {
+  onClose?: () => void;
+}
+
+const Login = ({ onClose }: LoginProps) => {
   const [isLogin, setIsLogin] = useState(true);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -38,7 +42,11 @@ const Login = () => {
             description: "Vous êtes maintenant connecté",
           });
           
-          navigate("/");
+          if (onClose) {
+            onClose();
+          } else {
+            navigate("/");
+          }
         }
       } else {
         const { data, error } = await supabase.auth.signUp({
@@ -72,7 +80,7 @@ const Login = () => {
   };
 
   return (
-    <Dialog open={true} onOpenChange={() => navigate(-1)}>
+    <Dialog open={true} onOpenChange={onClose || (() => navigate(-1))}>
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
           <DialogTitle>{isLogin ? "Connexion" : "Créer un compte"}</DialogTitle>
@@ -87,7 +95,7 @@ const Login = () => {
           variant="ghost"
           size="icon"
           className="absolute right-4 top-4"
-          onClick={() => navigate(-1)}
+          onClick={onClose || (() => navigate(-1))}
         >
           <X className="h-4 w-4" />
         </Button>

@@ -177,7 +177,7 @@ const LocationMap = ({ open, onOpenChange, onLocationSelect }: LocationMapProps)
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-[800px] h-[600px] transform-none">
+      <DialogContent className="sm:max-w-[800px] h-[600px]">
         <DialogTitle>Sélectionnez un emplacement</DialogTitle>
         <div className="h-[500px] relative">
           <GoogleMap

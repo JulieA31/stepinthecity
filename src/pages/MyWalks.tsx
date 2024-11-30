@@ -159,9 +159,9 @@ const MyWalks = () => {
       <div className="container mx-auto px-4 py-8">
         <div className="flex flex-col items-center mb-12">
           <img 
-            src="/lovable-uploads/e1718b7c-7427-41d8-b0a2-f25469f32728.png" 
+            src="/lovable-uploads/813c2bfd-c10a-4b25-99d1-6171f478abb9.png" 
             alt="Illustration de personnes en balade"
-            className="w-full max-w-2xl mb-8 rounded-lg"
+            className="w-full max-w-xl h-auto mb-8 rounded-lg"
           />
           <h1 className="text-4xl font-display text-text text-center">Mon Carnet de Route</h1>
         </div>

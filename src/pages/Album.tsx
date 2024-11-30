@@ -4,6 +4,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { format } from "date-fns";
 import { fr } from "date-fns/locale";
 import { SavedWalk, WalkMemory } from "@/types/walk";
+import WalkMemories from "@/components/WalkMemories";
 
 const Album = () => {
   const { id } = useParams();
@@ -14,30 +15,32 @@ const Album = () => {
     const fetchAlbum = async () => {
       if (!id) return;
 
-      // First, get the album and associated walk
-      const { data: album } = await supabase
+      // First, get the album details
+      const { data: album, error: albumError } = await supabase
         .from('photo_albums')
-        .select(`
-          saved_walk_id,
-          saved_walks (
-            id,
-            walk_title,
-            city,
-            created_at
-          )
-        `)
+        .select('*, saved_walks!inner(*)')
         .eq('id', id)
         .single();
+
+      if (albumError) {
+        console.error('Error fetching album:', albumError);
+        return;
+      }
 
       if (album?.saved_walks) {
         setWalk(album.saved_walks as SavedWalk);
 
-        // Then, fetch the memories associated with this walk
-        const { data: walkMemories } = await supabase
+        // Then, fetch the memories for this walk
+        const { data: walkMemories, error: memoriesError } = await supabase
           .from('walk_memories')
           .select('*')
-          .eq('saved_walk_id', album.saved_walk_id)
+          .eq('saved_walk_id', album.saved_walks.id)
           .order('created_at', { ascending: false });
+
+        if (memoriesError) {
+          console.error('Error fetching memories:', memoriesError);
+          return;
+        }
 
         if (walkMemories) {
           setMemories(walkMemories);
@@ -64,22 +67,7 @@ const Album = () => {
               {walk.city} - {formattedDate}
             </p>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {memories.map((memory) => (
-                <div key={memory.id} className="bg-white rounded-lg shadow overflow-hidden">
-                  <img
-                    src={memory.photo_url}
-                    alt="Souvenir"
-                    className="w-full h-64 object-cover"
-                  />
-                  {memory.description && (
-                    <div className="p-4">
-                      <p className="text-gray-600">{memory.description}</p>
-                    </div>
-                  )}
-                </div>
-              ))}
-            </div>
+            <WalkMemories memories={memories} />
           </div>
         </div>
       </div>

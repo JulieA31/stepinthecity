@@ -5,6 +5,7 @@ import { SavedWalk, WalkMemory } from "@/types/walk";
 import { classiquesParisSteps, baladeGastronomiqueSteps } from "@/data/walks/paris";
 import { lisbonneHistoriqueSteps, tramSteps, saveursSteps } from "@/data/walks/lisbonne";
 import { romeAntiqueSteps, romeBaroqueSteps, vaticanSteps } from "@/data/walks/rome";
+import { getImageForWalk } from "@/utils/walkImages";
 
 const getStepsForWalk = (walkTitle: string) => {
   const stepsMap: { [key: string]: any[] } = {
@@ -29,6 +30,19 @@ const formatCityName = (city: string) => {
   return cityMap[city.toLowerCase()] || city;
 };
 
+// Fonction pour charger la police Playfair Display
+const loadPlayfairDisplayFont = async () => {
+  const response = await fetch('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&display=swap');
+  const css = await response.text();
+  const fontUrl = css.match(/url\((.*?)\)/)?.[1];
+  if (fontUrl) {
+    const fontResponse = await fetch(fontUrl);
+    const fontArrayBuffer = await fontResponse.arrayBuffer();
+    return fontArrayBuffer;
+  }
+  return null;
+};
+
 export const generatePDF = async (walk: SavedWalk, memories: WalkMemory[]): Promise<string | null> => {
   try {
     const pdf = new jsPDF({
@@ -37,48 +51,75 @@ export const generatePDF = async (walk: SavedWalk, memories: WalkMemory[]): Prom
       format: "a4",
     });
 
+    // Ajout de la police Playfair Display
+    const fontData = await loadPlayfairDisplayFont();
+    if (fontData) {
+      pdf.addFont(fontData, "PlayfairDisplay", "normal");
+      pdf.setFont("PlayfairDisplay");
+    }
+
     // Configuration initiale
     const pageWidth = pdf.internal.pageSize.width;
     const margin = 20;
     const contentWidth = pageWidth - (2 * margin);
     let yPosition = margin;
 
+    // Ajout de l'image de couverture
+    try {
+      const coverImageUrl = getImageForWalk(walk.walk_title);
+      const response = await fetch(coverImageUrl);
+      const blob = await response.blob();
+      const base64data = await new Promise<string>((resolve) => {
+        const reader = new FileReader();
+        reader.onloadend = () => resolve(reader.result as string);
+        reader.readAsDataURL(blob);
+      });
+
+      const coverHeight = 60;
+      pdf.addImage(base64data, "JPEG", margin, yPosition, contentWidth, coverHeight);
+      yPosition += coverHeight + 10;
+    } catch (error) {
+      console.error("Error adding cover image:", error);
+    }
+
     // Titre du parcours
     pdf.setFontSize(24);
     pdf.text(walk.walk_title, margin, yPosition);
     yPosition += 10;
 
-    // Date et ville
+    // Date et ville avec icône
     pdf.setFontSize(14);
     const date = format(new Date(walk.created_at), "d MMMM yyyy", { locale: fr });
-    pdf.text(`${formatCityName(walk.city)} - ${date}`, margin, yPosition);
+    pdf.addImage("/lovable-uploads/map-pin.png", "PNG", margin, yPosition - 5, 5, 5);
+    pdf.text(`${formatCityName(walk.city)} - ${date}`, margin + 8, yPosition);
     yPosition += 20;
 
     // Étapes du parcours
     const steps = getStepsForWalk(walk.walk_title);
     if (steps && steps.length > 0) {
       pdf.setFontSize(16);
-      pdf.text("Étapes du parcours", margin, yPosition);
+      pdf.addImage("/lovable-uploads/map.png", "PNG", margin, yPosition - 5, 5, 5);
+      pdf.text("Étapes du parcours", margin + 8, yPosition);
       yPosition += 10;
 
       pdf.setFontSize(12);
       for (const step of steps) {
-        // Vérifier s'il reste assez d'espace sur la page
         if (yPosition > pdf.internal.pageSize.height - 30) {
           pdf.addPage();
           yPosition = margin;
         }
 
-        pdf.setFont(undefined, 'bold');
+        pdf.setFont("PlayfairDisplay", "bold");
         pdf.text(step.title, margin, yPosition);
         yPosition += 6;
 
-        pdf.setFont(undefined, 'normal');
+        pdf.setFont("PlayfairDisplay", "normal");
         const descriptionLines = pdf.splitTextToSize(step.description, contentWidth);
         pdf.text(descriptionLines, margin, yPosition);
         yPosition += (6 * descriptionLines.length);
 
-        pdf.text(step.duration, margin, yPosition);
+        pdf.addImage("/lovable-uploads/clock.png", "PNG", margin, yPosition - 5, 5, 5);
+        pdf.text(step.duration, margin + 8, yPosition);
         yPosition += 10;
       }
     }
@@ -89,12 +130,12 @@ export const generatePDF = async (walk: SavedWalk, memories: WalkMemory[]): Prom
       yPosition = margin;
 
       pdf.setFontSize(16);
-      pdf.text("Mes Souvenirs", margin, yPosition);
+      pdf.addImage("/lovable-uploads/gallery.png", "PNG", margin, yPosition - 5, 5, 5);
+      pdf.text("Mes Souvenirs", margin + 8, yPosition);
       yPosition += 15;
 
       for (const memory of memories) {
         try {
-          // Vérifier s'il reste assez d'espace sur la page
           if (yPosition > pdf.internal.pageSize.height - 70) {
             pdf.addPage();
             yPosition = margin;
@@ -108,12 +149,10 @@ export const generatePDF = async (walk: SavedWalk, memories: WalkMemory[]): Prom
             reader.readAsDataURL(blob);
           });
 
-          // Ajouter l'image
           const imgHeight = 60;
           pdf.addImage(base64data, "JPEG", margin, yPosition, contentWidth, imgHeight);
           yPosition += imgHeight + 5;
 
-          // Ajouter la description si elle existe
           if (memory.description) {
             pdf.setFontSize(12);
             const descriptionLines = pdf.splitTextToSize(memory.description, contentWidth);

@@ -1,1 +1,4 @@
 project_id = "ndkduznyyohboyxyqvpp"
+
+[functions.send-album-email]
+verify_jwt = true

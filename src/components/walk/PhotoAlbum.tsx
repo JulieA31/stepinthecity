@@ -1,11 +1,8 @@
-import { Download, Mail } from "lucide-react";
+import { Download } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/components/ui/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { SavedWalk, WalkMemory } from "@/types/walk";
-import jsPDF from "jspdf";
-import { format } from "date-fns";
-import { fr } from "date-fns/locale";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -20,6 +17,7 @@ import {
 } from "@/components/ui/tooltip";
 import { useState } from "react";
 import { EmailDialog } from "./email/EmailDialog";
+import { generatePDF, downloadPDF } from "./pdf/generatePDF";
 
 interface PhotoAlbumProps {
   walk: SavedWalk;
@@ -30,61 +28,6 @@ const PhotoAlbum = ({ walk, memories }: PhotoAlbumProps) => {
   const { toast } = useToast();
   const [isEmailDialogOpen, setIsEmailDialogOpen] = useState(false);
 
-  const generatePDF = async (): Promise<string | null> => {
-    try {
-      const pdf = new jsPDF({
-        orientation: "portrait",
-        unit: "mm",
-        format: "a4",
-      });
-
-      pdf.setFontSize(24);
-      pdf.text(walk.walk_title, 20, 20);
-
-      pdf.setFontSize(14);
-      const date = format(new Date(walk.created_at), "d MMMM yyyy", { locale: fr });
-      pdf.text(`${walk.city} - ${date}`, 20, 30);
-
-      let yPosition = 50;
-
-      for (let i = 0; i < memories.length; i++) {
-        const memory = memories[i];
-        if (i > 0) yPosition += 10;
-        if (yPosition > 250) {
-          pdf.addPage();
-          yPosition = 20;
-        }
-
-        try {
-          const response = await fetch(memory.photo_url);
-          const blob = await response.blob();
-          const base64data = await new Promise<string>((resolve) => {
-            const reader = new FileReader();
-            reader.onloadend = () => resolve(reader.result as string);
-            reader.readAsDataURL(blob);
-          });
-
-          pdf.addImage(base64data, "JPEG", 20, yPosition, 170, 100);
-
-          if (memory.description) {
-            pdf.setFontSize(12);
-            pdf.text(memory.description, 20, yPosition + 110);
-          }
-
-          yPosition += 120;
-        } catch (error) {
-          console.error("Error processing image:", error);
-          continue;
-        }
-      }
-
-      return pdf.output('datauristring').split(',')[1];
-    } catch (error) {
-      console.error("Error generating PDF:", error);
-      return null;
-    }
-  };
-
   const handleDownloadPDF = async () => {
     toast({
       title: "Génération du PDF",
@@ -92,54 +35,7 @@ const PhotoAlbum = ({ walk, memories }: PhotoAlbumProps) => {
     });
 
     try {
-      const pdf = new jsPDF({
-        orientation: "portrait",
-        unit: "mm",
-        format: "a4",
-      });
-
-      pdf.setFontSize(24);
-      pdf.text(walk.walk_title, 20, 20);
-
-      pdf.setFontSize(14);
-      const date = format(new Date(walk.created_at), "d MMMM yyyy", { locale: fr });
-      pdf.text(`${walk.city} - ${date}`, 20, 30);
-
-      let yPosition = 50;
-
-      for (let i = 0; i < memories.length; i++) {
-        const memory = memories[i];
-        if (i > 0) yPosition += 10;
-        if (yPosition > 250) {
-          pdf.addPage();
-          yPosition = 20;
-        }
-
-        try {
-          const response = await fetch(memory.photo_url);
-          const blob = await response.blob();
-          const base64data = await new Promise<string>((resolve) => {
-            const reader = new FileReader();
-            reader.onloadend = () => resolve(reader.result as string);
-            reader.readAsDataURL(blob);
-          });
-
-          pdf.addImage(base64data, "JPEG", 20, yPosition, 170, 100);
-
-          if (memory.description) {
-            pdf.setFontSize(12);
-            pdf.text(memory.description, 20, yPosition + 110);
-          }
-
-          yPosition += 120;
-        } catch (error) {
-          console.error("Error processing image:", error);
-          continue;
-        }
-      }
-
-      pdf.save(`Album_${walk.walk_title}.pdf`);
-
+      await downloadPDF(walk, memories);
       toast({
         title: "Succès",
         description: "Le PDF a été généré avec succès",
@@ -156,7 +52,7 @@ const PhotoAlbum = ({ walk, memories }: PhotoAlbumProps) => {
 
   const handleSendEmail = async (email: string) => {
     try {
-      const pdfBase64 = await generatePDF();
+      const pdfBase64 = await generatePDF(walk, memories);
       if (!pdfBase64) {
         throw new Error("Impossible de générer le PDF");
       }

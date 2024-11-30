@@ -37,19 +37,21 @@ const getStepsCountByDuration = (duration: number): number => {
   return 5;
 };
 
+interface RouteOptions {
+  startLocation: google.maps.LatLngLiteral;
+  endLocation?: google.maps.LatLngLiteral | null;
+  duration: string;
+  type: string;
+  routeType: string;
+}
+
 export const generateRoute = async ({
   startLocation,
   endLocation,
   duration,
   type,
   routeType
-}: {
-  startLocation: google.maps.LatLngLiteral;
-  endLocation?: google.maps.LatLngLiteral | null;
-  duration: string;
-  type: string;
-  routeType: string;
-}): Promise<Step[]> => {
+}: RouteOptions): Promise<Step[]> => {
   const targetDuration = parseInt(duration);
   const placeTypes = getPlaceTypesByTheme(type);
   const desiredStepsCount = getStepsCountByDuration(targetDuration);
@@ -72,31 +74,31 @@ export const generateRoute = async ({
     await loader.load();
     const service = new google.maps.places.PlacesService(document.createElement('div'));
     
-    const searchPromises = placeTypes.map(type => 
-      new Promise<google.maps.places.PlaceResult[]>((resolve) => {
+    const searchPromises = placeTypes.map(placeType => 
+      new Promise<google.maps.places.PlaceResult[]>((resolve, reject) => {
         const request: google.maps.places.PlaceSearchRequest = {
           location: new google.maps.LatLng(startLocation.lat, startLocation.lng),
-          radius: Math.min(targetDuration * 80, 3000), // Augmenté le rayon max à 3km
-          type: type,
+          radius: 5000, // Augmenté à 5km pour avoir plus de résultats
+          type: placeType as google.maps.places.PlaceType,
           rankBy: google.maps.places.RankBy.DISTANCE
         };
 
         service.nearbySearch(request, (results, status) => {
-          console.log(`Search results for type ${type}:`, { status, resultsCount: results?.length });
           if (status === google.maps.places.PlacesServiceStatus.OK && results) {
             resolve(results);
           } else if (status === google.maps.places.PlacesServiceStatus.ZERO_RESULTS) {
             resolve([]);
           } else {
-            console.warn(`No results for type ${type}:`, status);
-            resolve([]);
+            reject(new Error(`Places API error: ${status}`));
           }
         });
       })
     );
 
-    const allResults = await Promise.all(searchPromises);
-    console.log("All search results completed:", allResults.map(r => r.length));
+    const allResults = await Promise.all(searchPromises.map(p => p.catch(e => {
+      console.error("Search error:", e);
+      return [];
+    })));
     
     const uniquePlaces = new Map<string, google.maps.places.PlaceResult>();
     
@@ -110,40 +112,17 @@ export const generateRoute = async ({
       .sort((a, b) => (b.rating || 0) - (a.rating || 0))
       .slice(0, desiredStepsCount);
 
-    console.log("Sorted and filtered places:", sortedPlaces.length);
-
     if (sortedPlaces.length === 0) {
       throw new Error("Aucun lieu trouvé dans cette zone");
     }
 
     const steps: Step[] = await Promise.all(
-      sortedPlaces.map(async place => {
-        const placeDetails = await new Promise<google.maps.places.PlaceResult>((resolve) => {
-          service.getDetails(
-            { placeId: place.place_id!, fields: ['formatted_address', 'opening_hours', 'price_level'] },
-            (result, status) => {
-              if (status === google.maps.places.PlacesServiceStatus.OK && result) {
-                resolve(result);
-              } else {
-                resolve({} as google.maps.places.PlaceResult);
-              }
-            }
-          );
-        });
-
-        let description = "";
-        if (place.rating) {
-          description += `Note: ${place.rating}/5 (${place.user_ratings_total} avis). `;
-        }
-        if (placeDetails.formatted_address) {
-          description += placeDetails.formatted_address;
-        }
-
-        const stepDuration = Math.round(targetDuration / desiredStepsCount);
-
+      sortedPlaces.map(async (place, index) => {
+        const stepDuration = Math.round(targetDuration / (sortedPlaces.length));
+        
         return {
-          title: place.name || "Point d'intérêt",
-          description,
+          title: place.name || `Point d'intérêt ${index + 1}`,
+          description: place.vicinity || "Lieu intéressant à visiter",
           duration: `${stepDuration}min`,
           position: {
             lat: place.geometry?.location?.lat() || startLocation.lat,
@@ -153,19 +132,8 @@ export const generateRoute = async ({
       })
     );
 
-    console.log("Final generated steps:", steps.length);
-
     if (steps.length === 0) {
       throw new Error("Impossible de générer un parcours dans cette zone");
-    }
-
-    const totalDuration = calculateTotalDuration(steps);
-    if (Math.abs(totalDuration - targetDuration) > 10) {
-      const ratio = targetDuration / totalDuration;
-      steps.forEach(step => {
-        const currentDuration = parseInt(step.duration);
-        step.duration = `${Math.round(currentDuration * ratio)}min`;
-      });
     }
 
     return steps;

@@ -4,6 +4,18 @@ import { useToast } from "@/components/ui/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { SavedWalk, WalkMemory } from "@/types/walk";
 import ShareButton from "./ShareButton";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 
 interface PhotoAlbumProps {
   walk: SavedWalk;
@@ -69,16 +81,43 @@ const PhotoAlbum = ({ walk, memories }: PhotoAlbumProps) => {
     }
   };
 
+  const handleExportPDF = async () => {
+    // TODO: Implement PDF export functionality
+    toast({
+      title: "Info",
+      description: "Le téléchargement en PDF sera bientôt disponible",
+    });
+  };
+
   return (
     <div className="flex items-center gap-2">
-      <Button
-        variant="ghost"
-        size="icon"
-        onClick={generatePhotoAlbum}
-        title="Générer l'album photo"
-      >
-        <Download className="h-5 w-5" />
-      </Button>
+      <TooltipProvider>
+        <Tooltip>
+          <TooltipTrigger asChild>
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button
+                  variant="ghost"
+                  size="icon"
+                >
+                  <Download className="h-5 w-5" />
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent>
+                <DropdownMenuItem onClick={generatePhotoAlbum}>
+                  Créer l'album en ligne
+                </DropdownMenuItem>
+                <DropdownMenuItem onClick={handleExportPDF}>
+                  Télécharger en PDF
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
+          </TooltipTrigger>
+          <TooltipContent>
+            <p>Exporter mon album</p>
+          </TooltipContent>
+        </Tooltip>
+      </TooltipProvider>
       <ShareButton walk={walk} />
     </div>
   );

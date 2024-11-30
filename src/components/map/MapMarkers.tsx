@@ -21,14 +21,12 @@ const MapMarkers = ({ position, selectedPosition, setSelectedPosition }: MapMark
           strokeWeight: 2,
         }}
         title="Votre position"
-        optimized={true}
         clickable={false}
       />
       {selectedPosition && (
         <MarkerF
           position={selectedPosition}
           animation={google.maps.Animation.DROP}
-          optimized={true}
           clickable={false}
         />
       )}

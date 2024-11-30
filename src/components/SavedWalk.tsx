@@ -14,6 +14,19 @@ import { lisbonneHistoriqueSteps, tramSteps, saveursSteps } from "@/data/walks/l
 import { romeAntiqueSteps, romeBaroqueSteps, vaticanSteps } from "@/data/walks/rome";
 import { getImageForWalk } from "@/utils/walkImages";
 
+interface SavedWalkProps {
+  walk: SavedWalkType;
+  memories: WalkMemory[];
+  onDelete: (id: string) => void;
+  onAddMemory: {
+    selectedWalk: string | null;
+    setSelectedWalk: (id: string | null) => void;
+    newMemory: { description: string; file: File | null };
+    setNewMemory: (memory: { description: string; file: File | null }) => void;
+    handleAddMemory: () => void;
+  };
+}
+
 const formatCityName = (city: string) => {
   const cityMap: { [key: string]: string } = {
     'paris': 'Paris',
@@ -66,6 +79,26 @@ const SavedWalk = ({ walk, memories, onDelete, onAddMemory }: SavedWalkProps) =>
     window.location.reload();
   };
 
+  const handleDeleteWalk = async () => {
+    // D'abord supprimer les albums photos associés
+    const { error: albumError } = await supabase
+      .from('photo_albums')
+      .delete()
+      .eq('saved_walk_id', walk.id);
+
+    if (albumError) {
+      toast({
+        title: "Erreur",
+        description: "Impossible de supprimer les albums photos associés",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    // Ensuite supprimer la balade
+    onDelete(walk.id);
+  };
+
   const handleAddMemoryAndClose = async () => {
     await onAddMemory.handleAddMemory();
     setIsDialogOpen(false);
@@ -81,7 +114,7 @@ const SavedWalk = ({ walk, memories, onDelete, onAddMemory }: SavedWalkProps) =>
             <Button
               variant="ghost"
               size="icon"
-              onClick={() => onDelete(walk.id)}
+              onClick={handleDeleteWalk}
             >
               <Trash2 className="h-5 w-5" />
             </Button>

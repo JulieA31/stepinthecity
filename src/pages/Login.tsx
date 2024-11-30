@@ -30,7 +30,17 @@ const Login = () => {
           password,
         });
 
-        if (error) throw error;
+        if (error) {
+          if (error.message === "Email not confirmed") {
+            toast({
+              variant: "destructive",
+              title: "Email non confirmé",
+              description: "Veuillez vérifier votre email et cliquer sur le lien de confirmation",
+            });
+            return;
+          }
+          throw error;
+        }
 
         if (data.user) {
           toast({
@@ -54,9 +64,18 @@ const Login = () => {
         if (error) throw error;
 
         if (data.user) {
+          if (data.user.identities?.length === 0) {
+            toast({
+              variant: "destructive",
+              title: "Compte existant",
+              description: "Un compte existe déjà avec cet email",
+            });
+            return;
+          }
+
           toast({
             title: "Compte créé avec succès",
-            description: "Vous pouvez maintenant vous connecter",
+            description: "Veuillez vérifier votre email pour confirmer votre compte",
           });
           
           setIsLogin(true);

@@ -6,6 +6,10 @@ export const addFooter = async (pdf: jsPDF, pageWidth: number, pageHeight: numbe
   const yPosition = pageHeight - footerHeight;
   
   try {
+    // Ajouter une ligne de séparation
+    pdf.setDrawColor("#E5E7EB");
+    pdf.line(margin, yPosition, pageWidth - margin, yPosition);
+
     // Ajouter le logo
     const logoUrl = "/lovable-uploads/1d570795-c96a-447c-a27a-1b240ba72131.png";
     const response = await fetch(logoUrl);
@@ -17,9 +21,15 @@ export const addFooter = async (pdf: jsPDF, pageWidth: number, pageHeight: numbe
     });
 
     // Calculer les dimensions du logo
-    const logoHeight = 20;
-    const logoWidth = 40;
-    const logoX = margin;
+    const logoHeight = 15;
+    const logoWidth = 30;
+    
+    // Centrer les éléments horizontalement
+    const totalWidth = pageWidth - (2 * margin);
+    const contentWidth = logoWidth + pdf.getTextWidth("Step In The City") + 5 + pdf.getTextWidth("https://stepinthecity.me");
+    const startX = margin + (totalWidth - contentWidth) / 2;
+    
+    const logoX = startX;
     const logoY = yPosition + (footerHeight - logoHeight) / 2;
 
     pdf.addImage(base64Logo, "PNG", logoX, logoY, logoWidth, logoHeight);
@@ -32,16 +42,12 @@ export const addFooter = async (pdf: jsPDF, pageWidth: number, pageHeight: numbe
     const websiteText = "Step In The City";
     const websiteUrl = "https://stepinthecity.me";
     
-    const textX = logoX + logoWidth + 10;
     const textY = yPosition + footerHeight / 2;
+    const textX = logoX + logoWidth + 5;
 
     pdf.text(websiteText, textX, textY);
     pdf.setTextColor("#FF69B4");
     pdf.text(websiteUrl, textX + pdf.getTextWidth(websiteText) + 5, textY);
-
-    // Ajouter une ligne de séparation
-    pdf.setDrawColor("#E5E7EB");
-    pdf.line(margin, yPosition, pageWidth - margin, yPosition);
   } catch (error) {
     console.error("Error adding footer:", error);
   }

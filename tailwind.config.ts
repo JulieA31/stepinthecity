@@ -28,6 +28,11 @@ export default {
           light: "#F5F5F5",   // Gris très clair
           DEFAULT: "#6B7280", // Gris medium
           dark: "#4B5563",    // Gris foncé
+        },
+        destructive: {
+          DEFAULT: "#FF0000",
+          foreground: "#FFFFFF",
+          background: "#FEE2E2", // Fond rouge clair pour les erreurs
         }
       },
       fontFamily: {

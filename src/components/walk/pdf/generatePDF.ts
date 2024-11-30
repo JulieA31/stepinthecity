@@ -55,31 +55,29 @@ export const generatePDF = async (walk: SavedWalk, memories: WalkMemory[]): Prom
         reader.readAsDataURL(blob);
       });
 
-      const coverHeight = 60;
-      pdf.addImage(base64data, "JPEG", margin, yPosition, contentWidth, coverHeight);
-      yPosition += coverHeight + 10;
+      pdf.addImage(base64data, "JPEG", margin, yPosition, contentWidth, 60);
+      yPosition += 70;
     } catch (error) {
       console.error("Error adding cover image:", error);
+      yPosition += 10;
     }
 
     // Titre du parcours
     pdf.setFontSize(24);
     pdf.text(walk.walk_title, margin, yPosition);
-    yPosition += 10;
+    yPosition += 15;
 
-    // Date et ville avec icône
+    // Date et ville
     pdf.setFontSize(14);
     const date = format(new Date(walk.created_at), "d MMMM yyyy", { locale: fr });
-    pdf.addImage("/lovable-uploads/map-pin.png", "PNG", margin, yPosition - 5, 5, 5);
-    pdf.text(`${formatCityName(walk.city)} - ${date}`, margin + 8, yPosition);
+    pdf.text(`${formatCityName(walk.city)} - ${date}`, margin, yPosition);
     yPosition += 20;
 
     // Étapes du parcours
     const steps = getStepsForWalk(walk.walk_title);
     if (steps && steps.length > 0) {
       pdf.setFontSize(16);
-      pdf.addImage("/lovable-uploads/map.png", "PNG", margin, yPosition - 5, 5, 5);
-      pdf.text("Étapes du parcours", margin + 8, yPosition);
+      pdf.text("Étapes du parcours", margin, yPosition);
       yPosition += 10;
 
       pdf.setFontSize(12);
@@ -96,8 +94,7 @@ export const generatePDF = async (walk: SavedWalk, memories: WalkMemory[]): Prom
         pdf.text(descriptionLines, margin, yPosition);
         yPosition += (6 * descriptionLines.length);
 
-        pdf.addImage("/lovable-uploads/clock.png", "PNG", margin, yPosition - 5, 5, 5);
-        pdf.text(step.duration, margin + 8, yPosition);
+        pdf.text(step.duration, margin, yPosition);
         yPosition += 10;
       }
     }
@@ -108,8 +105,7 @@ export const generatePDF = async (walk: SavedWalk, memories: WalkMemory[]): Prom
       yPosition = margin;
 
       pdf.setFontSize(16);
-      pdf.addImage("/lovable-uploads/gallery.png", "PNG", margin, yPosition - 5, 5, 5);
-      pdf.text("Mes Souvenirs", margin + 8, yPosition);
+      pdf.text("Mes Souvenirs", margin, yPosition);
       yPosition += 15;
 
       for (const memory of memories) {
@@ -127,9 +123,8 @@ export const generatePDF = async (walk: SavedWalk, memories: WalkMemory[]): Prom
             reader.readAsDataURL(blob);
           });
 
-          const imgHeight = 60;
-          pdf.addImage(base64data, "JPEG", margin, yPosition, contentWidth, imgHeight);
-          yPosition += imgHeight + 5;
+          pdf.addImage(base64data, "JPEG", margin, yPosition, contentWidth, 60);
+          yPosition += 65;
 
           if (memory.description) {
             pdf.setFontSize(12);
@@ -154,24 +149,29 @@ export const generatePDF = async (walk: SavedWalk, memories: WalkMemory[]): Prom
 };
 
 export const downloadPDF = async (walk: SavedWalk, memories: WalkMemory[]): Promise<void> => {
-  const pdfBase64 = await generatePDF(walk, memories);
-  if (!pdfBase64) {
-    throw new Error("Failed to generate PDF");
-  }
+  try {
+    const pdfBase64 = await generatePDF(walk, memories);
+    if (!pdfBase64) {
+      throw new Error("Failed to generate PDF");
+    }
 
-  const binary = atob(pdfBase64);
-  const array = new Uint8Array(binary.length);
-  for (let i = 0; i < binary.length; i++) {
-    array[i] = binary.charCodeAt(i);
+    const binary = atob(pdfBase64);
+    const array = new Uint8Array(binary.length);
+    for (let i = 0; i < binary.length; i++) {
+      array[i] = binary.charCodeAt(i);
+    }
+    
+    const blob = new Blob([array], { type: 'application/pdf' });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = `Album_${walk.walk_title}.pdf`;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    URL.revokeObjectURL(url);
+  } catch (error) {
+    console.error("Error downloading PDF:", error);
+    throw error;
   }
-  
-  const blob = new Blob([array], { type: 'application/pdf' });
-  const url = URL.createObjectURL(blob);
-  const link = document.createElement('a');
-  link.href = url;
-  link.download = `Album_${walk.walk_title}.pdf`;
-  document.body.appendChild(link);
-  link.click();
-  document.body.removeChild(link);
-  URL.revokeObjectURL(url);
 };

@@ -11,6 +11,9 @@ interface WalkCardProps {
   city: string;
 }
 
+// Garder une référence globale de l'audio en cours de lecture
+let currentlyPlayingAudio: HTMLAudioElement | null = null;
+
 const WalkCard = ({ walk, audioEnabled, onAudioToggle, onClick, getImageForWalk, city }: WalkCardProps) => {
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const [isPlaying, setIsPlaying] = useState(false);
@@ -67,6 +70,11 @@ const WalkCard = ({ walk, audioEnabled, onAudioToggle, onClick, getImageForWalk,
         audioRef.current.pause();
         setIsPlaying(false);
       } else {
+        // Arrêter l'audio précédent s'il y en a un
+        if (currentlyPlayingAudio && currentlyPlayingAudio !== audioRef.current) {
+          currentlyPlayingAudio.pause();
+        }
+        
         console.log('Tentative de lecture');
         const playPromise = audioRef.current.play();
         
@@ -74,6 +82,8 @@ const WalkCard = ({ walk, audioEnabled, onAudioToggle, onClick, getImageForWalk,
           playPromise
             .then(() => {
               console.log('Lecture démarrée avec succès');
+              // Mettre à jour la référence de l'audio en cours
+              currentlyPlayingAudio = audioRef.current;
               setIsPlaying(true);
               onAudioToggle(walk.title);
             })

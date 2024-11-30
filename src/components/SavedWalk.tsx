@@ -1,190 +1,83 @@
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { useState } from "react";
+import { Card, CardContent, CardFooter } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
-import { Trash2, MapPin, Clock } from "lucide-react";
+import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog";
+import { SavedWalk as SavedWalkType, WalkMemory } from "@/types/walk";
 import WalkMemories from "./WalkMemories";
 import AddMemoryForm from "./AddMemoryForm";
-import { SavedWalk as SavedWalkType, WalkMemory } from "@/types/walk";
-import { useToast } from "./ui/use-toast";
-import { supabase } from "@/integrations/supabase/client";
-import { useState } from "react";
-import PhotoAlbum from "./walk/PhotoAlbum";
-import WalkMap from "./WalkMap";
-import { LoadScript } from "@react-google-maps/api";
-import { classiquesParisSteps, baladeGastronomiqueSteps } from "@/data/walks/paris";
-
-const GOOGLE_MAPS_API_KEY = "AIzaSyC806xlYYv2CYq2euqLnD4_cMrKrUTZGNI";
 
 interface SavedWalkProps {
   walk: SavedWalkType;
   memories: WalkMemory[];
-  onDelete: (id: string) => void;
+  onDelete: (walkId: string) => void;
   onAddMemory: {
     selectedWalk: string | null;
-    setSelectedWalk: (id: string | null) => void;
+    setSelectedWalk: (walkId: string | null) => void;
     newMemory: { description: string; file: File | null };
     setNewMemory: (memory: { description: string; file: File | null }) => void;
     handleAddMemory: () => void;
   };
 }
 
-const formatCityName = (city: string) => {
-  const cityMap: { [key: string]: string } = {
-    'paris': 'Paris',
-    'rome': 'Rome',
-    'lisbonne': 'Lisbonne'
-  };
-  return cityMap[city.toLowerCase()] || city;
-};
-
 const SavedWalk = ({ walk, memories, onDelete, onAddMemory }: SavedWalkProps) => {
-  const { toast } = useToast();
-  const [isDialogOpen, setIsDialogOpen] = useState(false);
-  const [isDetailsOpen, setIsDetailsOpen] = useState(false);
-  const [isMapLoaded, setIsMapLoaded] = useState(false);
-
-  const handleDeleteMemory = async (memoryId: string) => {
-    const { error } = await supabase
-      .from('walk_memories')
-      .delete()
-      .eq('id', memoryId);
-
-    if (error) {
-      toast({
-        title: "Erreur",
-        description: "Impossible de supprimer le souvenir",
-        variant: "destructive",
-      });
-      return;
-    }
-
-    toast({
-      title: "Succès",
-      description: "Souvenir supprimé avec succès",
-    });
-
-    window.location.reload();
-  };
-
-  const handleAddMemoryAndClose = async () => {
-    await onAddMemory.handleAddMemory();
-    setIsDialogOpen(false);
-  };
-
-  const getStepsForWalk = (title: string) => {
-    if (title === "Les classiques de Paris") return classiquesParisSteps;
-    if (title === "Balade gastronomique") return baladeGastronomiqueSteps;
-    return [];
-  };
+  const [showAddMemory, setShowAddMemory] = useState(false);
 
   return (
-    <>
-      <Card className="overflow-hidden cursor-pointer hover:shadow-lg transition-shadow" onClick={() => setIsDetailsOpen(true)}>
-        <CardHeader className="space-y-4">
-          <div className="flex flex-row items-center justify-between">
-            <CardTitle className="text-xl">{walk.walk_title}</CardTitle>
-            <div className="flex items-center gap-2">
-              <PhotoAlbum walk={walk} memories={memories} />
-              <Button
-                variant="ghost"
-                size="icon"
-                onClick={(e) => {
-                  e.stopPropagation();
-                  onDelete(walk.id);
-                }}
-              >
-                <Trash2 className="h-5 w-5" />
-              </Button>
-            </div>
-          </div>
-          {walk.photo_url && (
-            <div>
-              <img
-                src={walk.photo_url}
-                alt={walk.walk_title}
-                className="w-full h-48 object-cover rounded-lg"
-              />
-            </div>
-          )}
-        </CardHeader>
-        <CardContent>
-          <p className="text-gray-600 mb-4">{formatCityName(walk.city)}</p>
-        </CardContent>
-      </Card>
+    <Card className="bg-white">
+      <CardContent className="pt-6">
+        <h3 className="text-lg font-semibold mb-2">{walk.walk_title}</h3>
+        <p className="text-sm text-muted-foreground mb-4">{walk.city}</p>
+        
+        <WalkMemories memories={memories} />
+      </CardContent>
 
-      <Dialog open={isDetailsOpen} onOpenChange={setIsDetailsOpen}>
-        <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
-          <DialogHeader>
-            <DialogTitle className="text-2xl font-display">{walk.walk_title}</DialogTitle>
-          </DialogHeader>
-          
-          <div className="space-y-6">
-            <div className="flex items-center gap-4 text-gray-600">
-              <div className="flex items-center gap-2">
-                <MapPin className="h-5 w-5" />
-                <span>{formatCityName(walk.city)}</span>
-              </div>
-            </div>
+      <CardFooter className="flex justify-between gap-4">
+        <AlertDialog>
+          <AlertDialogTrigger asChild>
+            <Button variant="destructive">Supprimer</Button>
+          </AlertDialogTrigger>
+          <AlertDialogContent>
+            <AlertDialogHeader>
+              <AlertDialogTitle>Êtes-vous sûr ?</AlertDialogTitle>
+              <AlertDialogDescription>
+                Cette action est irréversible. Le parcours et tous les souvenirs associés seront supprimés définitivement.
+              </AlertDialogDescription>
+            </AlertDialogHeader>
+            <AlertDialogFooter>
+              <AlertDialogCancel>Annuler</AlertDialogCancel>
+              <AlertDialogAction onClick={() => onDelete(walk.id)}>
+                Supprimer
+              </AlertDialogAction>
+            </AlertDialogFooter>
+          </AlertDialogContent>
+        </AlertDialog>
 
-            <div className="h-[400px] w-full rounded-lg overflow-hidden">
-              <LoadScript 
-                googleMapsApiKey={GOOGLE_MAPS_API_KEY}
-                onLoad={() => setIsMapLoaded(true)}
-              >
-                <WalkMap 
-                  steps={getStepsForWalk(walk.walk_title)}
-                  walkTitle={walk.walk_title}
-                  isLoaded={isMapLoaded}
-                />
-              </LoadScript>
-            </div>
+        <Button 
+          variant="outline" 
+          onClick={() => {
+            onAddMemory.setSelectedWalk(walk.id);
+            setShowAddMemory(true);
+          }}
+        >
+          Ajouter un souvenir
+        </Button>
+      </CardFooter>
 
-            <WalkMemories 
-              memories={memories} 
-              onDeleteMemory={handleDeleteMemory}
-            />
-
-            <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
-              <DialogTrigger asChild>
-                <Button
-                  className="w-full mt-4"
-                  variant="outline"
-                  onClick={() => {
-                    onAddMemory.setSelectedWalk(walk.id);
-                    setIsDialogOpen(true);
-                  }}
-                >
-                  Ajouter un souvenir
-                </Button>
-              </DialogTrigger>
-              <DialogContent>
-                <DialogHeader>
-                  <DialogTitle>Ajouter un souvenir</DialogTitle>
-                </DialogHeader>
-                <AddMemoryForm
-                  onFileChange={(e) => {
-                    if (e.target.files && e.target.files[0]) {
-                      onAddMemory.setNewMemory({
-                        ...onAddMemory.newMemory,
-                        file: e.target.files[0],
-                      });
-                    }
-                  }}
-                  onDescriptionChange={(value) =>
-                    onAddMemory.setNewMemory({
-                      ...onAddMemory.newMemory,
-                      description: value,
-                    })
-                  }
-                  onSubmit={handleAddMemoryAndClose}
-                  description={onAddMemory.newMemory.description}
-                />
-              </DialogContent>
-            </Dialog>
-          </div>
-        </DialogContent>
-      </Dialog>
-    </>
+      <AddMemoryForm
+        isOpen={showAddMemory}
+        onClose={() => {
+          setShowAddMemory(false);
+          onAddMemory.setSelectedWalk(null);
+          onAddMemory.setNewMemory({ description: "", file: null });
+        }}
+        memory={onAddMemory.newMemory}
+        setMemory={onAddMemory.setNewMemory}
+        onSubmit={() => {
+          onAddMemory.handleAddMemory();
+          setShowAddMemory(false);
+        }}
+      />
+    </Card>
   );
 };
 

@@ -82,7 +82,6 @@ const PhotoAlbum = ({ walk, memories }: PhotoAlbumProps) => {
   };
 
   const handleExportPDF = async () => {
-    // TODO: Implement PDF export functionality
     toast({
       title: "Info",
       description: "Le téléchargement en PDF sera bientôt disponible",

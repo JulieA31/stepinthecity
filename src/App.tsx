@@ -9,6 +9,7 @@ import Predefined from "./pages/Predefined";
 import Header from "./components/Header";
 import Login from "./pages/Login";
 import MyWalks from "./pages/MyWalks";
+import Album from "./pages/Album";
 
 const queryClient = new QueryClient();
 
@@ -25,6 +26,7 @@ const App = () => (
           <Route path="/predefined" element={<Predefined />} />
           <Route path="/login" element={<Login />} />
           <Route path="/my-walks" element={<MyWalks />} />
+          <Route path="/album/:id" element={<Album />} />
         </Routes>
       </BrowserRouter>
     </TooltipProvider>

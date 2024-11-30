@@ -22,6 +22,16 @@ interface SavedWalkProps {
   };
 }
 
+// Fonction utilitaire pour formater le nom de la ville
+const formatCityName = (city: string) => {
+  const cityMap: { [key: string]: string } = {
+    'paris': 'Paris',
+    'rome': 'Rome',
+    'lisbonne': 'Lisbonne'
+  };
+  return cityMap[city.toLowerCase()] || city;
+};
+
 const SavedWalk = ({ walk, memories, onDelete, onAddMemory }: SavedWalkProps) => {
   const { toast } = useToast();
   const [isDialogOpen, setIsDialogOpen] = useState(false);
@@ -78,7 +88,7 @@ const SavedWalk = ({ walk, memories, onDelete, onAddMemory }: SavedWalkProps) =>
         )}
       </CardHeader>
       <CardContent>
-        <p className="text-gray-600 mb-4">{walk.city}</p>
+        <p className="text-gray-600 mb-4">{formatCityName(walk.city)}</p>
         
         <WalkMemories 
           memories={memories} 

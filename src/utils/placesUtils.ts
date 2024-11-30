@@ -22,7 +22,7 @@ export const findPlacesByType = async (
     const request = {
       location,
       radius,
-      type: type as google.maps.places.PlaceType
+      type // Removed type assertion as it's not needed
     };
 
     service.nearbySearch(request, (results, status) => {

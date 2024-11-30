@@ -2,31 +2,11 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useToast } from "@/components/ui/use-toast";
 import { supabase } from "@/integrations/supabase/client";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { Trash2, Camera } from "lucide-react";
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
-import { Label } from "@/components/ui/label";
-import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
-import WalkCard from "@/components/WalkCard";
-
-interface SavedWalk {
-  id: string;
-  walk_title: string;
-  city: string;
-  created_at: string;
-}
-
-interface WalkMemory {
-  id: string;
-  photo_url: string;
-  description: string;
-  created_at: string;
-}
+import SavedWalk from "@/components/SavedWalk";
+import { SavedWalk as SavedWalkType, WalkMemory } from "@/types/walk";
 
 const MyWalks = () => {
-  const [savedWalks, setSavedWalks] = useState<SavedWalk[]>([]);
+  const [savedWalks, setSavedWalks] = useState<SavedWalkType[]>([]);
   const [memories, setMemories] = useState<{ [key: string]: WalkMemory[] }>({});
   const [selectedWalk, setSelectedWalk] = useState<string | null>(null);
   const [newMemory, setNewMemory] = useState<{ description: string; file: File | null }>({
@@ -88,13 +68,7 @@ const MyWalks = () => {
     setMemories((prev) => ({ ...prev, [walkId]: data }));
   };
 
-  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (e.target.files && e.target.files[0]) {
-      setNewMemory((prev) => ({ ...prev, file: e.target.files![0] }));
-    }
-  };
-
-  const addMemory = async () => {
+  const handleAddMemory = async () => {
     if (!selectedWalk || !newMemory.file) return;
 
     const { data: { session } } = await supabase.auth.getSession();
@@ -181,85 +155,26 @@ const MyWalks = () => {
       <div className="container mx-auto px-4 py-8">
         <h1 className="text-4xl font-display text-text mb-8">Mon Carnet de Route</h1>
         
-        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-          {savedWalks.map((walk) => (
-            <Card key={walk.id} className="overflow-hidden">
-              <CardHeader className="flex flex-row items-center justify-between">
-                <CardTitle className="text-xl">{walk.walk_title}</CardTitle>
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  onClick={() => deleteWalk(walk.id)}
-                >
-                  <Trash2 className="h-5 w-5" />
-                </Button>
-              </CardHeader>
-              <CardContent>
-                <p className="text-gray-600 mb-4">{walk.city}</p>
-                
-                <div className="space-y-4">
-                  {memories[walk.id]?.map((memory) => (
-                    <div key={memory.id} className="relative">
-                      <img
-                        src={memory.photo_url}
-                        alt="Souvenir"
-                        className="w-full h-48 object-cover rounded-lg"
-                      />
-                      {memory.description && (
-                        <p className="mt-2 text-sm text-gray-600">{memory.description}</p>
-                      )}
-                    </div>
-                  ))}
-                </div>
-
-                <Dialog>
-                  <DialogTrigger asChild>
-                    <Button
-                      className="w-full mt-4"
-                      variant="outline"
-                      onClick={() => setSelectedWalk(walk.id)}
-                    >
-                      <Camera className="mr-2 h-4 w-4" />
-                      Ajouter un souvenir
-                    </Button>
-                  </DialogTrigger>
-                  <DialogContent>
-                    <DialogHeader>
-                      <DialogTitle>Ajouter un souvenir</DialogTitle>
-                    </DialogHeader>
-                    <div className="space-y-4">
-                      <div>
-                        <Label htmlFor="photo">Photo</Label>
-                        <Input
-                          id="photo"
-                          type="file"
-                          accept="image/*"
-                          onChange={handleFileChange}
-                        />
-                      </div>
-                      <div>
-                        <Label htmlFor="description">Description</Label>
-                        <Textarea
-                          id="description"
-                          value={newMemory.description}
-                          onChange={(e) =>
-                            setNewMemory((prev) => ({
-                              ...prev,
-                              description: e.target.value,
-                            }))
-                          }
-                        />
-                      </div>
-                      <Button onClick={addMemory} className="w-full">
-                        Sauvegarder
-                      </Button>
-                    </div>
-                  </DialogContent>
-                </Dialog>
-              </CardContent>
-            </Card>
-          ))}
-        </div>
+        <section>
+          <h2 className="text-2xl font-display text-text mb-6">Mes Parcours</h2>
+          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+            {savedWalks.map((walk) => (
+              <SavedWalk
+                key={walk.id}
+                walk={walk}
+                memories={memories[walk.id] || []}
+                onDelete={deleteWalk}
+                onAddMemory={{
+                  selectedWalk,
+                  setSelectedWalk,
+                  newMemory,
+                  setNewMemory,
+                  handleAddMemory,
+                }}
+              />
+            ))}
+          </div>
+        </section>
       </div>
     </div>
   );

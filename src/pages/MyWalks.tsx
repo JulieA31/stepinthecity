@@ -9,6 +9,8 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from 
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
+import { useMemoryUpload } from "@/hooks/useMemoryUpload";
+import { WalkCard } from "@/components/WalkCard";
 
 interface SavedWalk {
   id: string;
@@ -96,11 +98,20 @@ const MyWalks = () => {
   const addMemory = async () => {
     if (!selectedWalk || !newMemory.file) return;
 
+    const { data: { session } } = await supabase.auth.getSession();
+    if (!session) {
+      toast({
+        title: "Erreur",
+        description: "Vous devez être connecté pour ajouter un souvenir",
+        variant: "destructive",
+      });
+      return;
+    }
+
     const file = newMemory.file;
     const fileExt = file.name.split(".").pop();
     const filePath = `${crypto.randomUUID()}.${fileExt}`;
 
-    // Upload file to storage
     const { error: uploadError } = await supabase.storage
       .from("walk_memories")
       .upload(filePath, file);
@@ -114,16 +125,15 @@ const MyWalks = () => {
       return;
     }
 
-    // Get public URL
     const { data: { publicUrl } } = supabase.storage
       .from("walk_memories")
       .getPublicUrl(filePath);
 
-    // Save memory to database
     const { error: dbError } = await supabase.from("walk_memories").insert({
       saved_walk_id: selectedWalk,
       photo_url: publicUrl,
       description: newMemory.description,
+      user_id: session.user.id
     });
 
     if (dbError) {

@@ -1,4 +1,5 @@
 import { Libraries, useLoadScript } from "@react-google-maps/api";
+import { Step } from "@/types/walk";
 
 const libraries: Libraries = ["places"];
 
@@ -19,7 +20,7 @@ export const searchNearbyPlaces = async (
     const request = {
       location,
       radius,
-      type: type as google.maps.places.PlaceType[keyof google.maps.places.PlaceType],
+      type: type as any, // Fix for PlaceType issue
     };
 
     service.nearbySearch(request, (results, status) => {
@@ -50,4 +51,33 @@ export const getPlaceDetails = async (
       }
     });
   });
+};
+
+export const generateRoute = async (options: {
+  startLocation: { lat: number; lng: number };
+  endLocation?: { lat: number; lng: number } | null;
+  duration: string;
+  type: string;
+  routeType: string;
+}): Promise<Step[]> => {
+  // Simulation de génération de parcours
+  const steps: Step[] = [
+    {
+      title: "Point de départ",
+      description: "Votre parcours commence ici",
+      duration: "0",
+      position: options.startLocation
+    }
+  ];
+  
+  if (options.endLocation) {
+    steps.push({
+      title: "Point d'arrivée",
+      description: "Votre parcours se termine ici",
+      duration: options.duration,
+      position: options.endLocation
+    });
+  }
+  
+  return steps;
 };

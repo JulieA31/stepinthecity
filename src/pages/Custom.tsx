@@ -3,6 +3,7 @@ import { useToast } from "@/components/ui/use-toast";
 import CustomWalkForm from "@/components/CustomWalkForm";
 import { Step } from "@/types/walk";
 import { Clock, MapPin } from "lucide-react";
+import LocationMap from "@/components/LocationMap";
 
 const Custom = () => {
   const [routeType, setRouteType] = useState("loop");
@@ -10,6 +11,7 @@ const Custom = () => {
   const [endLocation, setEndLocation] = useState<{ lat: number; lng: number } | null>(null);
   const [generatedSteps, setGeneratedSteps] = useState<Step[]>([]);
   const [targetDuration, setTargetDuration] = useState(0);
+  const [showMap, setShowMap] = useState(false);
   const { toast } = useToast();
 
   const handleGenerateSteps = (steps: Step[], duration: number) => {
@@ -71,6 +73,18 @@ const Custom = () => {
           </div>
         )}
       </div>
+
+      <LocationMap
+        open={showMap}
+        onOpenChange={setShowMap}
+        onLocationSelect={(lat, lng) => {
+          if (!startLocation) {
+            setStartLocation({ lat, lng });
+          } else if (routeType === "point-to-point" && !endLocation) {
+            setEndLocation({ lat, lng });
+          }
+        }}
+      />
     </div>
   );
 };

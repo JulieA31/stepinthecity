@@ -9,6 +9,9 @@ import { useToast } from "./ui/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { useState } from "react";
 import PhotoAlbum from "./walk/PhotoAlbum";
+import { classiquesParisSteps, baladeGastronomiqueSteps } from "@/data/walks/paris";
+import { lisbonneHistoriqueSteps, tramSteps, saveursSteps } from "@/data/walks/lisbonne";
+import { romeAntiqueSteps, romeBaroqueSteps, vaticanSteps } from "@/data/walks/rome";
 
 interface SavedWalkProps {
   walk: SavedWalkType;
@@ -32,9 +35,25 @@ const formatCityName = (city: string) => {
   return cityMap[city.toLowerCase()] || city;
 };
 
+const getStepsForWalk = (walkTitle: string) => {
+  const stepsMap: { [key: string]: any[] } = {
+    'Les classiques de Paris': classiquesParisSteps,
+    'Balade gastronomique': baladeGastronomiqueSteps,
+    'Lisbonne historique': lisbonneHistoriqueSteps,
+    'Le tram 28': tramSteps,
+    'Saveurs de Lisbonne': saveursSteps,
+    'La Rome antique': romeAntiqueSteps,
+    'La Rome baroque': romeBaroqueSteps,
+    'Le Vatican': vaticanSteps
+  };
+  return stepsMap[walkTitle] || [];
+};
+
 const SavedWalk = ({ walk, memories, onDelete, onAddMemory }: SavedWalkProps) => {
   const { toast } = useToast();
   const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [isDetailsOpen, setIsDetailsOpen] = useState(false);
+  const steps = getStepsForWalk(walk.walk_title);
 
   const handleDeleteMemory = async (memoryId: string) => {
     const { error } = await supabase
@@ -80,24 +99,56 @@ const SavedWalk = ({ walk, memories, onDelete, onAddMemory }: SavedWalkProps) =>
             </Button>
           </div>
         </div>
-        {walk.photo_url && (
-          <div>
-            <img
-              src={walk.photo_url}
-              alt={walk.walk_title}
-              className="w-full h-48 object-cover rounded-lg"
-            />
-          </div>
-        )}
+        <Dialog open={isDetailsOpen} onOpenChange={setIsDetailsOpen}>
+          <DialogTrigger asChild>
+            <div className="cursor-pointer">
+              {walk.photo_url && (
+                <img
+                  src={walk.photo_url}
+                  alt={walk.walk_title}
+                  className="w-full h-48 object-cover rounded-lg"
+                />
+              )}
+              <p className="text-gray-600 mt-2">{formatCityName(walk.city)}</p>
+            </div>
+          </DialogTrigger>
+          <DialogContent className="max-w-3xl max-h-[90vh] overflow-y-auto">
+            <DialogHeader>
+              <DialogTitle className="text-2xl font-semibold">{walk.walk_title}</DialogTitle>
+            </DialogHeader>
+            <div className="space-y-6">
+              <div>
+                <h3 className="text-lg font-semibold mb-2">Ville</h3>
+                <p>{formatCityName(walk.city)}</p>
+              </div>
+              
+              {steps.length > 0 && (
+                <div>
+                  <h3 className="text-lg font-semibold mb-4">Étapes du parcours</h3>
+                  <div className="space-y-4">
+                    {steps.map((step, index) => (
+                      <div key={index} className="p-4 bg-gray-50 rounded-lg">
+                        <h4 className="font-medium">{step.title}</h4>
+                        <p className="text-sm text-gray-600 mt-1">{step.description}</p>
+                        <p className="text-sm text-gray-500 mt-2">{step.duration}</p>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              <div>
+                <h3 className="text-lg font-semibold mb-4">Mes Souvenirs</h3>
+                <WalkMemories 
+                  memories={memories} 
+                  onDeleteMemory={handleDeleteMemory}
+                />
+              </div>
+            </div>
+          </DialogContent>
+        </Dialog>
       </CardHeader>
       <CardContent>
-        <p className="text-gray-600 mb-4">{formatCityName(walk.city)}</p>
-        
-        <WalkMemories 
-          memories={memories} 
-          onDeleteMemory={handleDeleteMemory}
-        />
-
         <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
           <DialogTrigger asChild>
             <Button

@@ -41,15 +41,15 @@ const PhotoAlbum = ({ walk, memories }: PhotoAlbumProps) => {
       const { data: existingAlbums, error: fetchError } = await supabase
         .from('photo_albums')
         .select('id, share_link')
-        .eq('saved_walk_id', walk.id)
-        .single();
+        .eq('saved_walk_id', walk.id);
 
-      if (fetchError && fetchError.code !== 'PGRST116') {
+      if (fetchError) {
         throw fetchError;
       }
 
-      if (existingAlbums?.share_link) {
-        window.open(`${window.location.origin}/album/${existingAlbums.share_link}`, '_blank');
+      const existingAlbum = existingAlbums?.[0];
+      if (existingAlbum?.share_link) {
+        window.open(`${window.location.origin}/album/${existingAlbum.share_link}`, '_blank');
         return;
       }
 

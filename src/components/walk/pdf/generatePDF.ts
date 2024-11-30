@@ -42,8 +42,7 @@ export const generatePDF = async (walk: SavedWalk, memories: WalkMemory[]): Prom
     const pageWidth = pdf.internal.pageSize.width;
     const margin = 20;
     const contentWidth = pageWidth - (2 * margin);
-    const imageWidth = contentWidth * 0.8; // 80% de la largeur du contenu
-    const imageHeight = 40; // Hauteur fixe plus petite pour les images
+    const maxImageWidth = contentWidth * 0.8; // 80% de la largeur du contenu
     let yPosition = margin;
 
     // Ajout de l'image de couverture
@@ -57,9 +56,18 @@ export const generatePDF = async (walk: SavedWalk, memories: WalkMemory[]): Prom
         reader.readAsDataURL(blob);
       });
 
-      // Centrer l'image de couverture
-      const xOffset = margin + (contentWidth - imageWidth) / 2;
-      pdf.addImage(base64data, "JPEG", xOffset, yPosition, imageWidth, imageHeight);
+      // Calculer les dimensions de l'image en préservant le ratio
+      const img = new Image();
+      await new Promise((resolve) => {
+        img.onload = resolve;
+        img.src = base64data;
+      });
+      
+      const aspectRatio = img.height / img.width;
+      const imageWidth = Math.min(maxImageWidth, contentWidth);
+      const imageHeight = imageWidth * aspectRatio;
+
+      pdf.addImage(base64data, "JPEG", margin, yPosition, imageWidth, imageHeight);
       yPosition += imageHeight + 15;
     } catch (error) {
       console.error("Error adding cover image:", error);
@@ -127,9 +135,18 @@ export const generatePDF = async (walk: SavedWalk, memories: WalkMemory[]): Prom
             reader.readAsDataURL(blob);
           });
 
-          // Centrer l'image du souvenir
-          const xOffset = margin + (contentWidth - imageWidth) / 2;
-          pdf.addImage(base64data, "JPEG", xOffset, yPosition, imageWidth, imageHeight);
+          // Calculer les dimensions de l'image en préservant le ratio
+          const img = new Image();
+          await new Promise((resolve) => {
+            img.onload = resolve;
+            img.src = base64data;
+          });
+          
+          const aspectRatio = img.height / img.width;
+          const imageWidth = Math.min(maxImageWidth, contentWidth);
+          const imageHeight = imageWidth * aspectRatio;
+
+          pdf.addImage(base64data, "JPEG", margin, yPosition, imageWidth, imageHeight);
           yPosition += imageHeight + 10;
 
           if (memory.description) {

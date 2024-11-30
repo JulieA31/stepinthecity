@@ -3,8 +3,6 @@ import { Button } from "@/components/ui/button";
 import { useToast } from "@/components/ui/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { SavedWalk, WalkMemory } from "@/types/walk";
-import { format } from "date-fns";
-import { fr } from "date-fns/locale";
 import ShareButton from "./ShareButton";
 
 interface PhotoAlbumProps {
@@ -28,19 +26,22 @@ const PhotoAlbum = ({ walk, memories }: PhotoAlbumProps) => {
       }
 
       // Check if an album already exists
-      const { data: existingAlbum } = await supabase
+      const { data: existingAlbums, error: fetchError } = await supabase
         .from('photo_albums')
         .select('id')
-        .eq('saved_walk_id', walk.id)
-        .single();
+        .eq('saved_walk_id', walk.id);
 
+      if (fetchError) throw fetchError;
+
+      const existingAlbum = existingAlbums?.[0];
+      
       if (existingAlbum) {
         window.open(`${window.location.origin}/album/${existingAlbum.id}`, '_blank');
         return;
       }
 
       // Create a new album
-      const { data: album, error } = await supabase
+      const { data: album, error: insertError } = await supabase
         .from('photo_albums')
         .insert({
           user_id: session.user.id,
@@ -50,7 +51,7 @@ const PhotoAlbum = ({ walk, memories }: PhotoAlbumProps) => {
         .select()
         .single();
 
-      if (error) throw error;
+      if (insertError) throw insertError;
 
       window.open(`${window.location.origin}/album/${album.id}`, '_blank');
 
@@ -59,6 +60,7 @@ const PhotoAlbum = ({ walk, memories }: PhotoAlbumProps) => {
         description: "Album photo créé avec succès",
       });
     } catch (error) {
+      console.error('Error generating photo album:', error);
       toast({
         title: "Erreur",
         description: "Impossible de créer l'album photo",

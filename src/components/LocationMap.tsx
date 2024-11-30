@@ -1,8 +1,10 @@
-import { useState, useEffect, useCallback } from "react";
+import { useState, useCallback } from "react";
 import { GoogleMap, DirectionsRenderer, useJsApiLoader } from "@react-google-maps/api";
 import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/components/ui/use-toast";
+import MapMarkers from "./map/MapMarkers";
+import { useGeolocation } from "./map/useGeolocation";
 
 const GOOGLE_MAPS_API_KEY = "AIzaSyC806xlYYv2CYq2euqLnD4_cMrKrUTZGNI";
 
@@ -13,15 +15,9 @@ interface LocationMapProps {
 }
 
 const LocationMap = ({ open, onOpenChange, onLocationSelect }: LocationMapProps) => {
-  const [position, setPosition] = useState<google.maps.LatLngLiteral>({
-    lat: 48.8566,
-    lng: 2.3522
-  });
   const [selectedPosition, setSelectedPosition] = useState<google.maps.LatLngLiteral | null>(null);
   const [directions, setDirections] = useState<google.maps.DirectionsResult | null>(null);
   const [map, setMap] = useState<google.maps.Map | null>(null);
-  const [currentMarker, setCurrentMarker] = useState<google.maps.Marker | null>(null);
-  const [selectedMarker, setSelectedMarker] = useState<google.maps.Marker | null>(null);
   const { toast } = useToast();
 
   const { isLoaded } = useJsApiLoader({
@@ -29,79 +25,14 @@ const LocationMap = ({ open, onOpenChange, onLocationSelect }: LocationMapProps)
     googleMapsApiKey: GOOGLE_MAPS_API_KEY
   });
 
-  const clearMarkers = useCallback(() => {
-    if (currentMarker) {
-      currentMarker.setMap(null);
-      setCurrentMarker(null);
-    }
-    if (selectedMarker) {
-      selectedMarker.setMap(null);
-      setSelectedMarker(null);
-    }
-  }, [currentMarker, selectedMarker]);
+  const position = useGeolocation(isLoaded, map, open);
 
   useEffect(() => {
     if (!open) {
-      clearMarkers();
       setDirections(null);
+      setSelectedPosition(null);
     }
-  }, [open, clearMarkers]);
-
-  useEffect(() => {
-    if (navigator.geolocation && isLoaded && map && open && window.google) {
-      const geoOptions = {
-        enableHighAccuracy: true,
-        timeout: 10000,
-        maximumAge: 0
-      };
-
-      const geoSuccess = (pos: GeolocationPosition) => {
-        clearMarkers();
-        
-        const newPosition = {
-          lat: pos.coords.latitude,
-          lng: pos.coords.longitude
-        };
-        
-        setPosition(newPosition);
-        setSelectedPosition(newPosition);
-        
-        if (map) {
-          map.panTo(newPosition);
-          map.setZoom(15);
-
-          const userMarker = new window.google.maps.Marker({
-            position: newPosition,
-            map,
-            icon: {
-              path: window.google.maps.SymbolPath.CIRCLE,
-              scale: 10,
-              fillColor: "#4285F4",
-              fillOpacity: 1,
-              strokeColor: "#FFFFFF",
-              strokeWeight: 2,
-            },
-            title: "Votre position",
-            optimized: true,
-            clickable: false
-          });
-
-          setCurrentMarker(userMarker);
-        }
-      };
-
-      const geoError = (error: GeolocationPositionError) => {
-        console.error("Erreur de géolocalisation:", error);
-        toast({
-          title: "Erreur de géolocalisation",
-          description: "Impossible d'obtenir votre position actuelle avec précision",
-          variant: "destructive",
-        });
-      };
-
-      navigator.geolocation.getCurrentPosition(geoSuccess, geoError, geoOptions);
-    }
-  }, [map, open, isLoaded, clearMarkers]);
+  }, [open]);
 
   const calculateRoute = useCallback((destination: google.maps.LatLngLiteral) => {
     if (!isLoaded || !window.google || !map || !position) return;
@@ -126,33 +57,19 @@ const LocationMap = ({ open, onOpenChange, onLocationSelect }: LocationMapProps)
         }
       }
     );
-  }, [position, isLoaded, map]);
+  }, [position, isLoaded, map, toast]);
 
   const handleMapClick = useCallback((e: google.maps.MapMouseEvent) => {
-    if (e.latLng && map && isLoaded && window.google) {
+    if (e.latLng && map) {
       const clickedPosition = {
         lat: e.latLng.lat(),
         lng: e.latLng.lng()
       };
       
       setSelectedPosition(clickedPosition);
-      
-      if (selectedMarker) {
-        selectedMarker.setMap(null);
-      }
-
-      const newMarker = new window.google.maps.Marker({
-        position: clickedPosition,
-        map,
-        animation: window.google.maps.Animation.DROP,
-        optimized: true,
-        clickable: false
-      });
-      
-      setSelectedMarker(newMarker);
       calculateRoute(clickedPosition);
     }
-  }, [map, isLoaded, selectedMarker, calculateRoute]);
+  }, [map, calculateRoute]);
 
   const handleConfirm = () => {
     if (selectedPosition) {
@@ -196,6 +113,11 @@ const LocationMap = ({ open, onOpenChange, onLocationSelect }: LocationMapProps)
               clickableIcons: false,
             }}
           >
+            <MapMarkers
+              position={position}
+              selectedPosition={selectedPosition}
+              setSelectedPosition={setSelectedPosition}
+            />
             {directions && <DirectionsRenderer directions={directions} options={{ suppressMarkers: true }} />}
           </GoogleMap>
           <Button

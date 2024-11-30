@@ -4,7 +4,6 @@ import { useToast } from "@/components/ui/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import SavedWalk from "@/components/SavedWalk";
 import { SavedWalk as SavedWalkType, WalkMemory } from "@/types/walk";
-import { Facebook, Instagram, Share2 } from "lucide-react";
 
 const MyWalks = () => {
   const [savedWalks, setSavedWalks] = useState<SavedWalkType[]>([]);
@@ -165,11 +164,6 @@ const MyWalks = () => {
             className="w-full max-w-xl h-auto mb-8 rounded-lg"
           />
           <h1 className="text-4xl font-display text-text text-center mb-4">Mon Carnet de Route</h1>
-          <div className="flex gap-4 items-center">
-            <Facebook className="h-6 w-6 text-primary hover:text-accent transition-colors cursor-pointer" />
-            <Instagram className="h-6 w-6 text-primary hover:text-accent transition-colors cursor-pointer" />
-            <Share2 className="h-6 w-6 text-primary hover:text-accent transition-colors cursor-pointer" />
-          </div>
         </div>
         
         <section>

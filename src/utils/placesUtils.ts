@@ -62,7 +62,7 @@ export const generatePlacesForType = async (
         const request: google.maps.places.PlaceSearchRequest = {
           location: new google.maps.LatLng(location.lat, location.lng),
           radius: Math.min(targetDuration * 40, 2000), // Rayon basé sur la durée (max 2km)
-          type: type as google.maps.places.LocationType,
+          type: type as keyof typeof google.maps.places.PlaceType,
           rankBy: google.maps.places.RankBy.DISTANCE
         };
 

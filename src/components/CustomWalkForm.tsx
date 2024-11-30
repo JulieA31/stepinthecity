@@ -5,7 +5,7 @@ import { Step } from "@/types/walk";
 import { useToast } from "@/components/ui/use-toast";
 import { generateRoute } from "@/utils/routeGenerator";
 import { Alert, AlertDescription } from "@/components/ui/alert";
-import { FormOptions } from "./FormOptions";
+import FormOptions from "./FormOptions";
 
 interface CustomWalkFormProps {
   onGenerate: (steps: Step[], targetDuration: number) => void;

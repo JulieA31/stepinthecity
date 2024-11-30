@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import WalkDetailsDialog from "@/components/WalkDetailsDialog";
 import WalkCard from "@/components/WalkCard";
 import { getImageForWalk } from "@/utils/walkImages";
@@ -108,7 +108,7 @@ const Predefined = () => {
   return (
     <div className="min-h-screen bg-secondary pt-20">
       <div className="container mx-auto px-4 py-8">
-        <h1 className="text-4xl font-display text-text mb-8 text-center">Choisis ton parcours thématique</h1>
+        <h1 className="text-4xl font-display text-text mb-8 text-center">Choisir ton parcours thématique</h1>
         
         <div className="mb-8">
           <LocationSelector onCitySelect={handleCitySelect} />

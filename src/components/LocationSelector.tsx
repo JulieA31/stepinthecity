@@ -90,18 +90,17 @@ const LocationSelector = ({ onCitySelect }: LocationSelectorProps) => {
   const handleCountryChange = (value: string) => {
     setSelectedCountry(value as CountryKey);
     setSelectedCity("");
-    // Ne pas appeler onCitySelect ici pour garder le menu ouvert
   };
 
   const handleCityChange = (city: string) => {
     setSelectedCity(city);
-    onCitySelect(city); // Appeler onCitySelect uniquement quand une ville est sélectionnée
+    onCitySelect(city);
   };
 
   return (
-    <div className="flex items-center gap-4 px-4 py-2">
+    <div className="flex items-center justify-center gap-4 px-4 py-2">
       <MapPin className="w-5 h-5 text-primary" />
-      <div className="flex flex-col sm:flex-row gap-2">
+      <div className="flex flex-col sm:flex-row items-center gap-2">
         <Select value={selectedCountry} onValueChange={handleCountryChange}>
           <SelectTrigger className="w-[180px] bg-white">
             <SelectValue placeholder="Choisir un pays" />

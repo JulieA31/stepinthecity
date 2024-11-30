@@ -116,7 +116,7 @@ const LocationMap = ({ open, onOpenChange, onLocationSelect }: LocationMapProps)
           </GoogleMap>
           {selectedPosition && (
             <Button
-              className="absolute bottom-4 right-4 z-[1000]"
+              className="absolute bottom-4 right-4 z-[1000] bg-primary hover:bg-primary/90"
               onClick={handleConfirm}
             >
               Confirmer la position

@@ -21,8 +21,8 @@ export const addFooter = async (pdf: jsPDF, pageWidth: number, pageHeight: numbe
     });
 
     // Calculer les dimensions du logo
-    const logoHeight = 15;
-    const logoWidth = 30;
+    const logoHeight = 12; // Réduit la hauteur du logo
+    const logoWidth = 24; // Maintient le ratio
     
     // Centrer les éléments horizontalement
     const totalWidth = pageWidth - (2 * margin);
@@ -30,7 +30,7 @@ export const addFooter = async (pdf: jsPDF, pageWidth: number, pageHeight: numbe
     const startX = margin + (totalWidth - contentWidth) / 2;
     
     const logoX = startX;
-    const logoY = yPosition + (footerHeight - logoHeight) / 2;
+    const logoY = yPosition + (footerHeight - logoHeight) / 2 + 1; // Ajuste la position verticale
 
     pdf.addImage(base64Logo, "PNG", logoX, logoY, logoWidth, logoHeight);
 

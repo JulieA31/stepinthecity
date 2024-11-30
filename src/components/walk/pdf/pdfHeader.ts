@@ -7,7 +7,7 @@ export const addHeader = async (pdf: jsPDF, walkTitle: string, pageWidth: number
   
   try {
     // Ajouter le bandeau coloré
-    pdf.setFillColor("#FF69B4"); // Utilisation de la couleur primary du thème
+    pdf.setFillColor("#6B7280"); // Utilisation de la couleur theme.DEFAULT du thème
     pdf.rect(0, 0, pageWidth, 15, "F");
     
     // Ajouter le titre "Mon Carnet de Route"

@@ -1,48 +1,26 @@
 import { useState } from "react";
-import { useJsApiLoader } from "@react-google-maps/api";
-import LocationMap from "@/components/LocationMap";
-import WalkMap from "@/components/WalkMap";
+import { useToast } from "@/components/ui/use-toast";
 import CustomWalkForm from "@/components/CustomWalkForm";
 import { Step } from "@/types/walk";
-import { Clock } from "lucide-react";
-import { useToast } from "@/components/ui/use-toast";
-
-const GOOGLE_MAPS_API_KEY = "AIzaSyC806xlYYv2CYq2euqLnD4_cMrKrUTZGNI";
+import { Clock, MapPin } from "lucide-react";
 
 const Custom = () => {
   const [routeType, setRouteType] = useState("loop");
-  const [showMap, setShowMap] = useState(false);
   const [startLocation, setStartLocation] = useState<{ lat: number; lng: number } | null>(null);
   const [endLocation, setEndLocation] = useState<{ lat: number; lng: number } | null>(null);
   const [generatedSteps, setGeneratedSteps] = useState<Step[]>([]);
-  const [isMapVisible, setIsMapVisible] = useState(false);
-  const [totalDuration, setTotalDuration] = useState(0);
-  const [legDurations, setLegDurations] = useState<number[]>([]);
   const [targetDuration, setTargetDuration] = useState(0);
   const { toast } = useToast();
-
-  const { isLoaded } = useJsApiLoader({
-    id: 'google-map-script',
-    googleMapsApiKey: GOOGLE_MAPS_API_KEY
-  });
 
   const handleGenerateSteps = (steps: Step[], duration: number) => {
     setGeneratedSteps(steps);
     setTargetDuration(duration);
-    setIsMapVisible(true);
   };
 
-  const handleRouteCalculated = (durationInMinutes: number, legDurations: number[]) => {
-    setTotalDuration(durationInMinutes);
-    setLegDurations(legDurations);
-
-    if (Math.abs(durationInMinutes - targetDuration) > 10) {
-      toast({
-        title: "Attention",
-        description: `Le parcours généré dure ${durationInMinutes} minutes, ce qui diffère de la durée demandée de ${targetDuration} minutes.`,
-        variant: "destructive"
-      });
-    }
+  const getGoogleMapsUrl = (step: Step) => {
+    if (!step.position) return "";
+    const { lat, lng } = step.position;
+    return `https://www.google.com/maps/search/?api=1&query=${lat},${lng}`;
   };
 
   return (
@@ -59,86 +37,40 @@ const Custom = () => {
           setRouteType={setRouteType}
         />
 
-        {isMapVisible && generatedSteps.length > 0 && (
-          <>
-            <div className="h-[600px] relative mt-8 rounded-lg overflow-hidden shadow-lg">
-              {isLoaded ? (
-                <WalkMap
-                  steps={generatedSteps}
-                  walkTitle="Parcours personnalisé"
-                  isLoaded={isLoaded}
-                  onRouteCalculated={handleRouteCalculated}
-                />
-              ) : (
-                <div className="h-full flex items-center justify-center">
-                  Chargement de la carte...
-                </div>
-              )}
-            </div>
-
-            <div className="mt-8 grid grid-cols-1 md:grid-cols-2 gap-8">
-              {/* Colonne de gauche - Itinéraire */}
-              <div className="bg-white p-6 rounded-lg shadow-md">
-                <h2 className="text-2xl font-display mb-4">Itinéraire</h2>
-                <div className="flex items-center gap-2 mb-6">
-                  <Clock className="text-primary" size={20} />
-                  <span className="text-lg">Durée totale : {totalDuration} minutes</span>
-                </div>
-                <div className="space-y-4">
-                  {generatedSteps.map((step, index) => (
-                    <div key={index} className="border-l-2 border-primary pl-4">
-                      <div className="flex items-center gap-2">
-                        <span className="bg-primary text-white w-6 h-6 rounded-full flex items-center justify-center text-sm">
-                          {index + 1}
-                        </span>
-                        {index > 0 && legDurations[index - 1] && (
-                          <span className="text-gray-600">{legDurations[index - 1]} min de marche</span>
-                        )}
-                      </div>
-                      <h3 className="font-medium mt-1">{step.title}</h3>
+        {generatedSteps.length > 0 && (
+          <div className="mt-8 bg-white p-6 rounded-lg shadow-md">
+            <h2 className="text-2xl font-display mb-6">Votre itinéraire</h2>
+            <div className="space-y-6">
+              {generatedSteps.map((step, index) => (
+                <div key={index} className="border-l-2 border-primary pl-4">
+                  <div className="flex items-center gap-2 mb-2">
+                    <span className="bg-primary text-white w-6 h-6 rounded-full flex items-center justify-center text-sm">
+                      {index + 1}
+                    </span>
+                    <h3 className="font-medium text-lg">{step.title}</h3>
+                  </div>
+                  <p className="text-gray-600 mb-2">{step.description}</p>
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center text-sm text-gray-500">
+                      <Clock size={16} className="mr-1" />
+                      <span>{step.duration}</span>
                     </div>
-                  ))}
+                    <a
+                      href={getGoogleMapsUrl(step)}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="flex items-center gap-1 text-primary hover:text-primary-dark transition-colors"
+                    >
+                      <MapPin size={16} />
+                      <span>Voir sur Google Maps</span>
+                    </a>
+                  </div>
                 </div>
-              </div>
-
-              {/* Colonne de droite - Points d'intérêt */}
-              <div className="bg-white p-6 rounded-lg shadow-md">
-                <h2 className="text-2xl font-display mb-6">Points d'intérêt</h2>
-                <div className="space-y-6">
-                  {generatedSteps.map((step, index) => (
-                    <div key={index} className="flex gap-4">
-                      <div className="w-24 h-24 flex-shrink-0">
-                        <img
-                          src={step.imageUrl || "https://images.unsplash.com/photo-1472396961693-142e6e269027"}
-                          alt={step.title}
-                          className="w-full h-full object-cover rounded-lg"
-                        />
-                      </div>
-                      <div>
-                        <h3 className="font-medium text-lg mb-1">{step.title}</h3>
-                        <p className="text-gray-600 text-sm">{step.description}</p>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              </div>
+              ))}
             </div>
-          </>
+          </div>
         )}
       </div>
-
-      <LocationMap
-        open={showMap}
-        onOpenChange={setShowMap}
-        onLocationSelect={(lat, lng) => {
-          if (!startLocation) {
-            setStartLocation({ lat, lng });
-          } else if (routeType === "point-to-point" && !endLocation) {
-            setEndLocation({ lat, lng });
-          }
-          setShowMap(false);
-        }}
-      />
     </div>
   );
 };

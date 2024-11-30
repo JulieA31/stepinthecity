@@ -25,38 +25,42 @@ const Login = () => {
 
     try {
       if (isLogin) {
-        const { error } = await supabase.auth.signInWithPassword({
+        const { data, error } = await supabase.auth.signInWithPassword({
           email,
           password,
         });
 
         if (error) throw error;
 
-        toast({
-          title: "Connexion réussie",
-          description: "Vous êtes maintenant connecté",
-        });
-        
-        navigate("/");
+        if (data.user) {
+          toast({
+            title: "Connexion réussie",
+            description: "Vous êtes maintenant connecté",
+          });
+          
+          navigate("/");
+        }
       } else {
-        const { error } = await supabase.auth.signUp({
+        const { data, error } = await supabase.auth.signUp({
           email,
           password,
           options: {
             data: {
-              username: email.split("@")[0], // Using email prefix as default username
+              username: email.split("@")[0],
             },
           },
         });
 
         if (error) throw error;
 
-        toast({
-          title: "Compte créé avec succès",
-          description: "Vous pouvez maintenant vous connecter",
-        });
-        
-        setIsLogin(true);
+        if (data.user) {
+          toast({
+            title: "Compte créé avec succès",
+            description: "Vous pouvez maintenant vous connecter",
+          });
+          
+          setIsLogin(true);
+        }
       }
     } catch (error: any) {
       toast({

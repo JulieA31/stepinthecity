@@ -24,6 +24,7 @@ const handler = async (req: Request): Promise<Response> => {
     const { to, subject, pdfBase64, albumTitle } = await req.json() as EmailRequest;
 
     console.log(`Sending email for album: ${albumTitle} to: ${to.join(', ')}`);
+    console.log('API Key present:', !!RESEND_API_KEY);
 
     const res = await fetch("https://api.resend.com/emails", {
       method: "POST",

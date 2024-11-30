@@ -98,6 +98,29 @@ const Header = () => {
   return (
     <header className="fixed top-0 left-0 right-0 z-50 bg-background border-b h-[11rem]">
       <div className="container mx-auto px-4 h-full flex flex-col">
+        {/* Menu desktop */}
+        <nav className="hidden md:flex items-center justify-between py-2">
+          <div className="flex items-center gap-8">
+            <NavLinks />
+          </div>
+          {isLoggedIn ? (
+            <Button 
+              variant="ghost" 
+              className="flex items-center gap-2" 
+              onClick={handleLogout}
+            >
+              <LogOut className="h-4 w-4" />
+              Se déconnecter
+            </Button>
+          ) : (
+            <Link to="/login">
+              <Button variant="default">
+                Se connecter / S'inscrire
+              </Button>
+            </Link>
+          )}
+        </nav>
+
         <div className="flex items-center justify-between py-2">
           <Link to="/" className="flex items-center">
             <img 
@@ -139,29 +162,6 @@ const Header = () => {
             </Sheet>
           </div>
         </div>
-
-        {/* Menu desktop */}
-        <nav className="hidden md:flex items-center justify-between mt-auto pb-4">
-          <div className="flex items-center gap-8">
-            <NavLinks />
-          </div>
-          {isLoggedIn ? (
-            <Button 
-              variant="ghost" 
-              className="flex items-center gap-2" 
-              onClick={handleLogout}
-            >
-              <LogOut className="h-4 w-4" />
-              Se déconnecter
-            </Button>
-          ) : (
-            <Link to="/login">
-              <Button variant="default">
-                Se connecter / S'inscrire
-              </Button>
-            </Link>
-          )}
-        </nav>
       </div>
     </header>
   );

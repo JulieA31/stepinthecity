@@ -12,22 +12,31 @@ export type Database = {
       photo_albums: {
         Row: {
           created_at: string
+          description: string | null
           id: string
+          location: string | null
           saved_walk_id: string
+          share_link: string | null
           title: string
           user_id: string
         }
         Insert: {
           created_at?: string
+          description?: string | null
           id?: string
+          location?: string | null
           saved_walk_id: string
+          share_link?: string | null
           title: string
           user_id: string
         }
         Update: {
           created_at?: string
+          description?: string | null
           id?: string
+          location?: string | null
           saved_walk_id?: string
+          share_link?: string | null
           title?: string
           user_id?: string
         }

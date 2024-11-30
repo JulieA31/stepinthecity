@@ -40,15 +40,16 @@ const PhotoAlbum = ({ walk, memories }: PhotoAlbumProps) => {
       // Check if an album already exists
       const { data: existingAlbums, error: fetchError } = await supabase
         .from('photo_albums')
-        .select('id')
-        .eq('saved_walk_id', walk.id);
+        .select('id, share_link')
+        .eq('saved_walk_id', walk.id)
+        .single();
 
-      if (fetchError) throw fetchError;
+      if (fetchError && fetchError.code !== 'PGRST116') {
+        throw fetchError;
+      }
 
-      const existingAlbum = existingAlbums?.[0];
-      
-      if (existingAlbum) {
-        window.open(`${window.location.origin}/album/${existingAlbum.id}`, '_blank');
+      if (existingAlbums?.share_link) {
+        window.open(`${window.location.origin}/album/${existingAlbums.share_link}`, '_blank');
         return;
       }
 
@@ -59,13 +60,15 @@ const PhotoAlbum = ({ walk, memories }: PhotoAlbumProps) => {
           user_id: session.user.id,
           saved_walk_id: walk.id,
           title: walk.walk_title,
+          location: walk.city,
+          description: `Album photo de ma balade à ${walk.city}`,
         })
-        .select()
+        .select('share_link')
         .single();
 
       if (insertError) throw insertError;
 
-      window.open(`${window.location.origin}/album/${album.id}`, '_blank');
+      window.open(`${window.location.origin}/album/${album.share_link}`, '_blank');
 
       toast({
         title: "Succès",
@@ -95,10 +98,7 @@ const PhotoAlbum = ({ walk, memories }: PhotoAlbumProps) => {
           <TooltipTrigger asChild>
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
-                <Button
-                  variant="ghost"
-                  size="icon"
-                >
+                <Button variant="ghost" size="icon">
                   <Download className="h-5 w-5" />
                 </Button>
               </DropdownMenuTrigger>

@@ -10,16 +10,21 @@ const Album = () => {
   const { id } = useParams();
   const [walk, setWalk] = useState<SavedWalk | null>(null);
   const [memories, setMemories] = useState<WalkMemory[]>([]);
+  const [albumTitle, setAlbumTitle] = useState<string>("");
+  const [albumDescription, setAlbumDescription] = useState<string>("");
 
   useEffect(() => {
     const fetchAlbum = async () => {
       if (!id) return;
 
-      // First, get the album details
+      // First, get the album details using the share_link
       const { data: album, error: albumError } = await supabase
         .from('photo_albums')
-        .select('*, saved_walks!inner(*)')
-        .eq('id', id)
+        .select(`
+          *,
+          saved_walks (*)
+        `)
+        .eq('share_link', id)
         .single();
 
       if (albumError) {
@@ -29,6 +34,8 @@ const Album = () => {
 
       if (album?.saved_walks) {
         setWalk(album.saved_walks as SavedWalk);
+        setAlbumTitle(album.title);
+        setAlbumDescription(album.description || "");
 
         // Then, fetch the memories for this walk
         const { data: walkMemories, error: memoriesError } = await supabase
@@ -61,8 +68,11 @@ const Album = () => {
         <div className="bg-white rounded-lg shadow-lg overflow-hidden">
           <div className="px-6 py-8">
             <h1 className="text-3xl font-bold text-gray-900 text-center mb-2">
-              {walk.walk_title}
+              {albumTitle || walk.walk_title}
             </h1>
+            {albumDescription && (
+              <p className="text-gray-600 text-center mb-4">{albumDescription}</p>
+            )}
             <p className="text-gray-600 text-center mb-8">
               {walk.city} - {formattedDate}
             </p>

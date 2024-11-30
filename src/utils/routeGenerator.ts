@@ -1,5 +1,5 @@
 import { Step } from "@/types/walk";
-import { generatePlacesForType } from "./placesUtils";
+import { generateRoute as generatePlacesRoute } from "./placesUtils";
 
 interface RouteOptions {
   startLocation: google.maps.LatLngLiteral;
@@ -37,7 +37,14 @@ export const generateRoute = async ({
   type, 
   routeType 
 }: RouteOptions): Promise<Step[]> => {
-  const steps = await generatePlacesForType(startLocation, type, duration);
+  const steps = await generatePlacesRoute({
+    startLocation,
+    endLocation,
+    duration,
+    type,
+    routeType
+  });
+  
   const finalSteps: Step[] = [];
   
   // Point de départ avec description personnalisée

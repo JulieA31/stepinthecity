@@ -21,8 +21,8 @@ export const addHeader = async (pdf: jsPDF, walkTitle: string, pageWidth: number
     });
 
     // Dimensions du logo dans le bandeau (réduites de 10% supplémentaires)
-    const logoHeight = 9.56;
-    const logoWidth = 19.12;
+    const logoHeight = 8.604;
+    const logoWidth = 17.208;
     const logoX = 5;
     const logoY = 2.5;
 

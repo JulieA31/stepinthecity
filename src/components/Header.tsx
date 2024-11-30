@@ -96,20 +96,23 @@ const Header = () => {
   );
 
   return (
-    <header className="fixed top-0 left-0 right-0 z-50 bg-background border-b h-[11rem]">
+    <header className="fixed top-0 left-0 right-0 z-50 bg-background border-b h-24">
       <div className="container mx-auto px-4 h-full">
-        <div className="flex items-center justify-between py-2">
+        <div className="flex items-center justify-between h-full">
           <Link to="/" className="flex items-center">
             <img 
               src="/lovable-uploads/1d570795-c96a-447c-a27a-1b240ba72131.png" 
               alt="Step In The City Logo" 
-              className="h-[9.538rem] w-auto"
+              className="h-20 w-auto"
             />
           </Link>
 
           {/* Menu desktop */}
           <nav className="hidden md:flex items-center gap-8">
             <NavLinks />
+          </nav>
+
+          <div className="hidden md:block">
             {isLoggedIn ? (
               <Button 
                 variant="ghost" 
@@ -126,14 +129,14 @@ const Header = () => {
                 </Button>
               </Link>
             )}
-          </nav>
+          </div>
 
           {/* Menu mobile */}
           <div className="md:hidden">
             <Sheet open={isOpen} onOpenChange={setIsOpen}>
               <SheetTrigger asChild>
-                <Button variant="ghost" size="icon" className="h-16 w-16">
-                  {isOpen ? <X className="h-10 w-10" /> : <Menu className="h-10 w-10" />}
+                <Button variant="ghost" size="icon" className="h-10 w-10">
+                  {isOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
                 </Button>
               </SheetTrigger>
               <SheetContent side="right" className="w-[80%] sm:w-[385px]">

@@ -9,8 +9,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from 
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import { useMemoryUpload } from "@/hooks/useMemoryUpload";
-import { WalkCard } from "@/components/WalkCard";
+import WalkCard from "@/components/WalkCard";
 
 interface SavedWalk {
   id: string;

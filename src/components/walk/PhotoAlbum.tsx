@@ -94,11 +94,11 @@ const PhotoAlbum = ({ walk, memories }: PhotoAlbumProps) => {
                     <Download className="h-5 w-5" />
                   </Button>
                 </DropdownMenuTrigger>
-                <DropdownMenuContent>
-                  <DropdownMenuItem onClick={handleDownloadPDF}>
+                <DropdownMenuContent className="bg-white border border-gray-200 shadow-lg">
+                  <DropdownMenuItem onClick={handleDownloadPDF} className="hover:bg-gray-100">
                     Télécharger en PDF
                   </DropdownMenuItem>
-                  <DropdownMenuItem onClick={() => setIsEmailDialogOpen(true)}>
+                  <DropdownMenuItem onClick={() => setIsEmailDialogOpen(true)} className="hover:bg-gray-100">
                     Envoyer par email
                   </DropdownMenuItem>
                 </DropdownMenuContent>

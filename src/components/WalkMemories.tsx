@@ -1,5 +1,5 @@
 import { WalkMemory } from "@/types/walk";
-import { Trash2, X } from "lucide-react";
+import { Trash2 } from "lucide-react";
 import { Button } from "./ui/button";
 import { useState } from "react";
 import {
@@ -34,20 +34,11 @@ const WalkMemories = ({ memories, onDeleteMemory }: WalkMemoriesProps) => {
                 />
               </DialogTrigger>
               <DialogContent className="max-w-4xl p-0 overflow-hidden">
-                <div className="relative">
-                  <img
-                    src={memory.photo_url}
-                    alt="Souvenir en grand format"
-                    className="w-full h-auto max-h-[80vh] object-contain"
-                  />
-                  <Button
-                    variant="ghost"
-                    size="icon"
-                    className="absolute top-2 right-2"
-                  >
-                    <X className="h-4 w-4" />
-                  </Button>
-                </div>
+                <img
+                  src={memory.photo_url}
+                  alt="Souvenir en grand format"
+                  className="w-full h-auto max-h-[80vh] object-contain"
+                />
               </DialogContent>
             </Dialog>
             {memory.description && (

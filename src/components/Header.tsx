@@ -103,7 +103,7 @@ const Header = () => {
             <img 
               src="/lovable-uploads/1d570795-c96a-447c-a27a-1b240ba72131.png" 
               alt="Step In The City Logo" 
-              className="h-[10.04rem] w-auto"
+              className="h-[9.538rem] w-auto"
             />
           </Link>
 

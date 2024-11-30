@@ -7,9 +7,12 @@ import {
 } from "@/components/ui/dialog";
 import { LoadScript } from "@react-google-maps/api";
 import { useState } from "react";
+import { useToast } from "@/components/ui/use-toast";
+import { Button } from "@/components/ui/button";
 import WalkMap from "./WalkMap";
 import { Step, Walk } from "@/types/walk";
 import { classiquesParisSteps, baladeGastronomiqueSteps } from "@/data/walks/paris";
+import { supabase } from "@/integrations/supabase/client";
 
 const GOOGLE_MAPS_API_KEY = "AIzaSyC806xlYYv2CYq2euqLnD4_cMrKrUTZGNI";
 
@@ -29,15 +32,74 @@ const WalkDetailsDialog = ({
   getStepsForWalk,
 }: WalkDetailsDialogProps) => {
   const [isLoaded, setIsLoaded] = useState(false);
+  const [isSaving, setIsSaving] = useState(false);
+  const { toast } = useToast();
 
   if (!walk) return null;
 
-  // Utiliser directement les étapes selon le parcours
   const steps = walk.title === "Les classiques de Paris" 
     ? classiquesParisSteps 
     : walk.title === "Balade gastronomique"
     ? baladeGastronomiqueSteps
     : getStepsForWalk(walk.title);
+
+  const handleSaveWalk = async () => {
+    try {
+      setIsSaving(true);
+      
+      // Vérifier si l'utilisateur est connecté
+      const { data: { session } } = await supabase.auth.getSession();
+      if (!session) {
+        toast({
+          title: "Erreur",
+          description: "Vous devez être connecté pour enregistrer un parcours",
+          variant: "destructive",
+        });
+        return;
+      }
+
+      // Vérifier si le parcours est déjà enregistré
+      const { data: existingWalks } = await supabase
+        .from('saved_walks')
+        .select()
+        .eq('user_id', session.user.id)
+        .eq('walk_title', walk.title)
+        .single();
+
+      if (existingWalks) {
+        toast({
+          title: "Information",
+          description: "Ce parcours est déjà enregistré dans votre carnet",
+        });
+        return;
+      }
+
+      // Enregistrer le parcours
+      const { error } = await supabase
+        .from('saved_walks')
+        .insert({
+          user_id: session.user.id,
+          walk_title: walk.title,
+          city: walk.city || "Paris" // Par défaut Paris si la ville n'est pas spécifiée
+        });
+
+      if (error) throw error;
+
+      toast({
+        title: "Succès",
+        description: "Le parcours a été ajouté à votre carnet de route",
+      });
+
+    } catch (error) {
+      toast({
+        title: "Erreur",
+        description: "Impossible d'enregistrer le parcours",
+        variant: "destructive",
+      });
+    } finally {
+      setIsSaving(false);
+    }
+  };
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
@@ -55,7 +117,16 @@ const WalkDetailsDialog = ({
           />
           
           <div className="mt-4">
-            <p className="text-gray-600 mb-6">{walk.description}</p>
+            <div className="flex justify-between items-start mb-6">
+              <p className="text-gray-600 flex-1">{walk.description}</p>
+              <Button
+                onClick={handleSaveWalk}
+                disabled={isSaving}
+                className="ml-4 whitespace-nowrap"
+              >
+                {isSaving ? "Enregistrement..." : "Enregistrer dans mon Carnet"}
+              </Button>
+            </div>
             
             <div className="flex items-center gap-6 mb-8">
               <div className="flex items-center gap-2">

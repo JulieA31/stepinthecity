@@ -11,6 +11,7 @@ export interface Walk {
   description: string;
   duration: string;
   difficulty: string;
+  city?: string;
 }
 
 export interface SavedWalk {

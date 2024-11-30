@@ -47,7 +47,6 @@ const WalkDetailsDialog = ({
     try {
       setIsSaving(true);
       
-      // Vérifier si l'utilisateur est connecté
       const { data: { session } } = await supabase.auth.getSession();
       if (!session) {
         toast({
@@ -63,10 +62,9 @@ const WalkDetailsDialog = ({
         .from('saved_walks')
         .select()
         .eq('user_id', session.user.id)
-        .eq('walk_title', walk.title)
-        .single();
+        .eq('walk_title', walk.title);
 
-      if (existingWalks) {
+      if (existingWalks && existingWalks.length > 0) {
         toast({
           title: "Information",
           description: "Ce parcours est déjà enregistré dans votre carnet",
@@ -80,7 +78,7 @@ const WalkDetailsDialog = ({
         .insert({
           user_id: session.user.id,
           walk_title: walk.title,
-          city: walk.city || "Paris" // Par défaut Paris si la ville n'est pas spécifiée
+          city: walk.city || "Paris"
         });
 
       if (error) throw error;

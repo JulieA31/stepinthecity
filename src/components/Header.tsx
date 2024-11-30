@@ -2,7 +2,7 @@ import { Link, useLocation, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
-import { LogOut, Menu, X } from "lucide-react";
+import { LogOut, Menu, X, Home, MapPin, Map, Book } from "lucide-react";
 import {
   Sheet,
   SheetContent,
@@ -54,29 +54,42 @@ const Header = () => {
   const NavLinks = () => (
     <>
       <Link
+        to="/"
+        onClick={() => setIsOpen(false)}
+        className={`text-sm font-medium transition-colors hover:text-primary flex items-center gap-2 ${
+          location.pathname === "/" ? "text-primary" : "text-muted-foreground"
+        }`}
+      >
+        <Home className="h-4 w-4" />
+        Accueil
+      </Link>
+      <Link
         to="/predefined"
         onClick={() => setIsOpen(false)}
-        className={`text-sm font-medium transition-colors hover:text-primary ${
+        className={`text-sm font-medium transition-colors hover:text-primary flex items-center gap-2 ${
           location.pathname === "/predefined" ? "text-primary" : "text-muted-foreground"
         }`}
       >
+        <MapPin className="h-4 w-4" />
         Parcours prédéfinis
       </Link>
       <Link
         to="/custom"
         onClick={() => setIsOpen(false)}
-        className={`text-sm font-medium transition-colors hover:text-primary ${
+        className={`text-sm font-medium transition-colors hover:text-primary flex items-center gap-2 ${
           location.pathname === "/custom" ? "text-primary" : "text-muted-foreground"
         }`}
       >
+        <Map className="h-4 w-4" />
         Parcours personnalisé
       </Link>
       <button
         onClick={handleCarnetClick}
-        className={`text-sm font-medium transition-colors hover:text-primary text-left ${
+        className={`text-sm font-medium transition-colors hover:text-primary text-left flex items-center gap-2 ${
           location.pathname === "/my-walks" ? "text-primary" : "text-muted-foreground"
         }`}
       >
+        <Book className="h-4 w-4" />
         Mon Carnet de Route
       </button>
     </>

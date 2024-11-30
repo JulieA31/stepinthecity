@@ -95,7 +95,7 @@ const Index = () => {
               </div>
               <h2 className="text-2xl font-display">Parcours Prédéfinis</h2>
             </div>
-            <p className="text-gray-600">
+            <p className="text-gray-600 text-center">
               Découvre nos sélections d'itinéraires thématiques soigneusement préparés.
             </p>
             <button className="btn-primary mt-6 w-full">

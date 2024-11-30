@@ -7,15 +7,19 @@ let placesService: google.maps.places.PlacesService | null = null;
 const initPlacesService = async () => {
   if (placesService) return placesService;
 
-  const loader = new Loader({
-    apiKey: GOOGLE_MAPS_API_KEY,
-    version: "weekly",
-    libraries: ["places"]
-  });
+  // Attendre que l'API Google Maps soit chargée
+  if (!window.google || !window.google.maps) {
+    const loader = new Loader({
+      apiKey: GOOGLE_MAPS_API_KEY,
+      version: "weekly",
+      libraries: ["places"]
+    });
+    await loader.load();
+  }
 
-  await loader.load();
-  const div = document.createElement('div');
-  placesService = new google.maps.places.PlacesService(div);
+  // Créer un élément div pour le service Places
+  const mapDiv = document.createElement('div');
+  placesService = new google.maps.places.PlacesService(mapDiv);
   return placesService;
 };
 
@@ -24,24 +28,29 @@ export const findPlacesByType = async (
   type: string,
   radius: number = 2000
 ): Promise<google.maps.places.PlaceResult[]> => {
-  const service = await initPlacesService();
+  try {
+    const service = await initPlacesService();
 
-  return new Promise((resolve, reject) => {
-    const request = {
-      location,
-      radius,
-      type
-    };
+    return new Promise((resolve, reject) => {
+      const request = {
+        location,
+        radius,
+        type
+      };
 
-    service.nearbySearch(request, (results, status) => {
-      if (status === google.maps.places.PlacesServiceStatus.OK && results) {
-        resolve(results);
-      } else {
-        console.error("Places search failed with status:", status);
-        reject(new Error(`Places search failed with status: ${status}`));
-      }
+      service.nearbySearch(request, (results, status) => {
+        if (status === google.maps.places.PlacesServiceStatus.OK && results) {
+          resolve(results);
+        } else {
+          console.error("Places search failed with status:", status);
+          reject(new Error(`Places search failed with status: ${status}`));
+        }
+      });
     });
-  });
+  } catch (error) {
+    console.error("Error in findPlacesByType:", error);
+    throw error;
+  }
 };
 
 export const generatePlacesForType = async (

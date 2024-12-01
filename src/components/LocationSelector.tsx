@@ -9,7 +9,7 @@ import {
 import { MapPin } from "lucide-react";
 
 export const touristicCities = {
-  France: ["Paris", "Marseille"],
+  France: ["Paris", "Marseille", "Lyon"],
   Italy: ["Rome"],
   Portugal: ["Lisbonne"]
 };
@@ -56,6 +56,36 @@ export const cityItineraries: { [key: string]: any[] } = {
       duration: "2h",
       difficulty: "Facile",
       city: "Marseille"
+    }
+  ],
+  Lyon: [
+    {
+      title: "Lyon à travers les siècles",
+      description: "Explorez Lyon, de l'Antiquité à la Renaissance, à travers ses quartiers emblématiques et ses monuments.",
+      duration: "2h30",
+      difficulty: "Facile",
+      city: "Lyon"
+    },
+    {
+      title: "Lyon entre Rhône et Saône",
+      description: "Une balade entre les deux fleuves, du Parc de la Tête d'Or aux quais historiques.",
+      duration: "3h",
+      difficulty: "Modéré",
+      city: "Lyon"
+    },
+    {
+      title: "Le goût de Lyon",
+      description: "Une promenade gourmande dans la capitale mondiale de la gastronomie.",
+      duration: "2h",
+      difficulty: "Facile",
+      city: "Lyon"
+    },
+    {
+      title: "Sur les pas de Guignol",
+      description: "À la rencontre du célèbre personnage lyonnais et de son univers.",
+      duration: "2h30",
+      difficulty: "Facile",
+      city: "Lyon"
     }
   ],
   Rome: [

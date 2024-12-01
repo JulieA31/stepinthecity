@@ -12,7 +12,11 @@ import {
   vaticanSteps,
   surLesTracesDuPasseSteps,
   entreTerreMerSteps,
-  marseilleArtsSteps
+  marseilleArtsSteps,
+  lyonSieclesSteps,
+  lyonRhoneSaoneSteps,
+  lyonGourmandSteps,
+  lyonGuignolSteps
 } from "@/data/walkSteps";
 import { touristicCities, cityItineraries } from "@/components/LocationSelector";
 import LocationSelector from "@/components/LocationSelector";

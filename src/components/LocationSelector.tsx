@@ -9,7 +9,7 @@ import {
 import { MapPin } from "lucide-react";
 
 export const touristicCities = {
-  France: ["Paris"],
+  France: ["Paris", "Marseille"],
   Italy: ["Rome"],
   Portugal: ["Lisbonne"]
 };
@@ -33,6 +33,29 @@ export const cityItineraries: { [key: string]: any[] } = {
       description: "Une promenade gourmande à travers les quartiers historiques de Paris.",
       duration: "3h30",
       difficulty: "Facile"
+    }
+  ],
+  Marseille: [
+    {
+      title: "Sur les traces du passé",
+      description: "Découvrez l'histoire de Marseille, de la fondation grecque à la modernité, en parcourant ses lieux emblématiques.",
+      duration: "2h30",
+      difficulty: "Facile",
+      city: "Marseille"
+    },
+    {
+      title: "Entre terre et mer",
+      description: "Une balade entre parcs, plages et corniche pour découvrir les plus beaux paysages naturels de Marseille.",
+      duration: "3h",
+      difficulty: "Modéré",
+      city: "Marseille"
+    },
+    {
+      title: "Marseille et ses arts",
+      description: "Un parcours culturel à travers les lieux artistiques emblématiques de la cité phocéenne.",
+      duration: "2h",
+      difficulty: "Facile",
+      city: "Marseille"
     }
   ],
   Rome: [

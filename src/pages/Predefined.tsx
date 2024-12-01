@@ -34,7 +34,10 @@ const Predefined = () => {
       "Saveurs portugaises": saveursSteps,
       "Sur les pas de César": romeAntiqueSteps,
       "Rome baroque": romeBaroqueSteps,
-      "Vatican et spiritualité": vaticanSteps
+      "Vatican et spiritualité": vaticanSteps,
+      "Sur les traces du passé": surLesTracesDuPasseSteps,
+      "Entre terre et mer": entreTerreMerSteps,
+      "Marseille et ses arts": marseilleArtsSteps
     };
     return stepsMap[title] || [];
   };

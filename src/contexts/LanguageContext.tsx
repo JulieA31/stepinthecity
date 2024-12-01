@@ -36,22 +36,53 @@ const translations = {
     // Predefined page
     "chooseThematicRoute": "Choisir ton parcours thématique",
     "selectCity": "Sélectionner une ville",
-    
-    // Common
+    "downloadPDF": "Télécharger en PDF",
+    "sendByEmail": "Envoyer par email",
+    "seeOnGoogleMaps": "Voir sur Google Maps",
+    "routeDetails": "Détails du parcours",
+    "routeSteps": "Étapes du parcours",
     "duration": "Durée",
     "difficulty": "Difficulté",
     "easy": "Facile",
     "moderate": "Modéré",
     "hard": "Difficile",
+    "audioGuide": "Guide audio",
+    "audioAvailable": "Guide audio disponible",
+    "audioNotAvailable": "Guide audio non disponible",
+    
+    // Custom page
+    "createYourRoute": "Créer ton parcours",
+    "startPoint": "Point de départ",
+    "endPoint": "Point d'arrivée",
+    "selectOnMap": "Sélectionner sur la carte",
+    "routeType": "Type de parcours",
+    "loopRoute": "Boucle",
+    "pointToPoint": "Point à point",
+    "targetDuration": "Durée souhaitée",
+    "generateRoute": "Générer le parcours",
+    "yourItinerary": "Votre itinéraire",
+    
+    // MyWalks page
+    "myRoutes": "Mes parcours",
+    "noSavedRoutes": "Vous n'avez pas encore de parcours enregistrés",
+    "startExploring": "Commencer à explorer",
+    "deleteRoute": "Supprimer ce parcours",
+    "addMemory": "Ajouter un souvenir",
+    "shareAlbum": "Partager l'album",
+    
+    // Common
     "saveToBook": "Enregistrer dans mon Carnet",
     "saving": "Enregistrement...",
-    "routeSteps": "Étapes du parcours",
-    "audioNotAvailable": "La narration audio n'est pas disponible pour ce parcours.",
     "loginRequired": "Connexion requise",
     "loginToAccess": "Veuillez vous connecter pour accéder à votre carnet de route",
     "routeAlreadySaved": "Ce parcours est déjà enregistré dans votre carnet",
     "routeSaved": "Le parcours a été ajouté à votre carnet de route",
-    "errorSaving": "Impossible d'enregistrer le parcours"
+    "errorSaving": "Impossible d'enregistrer le parcours",
+    "confirmDelete": "Confirmer la suppression",
+    "cancel": "Annuler",
+    "confirm": "Confirmer",
+    "success": "Succès",
+    "error": "Erreur"
   },
   en: {
     // Header
@@ -80,22 +111,53 @@ const translations = {
     // Predefined page
     "chooseThematicRoute": "Choose your thematic route",
     "selectCity": "Select a city",
-    
-    // Common
+    "downloadPDF": "Download PDF",
+    "sendByEmail": "Send by email",
+    "seeOnGoogleMaps": "See on Google Maps",
+    "routeDetails": "Route details",
+    "routeSteps": "Route steps",
     "duration": "Duration",
     "difficulty": "Difficulty",
     "easy": "Easy",
     "moderate": "Moderate",
     "hard": "Hard",
+    "audioGuide": "Audio guide",
+    "audioAvailable": "Audio guide available",
+    "audioNotAvailable": "Audio guide not available",
+    
+    // Custom page
+    "createYourRoute": "Create your route",
+    "startPoint": "Starting point",
+    "endPoint": "End point",
+    "selectOnMap": "Select on map",
+    "routeType": "Route type",
+    "loopRoute": "Loop",
+    "pointToPoint": "Point to point",
+    "targetDuration": "Target duration",
+    "generateRoute": "Generate route",
+    "yourItinerary": "Your itinerary",
+    
+    // MyWalks page
+    "myRoutes": "My routes",
+    "noSavedRoutes": "You don't have any saved routes yet",
+    "startExploring": "Start exploring",
+    "deleteRoute": "Delete this route",
+    "addMemory": "Add a memory",
+    "shareAlbum": "Share album",
+    
+    // Common
     "saveToBook": "Save to my Book",
     "saving": "Saving...",
-    "routeSteps": "Route steps",
-    "audioNotAvailable": "Audio narration is not available for this route.",
     "loginRequired": "Login required",
     "loginToAccess": "Please login to access your route book",
     "routeAlreadySaved": "This route is already saved in your book",
     "routeSaved": "The route has been added to your book",
-    "errorSaving": "Unable to save the route"
+    "errorSaving": "Unable to save the route",
+    "confirmDelete": "Confirm deletion",
+    "cancel": "Cancel",
+    "confirm": "Confirm",
+    "success": "Success",
+    "error": "Error"
   }
 };
 

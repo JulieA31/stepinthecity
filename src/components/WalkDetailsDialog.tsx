@@ -1,28 +1,20 @@
-import { Clock } from "lucide-react";
 import {
   Dialog,
   DialogContent,
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import { LoadScript } from "@react-google-maps/api";
-import { useState } from "react";
-import { useToast } from "@/components/ui/use-toast";
 import { Button } from "@/components/ui/button";
-import WalkMap from "./WalkMap";
-import { Step, Walk } from "@/types/walk";
-import { classiquesParisSteps, baladeGastronomiqueSteps } from "@/data/walks/paris";
-import { supabase } from "@/integrations/supabase/client";
-import Login from "@/pages/Login";
-
-const GOOGLE_MAPS_API_KEY = "AIzaSyC806xlYYv2CYq2euqLnD4_cMrKrUTZGNI";
+import { Volume2, VolumeX } from "lucide-react";
+import { useState } from "react";
+import { useLanguage } from "@/contexts/LanguageContext";
 
 interface WalkDetailsDialogProps {
-  walk: Walk | null;
+  walk: any;
   isOpen: boolean;
   onClose: () => void;
   getImageForWalk: (title: string) => string;
-  getStepsForWalk: (title: string) => Step[];
+  getStepsForWalk: (title: string) => any[];
 }
 
 const WalkDetailsDialog = ({
@@ -32,141 +24,76 @@ const WalkDetailsDialog = ({
   getImageForWalk,
   getStepsForWalk,
 }: WalkDetailsDialogProps) => {
-  const [isLoaded, setIsLoaded] = useState(false);
-  const [isSaving, setIsSaving] = useState(false);
-  const [showLoginDialog, setShowLoginDialog] = useState(false);
-  const { toast } = useToast();
+  const [audioEnabled, setAudioEnabled] = useState(false);
+  const { t } = useLanguage();
 
   if (!walk) return null;
 
-  const steps = walk.title === "Les classiques de Paris" 
-    ? classiquesParisSteps 
-    : walk.title === "Balade gastronomique"
-    ? baladeGastronomiqueSteps
-    : getStepsForWalk(walk.title);
+  const hasAudio = walk.title === "Les classiques de Paris" || 
+                  walk.title === "Sur les pas de Victor Hugo" || 
+                  walk.title === "Sur les pas de César";
 
-  const handleSaveWalk = async () => {
-    try {
-      setIsSaving(true);
-      
-      const { data: { session } } = await supabase.auth.getSession();
-      if (!session) {
-        setShowLoginDialog(true);
-        return;
-      }
-
-      const { data: existingWalks } = await supabase
-        .from('saved_walks')
-        .select()
-        .eq('user_id', session.user.id)
-        .eq('walk_title', walk.title);
-
-      if (existingWalks && existingWalks.length > 0) {
-        toast({
-          title: "Information",
-          description: "Ce parcours est déjà enregistré dans votre carnet",
-        });
-        return;
-      }
-
-      const { error } = await supabase
-        .from('saved_walks')
-        .insert({
-          user_id: session.user.id,
-          walk_title: walk.title,
-          city: walk.city || "Paris"
-        });
-
-      if (error) throw error;
-
-      toast({
-        title: "Succès",
-        description: "Le parcours a été ajouté à votre carnet de route",
-      });
-
-    } catch (error) {
-      toast({
-        title: "Erreur",
-        description: "Impossible d'enregistrer le parcours",
-        variant: "destructive",
-      });
-    } finally {
-      setIsSaving(false);
-    }
-  };
+  const steps = getStepsForWalk(walk.title);
 
   return (
-    <>
-      <Dialog open={isOpen} onOpenChange={onClose}>
-        <DialogContent className="max-w-3xl max-h-[90vh] overflow-hidden flex flex-col">
-          <DialogHeader className="flex flex-row items-center justify-between">
-            <DialogTitle className="text-2xl font-display">{walk.title}</DialogTitle>
-            <Button
-              onClick={handleSaveWalk}
-              disabled={isSaving}
-              className="bg-primary hover:bg-accent text-white"
-            >
-              {isSaving ? "Enregistrement..." : "Enregistrer dans mon Carnet"}
-            </Button>
-          </DialogHeader>
-          
-          <div className="flex-1 overflow-y-auto pr-2">
-            <div 
-              className="h-64 w-full bg-cover bg-center rounded-lg mb-6"
-              style={{ 
-                backgroundImage: `url(${getImageForWalk(walk.title)}?auto=format&fit=crop&w=1200&q=80)`,
-              }}
-            />
-            
-            <div className="mt-4">
-              <p className="text-gray-600 mb-6">{walk.description}</p>
-              
-              <div className="flex items-center gap-6 mb-8">
-                <div className="flex items-center gap-2">
-                  <Clock className="text-primary" size={20} />
-                  <span>{walk.duration}</span>
-                </div>
-                <div className="flex items-center gap-2">
-                  <Clock className="text-primary" size={20} />
-                  <span>{walk.difficulty}</span>
-                </div>
+    <Dialog open={isOpen} onOpenChange={onClose}>
+      <DialogContent className="max-w-3xl max-h-[90vh] overflow-y-auto">
+        <DialogHeader>
+          <DialogTitle className="text-2xl">{walk.title}</DialogTitle>
+        </DialogHeader>
+
+        <div className="mt-4">
+          <img
+            src={getImageForWalk(walk.title)}
+            alt={walk.title}
+            className="w-full h-64 object-cover rounded-lg mb-6"
+          />
+
+          <div className="space-y-6">
+            <div className="flex items-center justify-between">
+              <div className="space-y-1">
+                <p className="text-sm font-medium">{t("duration")}: {walk.duration}</p>
+                <p className="text-sm font-medium">
+                  {t("difficulty")}: {t(walk.difficulty.toLowerCase())}
+                </p>
               </div>
 
-              <div className="h-[400px] w-full mb-8 rounded-lg overflow-hidden">
-                <LoadScript 
-                  googleMapsApiKey={GOOGLE_MAPS_API_KEY}
-                  onLoad={() => setIsLoaded(true)}
-                >
-                  <WalkMap 
-                    steps={steps}
-                    walkTitle={walk.title}
-                    isLoaded={isLoaded}
-                  />
-                </LoadScript>
-              </div>
+              {hasAudio && (
+                <div className="flex items-center gap-2">
+                  <span className="text-sm text-gray-500">
+                    {t("audioGuide")}
+                  </span>
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    onClick={() => setAudioEnabled(!audioEnabled)}
+                  >
+                    {audioEnabled ? (
+                      <Volume2 className="h-5 w-5 text-primary" />
+                    ) : (
+                      <VolumeX className="h-5 w-5 text-gray-400" />
+                    )}
+                  </Button>
+                </div>
+              )}
+            </div>
 
-              <div className="space-y-6">
-                <h3 className="text-xl font-semibold">Étapes du parcours</h3>
-                {steps && steps.map((step, index) => (
+            <div>
+              <h3 className="text-lg font-semibold mb-2">{t("routeSteps")}</h3>
+              <div className="space-y-4">
+                {steps.map((step, index) => (
                   <div key={index} className="border-l-2 border-primary pl-4">
-                    <h4 className="text-lg font-medium mb-2">{step.title}</h4>
-                    <p className="text-gray-600 mb-2">{step.description}</p>
-                    <div className="flex items-center text-sm text-gray-500">
-                      <Clock size={16} className="mr-1" />
-                      <span>{step.duration}</span>
-                    </div>
+                    <h4 className="font-medium">{step.title}</h4>
+                    <p className="text-sm text-gray-600 mt-1">{step.description}</p>
+                    <p className="text-sm text-gray-500 mt-1">{step.duration}</p>
                   </div>
                 ))}
               </div>
             </div>
           </div>
-        </DialogContent>
-      </Dialog>
-
-      {showLoginDialog && (
-        <Login onClose={() => setShowLoginDialog(false)} />
-      )}
-    </>
+        </div>
+      </DialogContent>
+    </Dialog>
   );
 };
 

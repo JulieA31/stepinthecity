@@ -1,4 +1,3 @@
-import { useState } from "react";
 import {
   Select,
   SelectContent,
@@ -6,72 +5,48 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { MapPin } from "lucide-react";
-import { touristicCities, cityItineraries } from "@/data/cities";
+import { touristicCities } from "@/data/cities";
+import { useLanguage } from "@/contexts/LanguageContext";
 
 interface LocationSelectorProps {
   onCitySelect: (city: string) => void;
 }
 
 const LocationSelector = ({ onCitySelect }: LocationSelectorProps) => {
-  const [selectedCountry, setSelectedCountry] = useState<keyof typeof touristicCities | "">("");
-  const [selectedCity, setSelectedCity] = useState("");
-
-  const handleCountryChange = (value: string) => {
-    setSelectedCountry(value as keyof typeof touristicCities);
-    setSelectedCity("");
-  };
-
-  const handleCityChange = (city: string) => {
-    setSelectedCity(city);
-    onCitySelect(city);
-  };
+  const { t } = useLanguage();
 
   return (
-    <div className="flex items-center justify-center gap-4 px-4 py-2">
-      <MapPin className="w-5 h-5 text-primary" />
-      <div className="flex flex-col sm:flex-row items-center gap-2">
-        <Select value={selectedCountry} onValueChange={handleCountryChange}>
-          <SelectTrigger className="w-[180px] bg-white">
-            <SelectValue placeholder="Choisir un pays" />
-          </SelectTrigger>
-          <SelectContent className="bg-white border shadow-lg">
-            {Object.keys(touristicCities).map((country) => (
-              <SelectItem 
-                key={country} 
-                value={country}
-                className="hover:bg-gray-100 cursor-pointer py-2"
-              >
+    <div className="w-full max-w-sm mx-auto">
+      <Select onValueChange={onCitySelect}>
+        <SelectTrigger>
+          <SelectValue placeholder={t("selectCity")} />
+        </SelectTrigger>
+        <SelectContent>
+          {Object.entries(touristicCities).map(([country, cities]) => (
+            <div key={country}>
+              <div className="px-2 py-1.5 text-sm font-semibold">
+                <span className="mr-2">{countryFlags[country]}</span>
                 {country}
-              </SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
-
-        <Select
-          value={selectedCity}
-          onValueChange={handleCityChange}
-          disabled={!selectedCountry}
-        >
-          <SelectTrigger className="w-[180px] bg-white">
-            <SelectValue placeholder="Choisir une ville" />
-          </SelectTrigger>
-          <SelectContent className="bg-white border shadow-lg">
-            {selectedCountry &&
-              touristicCities[selectedCountry].map((city) => (
-                <SelectItem 
-                  key={city} 
-                  value={city}
-                  className="hover:bg-gray-100 cursor-pointer py-2"
-                >
+              </div>
+              {cities.map((city) => (
+                <SelectItem key={city} value={city}>
                   {city}
                 </SelectItem>
               ))}
-          </SelectContent>
-        </Select>
-      </div>
+            </div>
+          ))}
+        </SelectContent>
+      </Select>
     </div>
   );
+};
+
+const countryFlags: { [key: string]: string } = {
+  France: "🇫🇷",
+  Italy: "🇮🇹",
+  Spain: "🇪🇸",
+  "United Kingdom": "🇬🇧",
+  Portugal: "🇵🇹"
 };
 
 export default LocationSelector;

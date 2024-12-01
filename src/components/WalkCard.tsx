@@ -1,9 +1,15 @@
-import { Volume2, Clock, Users, MapPin } from "lucide-react";
-import { useState, useRef, useEffect } from "react";
-import { useToast } from "@/components/ui/use-toast";
+import { Card } from "@/components/ui/card";
+import { Volume2, VolumeX } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { useLanguage } from "@/contexts/LanguageContext";
 
 interface WalkCardProps {
-  walk: any;
+  walk: {
+    title: string;
+    description: string;
+    duration: string;
+    difficulty: string;
+  };
   audioEnabled: boolean;
   onAudioToggle: (title: string) => void;
   onClick: () => void;
@@ -11,145 +17,63 @@ interface WalkCardProps {
   city: string;
 }
 
-// Garder une référence globale de l'audio en cours de lecture
-let currentlyPlayingAudio: HTMLAudioElement | null = null;
+const WalkCard = ({
+  walk,
+  audioEnabled,
+  onAudioToggle,
+  onClick,
+  getImageForWalk,
+  city
+}: WalkCardProps) => {
+  const { t } = useLanguage();
 
-const WalkCard = ({ walk, audioEnabled, onAudioToggle, onClick, getImageForWalk, city }: WalkCardProps) => {
-  const audioRef = useRef<HTMLAudioElement | null>(null);
-  const [isPlaying, setIsPlaying] = useState(false);
-  const { toast } = useToast();
-
-  useEffect(() => {
-    return () => {
-      if (audioRef.current) {
-        audioRef.current.pause();
-        audioRef.current = null;
-      }
-    };
-  }, []);
-
-  const handleAudioToggle = async (e: React.MouseEvent) => {
-    e.stopPropagation();
-    
-    let audioPath;
-    if (walk.title === "Sur les pas de César") {
-      audioPath = '/audio/sur-les-pas-de-jules-cesar.mp3';
-    } else if (walk.title === "Les classiques de Paris") {
-      audioPath = '/audio/les-classiques-de-paris.mp3';
-    } else {
-      const formattedTitle = walk.title.toLowerCase().replace(/ /g, '-');
-      audioPath = `/audio/${formattedTitle}.mp3`;
-    }
-    
-    console.log('Tentative de lecture audio:', audioPath);
-    
-    if (!audioRef.current) {
-      console.log('Création d\'un nouvel élément audio');
-      const audio = new Audio(audioPath);
-      
-      audio.addEventListener('error', (e) => {
-        console.error('Erreur de chargement audio:', e);
-        toast({
-          title: "Erreur",
-          description: "La narration audio n'est pas disponible pour ce parcours.",
-          variant: "destructive"
-        });
-        setIsPlaying(false);
-      });
-
-      audio.addEventListener('canplaythrough', () => {
-        console.log('Audio chargé avec succès');
-      });
-
-      audioRef.current = audio;
-    }
-
-    try {
-      if (isPlaying) {
-        console.log('Pause de l\'audio');
-        audioRef.current.pause();
-        setIsPlaying(false);
-      } else {
-        // Arrêter l'audio précédent s'il y en a un
-        if (currentlyPlayingAudio && currentlyPlayingAudio !== audioRef.current) {
-          currentlyPlayingAudio.pause();
-        }
-        
-        console.log('Tentative de lecture');
-        const playPromise = audioRef.current.play();
-        
-        if (playPromise !== undefined) {
-          playPromise
-            .then(() => {
-              console.log('Lecture démarrée avec succès');
-              // Mettre à jour la référence de l'audio en cours
-              currentlyPlayingAudio = audioRef.current;
-              setIsPlaying(true);
-              onAudioToggle(walk.title);
-            })
-            .catch(error => {
-              console.error('Erreur lors de la lecture:', error);
-              toast({
-                title: "Erreur",
-                description: "Impossible de lancer la narration audio.",
-                variant: "destructive"
-              });
-              setIsPlaying(false);
-            });
-        }
-      }
-    } catch (error) {
-      console.error('Erreur lors de la lecture:', error);
-      toast({
-        title: "Erreur",
-        description: "Impossible de lancer la narration audio.",
-        variant: "destructive"
-      });
-      setIsPlaying(false);
-    }
-  };
+  const hasAudio = walk.title === "Les classiques de Paris" || 
+                  walk.title === "Sur les pas de Victor Hugo" || 
+                  walk.title === "Sur les pas de César";
 
   return (
-    <div 
-      className="card hover:scale-105 transition-transform duration-200 cursor-pointer bg-white rounded-lg shadow-lg overflow-hidden"
-      onClick={onClick}
-    >
-      <div 
-        className="h-48 w-full bg-cover bg-center"
-        style={{ 
-          backgroundImage: `url(${getImageForWalk(walk.title)}?auto=format&fit=crop&w=800&q=80)`,
-        }}
-      />
-      <div className="p-6">
-        <div className="flex justify-between items-start mb-4">
-          <h2 className="text-2xl font-display text-text">{walk.title}</h2>
-          <button 
-            onClick={handleAudioToggle}
-            className={`p-2 rounded-full transition-colors ${
-              isPlaying ? 'bg-primary text-white' : 'bg-gray-100'
-            }`}
-            aria-label={isPlaying ? "Arrêter la narration" : "Lancer la narration"}
-          >
-            <Volume2 size={20} />
-          </button>
+    <Card className="overflow-hidden group cursor-pointer transition-transform hover:scale-[1.02]">
+      <div className="relative" onClick={onClick}>
+        <img
+          src={getImageForWalk(walk.title)}
+          alt={walk.title}
+          className="w-full h-48 object-cover"
+        />
+        <div className="absolute inset-0 bg-black/20 group-hover:bg-black/30 transition-colors" />
+      </div>
+      
+      <div className="p-4">
+        <div className="flex items-start justify-between gap-2 mb-2">
+          <h3 className="text-lg font-medium leading-tight">{walk.title}</h3>
+          {hasAudio && (
+            <Button
+              variant="ghost"
+              size="icon"
+              className="shrink-0 -mt-1 -mr-2"
+              onClick={(e) => {
+                e.stopPropagation();
+                onAudioToggle(walk.title);
+              }}
+            >
+              {audioEnabled ? (
+                <Volume2 className="h-5 w-5 text-primary" />
+              ) : (
+                <VolumeX className="h-5 w-5 text-gray-400" />
+              )}
+            </Button>
+          )}
         </div>
-        <p className="text-gray-600 mb-4">{walk.description}</p>
-        <div className="flex items-center gap-4 text-sm text-gray-500">
-          <div className="flex items-center gap-1">
-            <Clock size={16} />
-            {walk.duration}
-          </div>
-          <div className="flex items-center gap-1">
-            <Users size={16} />
-            {walk.difficulty}
-          </div>
-          <div className="flex items-center gap-1">
-            <MapPin size={16} />
-            {city}
-          </div>
+        
+        <p className="text-sm text-gray-600 mb-4 line-clamp-2">
+          {walk.description}
+        </p>
+        
+        <div className="flex items-center justify-between text-sm text-gray-500">
+          <span>{t("duration")}: {walk.duration}</span>
+          <span>{t("difficulty")}: {t(walk.difficulty.toLowerCase())}</span>
         </div>
       </div>
-    </div>
+    </Card>
   );
 };
 

@@ -35,14 +35,13 @@ import {
 } from "@/data/walkSteps";
 import { touristicCities, cityItineraries } from "@/data/cities";
 import LocationSelector from "@/components/LocationSelector";
+import { useLanguage } from "@/contexts/LanguageContext";
 
 const Predefined = () => {
   const [audioEnabled, setAudioEnabled] = useState<{ [key: string]: boolean }>({});
   const [selectedWalk, setSelectedWalk] = useState<any | null>(null);
   const [selectedCity, setSelectedCity] = useState<string>("");
-
-  console.log('Cities available:', touristicCities);
-  console.log('City itineraries:', cityItineraries);
+  const { t } = useLanguage();
 
   const toggleAudio = (title: string) => {
     setAudioEnabled(prev => ({
@@ -87,15 +86,12 @@ const Predefined = () => {
   };
 
   const handleCitySelect = (city: string) => {
-    console.log('Selected city:', city);
     setSelectedCity(city);
   };
 
   const renderWalks = () => {
     if (selectedCity) {
-      console.log('Rendering walks for city:', selectedCity);
       const itineraries = cityItineraries[selectedCity];
-      console.log('Found itineraries:', itineraries);
       if (!itineraries) return null;
 
       return (
@@ -120,42 +116,37 @@ const Predefined = () => {
 
     return (
       <>
-        {Object.entries(touristicCities).map(([country, cities]) => {
-          console.log('Rendering country:', country, 'with cities:', cities);
-          return (
-            <div key={country} className="mb-12">
-              <h2 className="text-3xl font-display text-text mb-6">
-                <span className="mr-2">{countryFlags[country]}</span>
-                {country}
-              </h2>
-              {cities.map(city => {
-                console.log('Processing city:', city);
-                const itineraries = cityItineraries[city];
-                console.log('Found itineraries for city:', itineraries);
-                if (!itineraries) return null;
-                
-                return (
-                  <div key={city} className="mb-8">
-                    <h3 className="text-2xl font-display text-text mb-4">{city}</h3>
-                    <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-                      {itineraries.map((walk: any, index: number) => (
-                        <WalkCard
-                          key={index}
-                          walk={walk}
-                          audioEnabled={audioEnabled[walk.title]}
-                          onAudioToggle={toggleAudio}
-                          onClick={() => setSelectedWalk(walk)}
-                          getImageForWalk={getImageForWalk}
-                          city={city}
-                        />
-                      ))}
-                    </div>
+        {Object.entries(touristicCities).map(([country, cities]) => (
+          <div key={country} className="mb-12">
+            <h2 className="text-3xl font-display text-text mb-6">
+              <span className="mr-2">{countryFlags[country]}</span>
+              {country}
+            </h2>
+            {cities.map(city => {
+              const itineraries = cityItineraries[city];
+              if (!itineraries) return null;
+              
+              return (
+                <div key={city} className="mb-8">
+                  <h3 className="text-2xl font-display text-text mb-4">{city}</h3>
+                  <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+                    {itineraries.map((walk: any, index: number) => (
+                      <WalkCard
+                        key={index}
+                        walk={walk}
+                        audioEnabled={audioEnabled[walk.title]}
+                        onAudioToggle={toggleAudio}
+                        onClick={() => setSelectedWalk(walk)}
+                        getImageForWalk={getImageForWalk}
+                        city={city}
+                      />
+                    ))}
                   </div>
-                );
-              })}
-            </div>
-          );
-        })}
+                </div>
+              );
+            })}
+          </div>
+        ))}
       </>
     );
   };
@@ -163,7 +154,9 @@ const Predefined = () => {
   return (
     <div className="min-h-screen bg-secondary pt-20">
       <div className="container mx-auto px-4 py-8">
-        <h1 className="text-4xl font-display text-text mb-8 text-center">Choisir ton parcours thématique</h1>
+        <h1 className="text-4xl font-display text-text mb-8 text-center">
+          {t("chooseThematicRoute")}
+        </h1>
         
         <div className="mb-8">
           <LocationSelector onCitySelect={handleCitySelect} />

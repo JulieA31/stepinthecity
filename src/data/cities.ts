@@ -17,5 +17,6 @@ export const cityItineraries = {
   ...italyItineraries.Rome,
   ...italyItineraries.Venise,
   ...italyItineraries.Florence,
-  ...italyItineraries.Milan
+  ...italyItineraries.Milan,
+  ...portugalItineraries.Lisbonne
 };

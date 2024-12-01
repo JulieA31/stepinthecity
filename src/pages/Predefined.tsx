@@ -16,7 +16,14 @@ import {
   lyonSieclesSteps,
   lyonRhoneSaoneSteps,
   lyonGourmandSteps,
-  lyonGuignolSteps
+  lyonGuignolSteps,
+  toulouseHistoriqueSteps,
+  toulouseScienceSteps,
+  toulouseGastronomieSteps,
+  toulouseRugbySteps,
+  niceHistoriqueSteps,
+  niceArtistiqueSteps,
+  niceNaturelSteps
 } from "@/data/walkSteps";
 import { touristicCities, cityItineraries } from "@/data/cities";
 import LocationSelector from "@/components/LocationSelector";
@@ -44,7 +51,21 @@ const Predefined = () => {
       "Vatican et spiritualité": vaticanSteps,
       "Sur les traces du passé": surLesTracesDuPasseSteps,
       "Entre terre et mer": entreTerreMerSteps,
-      "Marseille et ses arts": marseilleArtsSteps
+      "Marseille et ses arts": marseilleArtsSteps,
+      // Lyon
+      "Lyon à travers les siècles": lyonSieclesSteps,
+      "Lyon entre Rhône et Saône": lyonRhoneSaoneSteps,
+      "Le goût de Lyon": lyonGourmandSteps,
+      "Sur les pas de Guignol": lyonGuignolSteps,
+      // Toulouse
+      "Toulouse à travers les siècles": toulouseHistoriqueSteps,
+      "Toulouse, cité de l'espace et de l'innovation": toulouseScienceSteps,
+      "À la découverte des saveurs de la Ville Rose": toulouseGastronomieSteps,
+      "Toulouse, capitale du rugby": toulouseRugbySteps,
+      // Nice
+      "Nice, entre mer et Histoire": niceHistoriqueSteps,
+      "Nice, muse des peintres et des artistes": niceArtistiqueSteps,
+      "Nice au naturel": niceNaturelSteps
     };
     return stepsMap[title] || [];
   };

@@ -33,26 +33,53 @@ const WalkDetailsDialog = ({
                   walk.title === "Sur les pas de Victor Hugo" || 
                   walk.title === "Sur les pas de César";
 
+  const getTranslationKey = (title: string) => {
+    const keyMap: { [key: string]: string } = {
+      "Les classiques de Paris": "classicsParis",
+      "Sur les pas de Victor Hugo": "victorHugoSteps",
+      "Balade gastronomique": "gastronomicWalk",
+      "Sur les traces du passé": "marseilleHistory",
+      "Entre terre et mer": "marseilleLandSea",
+      "Marseille et ses arts": "marseilleArts",
+      "Lyon à travers les siècles": "lyonHistory",
+      "Lyon entre Rhône et Saône": "lyonRivers",
+      "Le goût de Lyon": "lyonGastronomy",
+      "Sur les pas de Guignol": "lyonGuignol",
+      "Toulouse à travers les siècles": "toulouseHistory",
+      "Toulouse, cité de l'espace et de l'innovation": "toulouseSpace",
+      "À la découverte des saveurs de la Ville Rose": "toulouseGastronomy",
+      "Toulouse, capitale du rugby": "toulouseRugby",
+      "Nice, entre mer et Histoire": "niceHistory",
+      "Nice, muse des peintres et des artistes": "niceArt",
+      "Nice au naturel": "niceNature"
+    };
+    return keyMap[title] || title;
+  };
+
   const steps = getStepsForWalk(walk.title);
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent className="max-w-3xl max-h-[90vh] overflow-y-auto">
         <DialogHeader>
-          <DialogTitle className="text-2xl">{walk.title}</DialogTitle>
+          <DialogTitle className="text-2xl">
+            {t(getTranslationKey(walk.title))}
+          </DialogTitle>
         </DialogHeader>
 
         <div className="mt-4">
           <img
             src={getImageForWalk(walk.title)}
-            alt={walk.title}
+            alt={t(getTranslationKey(walk.title))}
             className="w-full h-64 object-cover rounded-lg mb-6"
           />
 
           <div className="space-y-6">
             <div className="flex items-center justify-between">
               <div className="space-y-1">
-                <p className="text-sm font-medium">{t("duration")}: {walk.duration}</p>
+                <p className="text-sm font-medium">
+                  {t("duration")}: {walk.duration}
+                </p>
                 <p className="text-sm font-medium">
                   {t("difficulty")}: {t(walk.difficulty.toLowerCase())}
                 </p>
@@ -83,8 +110,10 @@ const WalkDetailsDialog = ({
               <div className="space-y-4">
                 {steps.map((step, index) => (
                   <div key={index} className="border-l-2 border-primary pl-4">
-                    <h4 className="font-medium">{step.title}</h4>
-                    <p className="text-sm text-gray-600 mt-1">{step.description}</p>
+                    <h4 className="font-medium">{t(step.title)}</h4>
+                    <p className="text-sm text-gray-600 mt-1">
+                      {t(step.description)}
+                    </p>
                     <p className="text-sm text-gray-500 mt-1">{step.duration}</p>
                   </div>
                 ))}

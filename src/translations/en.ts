@@ -74,5 +74,86 @@ export const enTranslations = {
   "niceArtDesc": "Discover Nice from a creative angle, following in the footsteps of artists who were inspired by its unique light.",
   "niceNature": "Nice Naturally",
   "niceNatureDesc": "A relaxing walk through the most beautiful green and natural spaces of Nice.",
-  "selectCountry": "Select a country"
+  "selectCountry": "Select a country",
+
+  // Difficulty levels
+  "easy": "Easy",
+  "moderate": "Moderate",
+  "hard": "Hard",
+
+  // Walk details
+  "routeSteps": "Route steps",
+  "duration": "Duration",
+  "difficulty": "Difficulty",
+  "audioGuide": "Audio guide",
+
+  // Paris walks steps
+  "placeVendome": "Place Vendôme",
+  "placeVendomeDesc": "Admire this royal square and its luxury boutiques",
+  "palaisRoyal": "Palais Royal",
+  "palaisRoyalDesc": "Discover this magnificent palace and its gardens",
+  "louvre": "Louvre Museum",
+  "louvreDesc": "Explore the world's largest art museum",
+  "notredame": "Notre-Dame Cathedral",
+  "notredameDesc": "Contemplate this masterpiece of Gothic architecture",
+  "pantheon": "Panthéon",
+  "pantheonDesc": "Visit this monument dedicated to great French historical figures",
+  "jardinLuxembourg": "Luxembourg Gardens",
+  "jardinLuxembourgDesc": "Take a walk in this beautiful French garden",
+  "tourEiffel": "Eiffel Tower",
+  "tourEiffelDesc": "Admire Paris's most iconic monument",
+  "arcTriomphe": "Arc de Triomphe",
+  "arcTriompheDesc": "Discover this historic monument and its panoramic view",
+  "placeConcorde": "Place de la Concorde",
+  "placeConcordeDesc": "Explore Paris's largest square",
+
+  // Rome walks steps
+  "colisee": "Colosseum",
+  "coliseeDesc": "Discover the world's most famous amphitheater",
+  "forumRomain": "Roman Forum",
+  "forumRomainDesc": "Explore the heart of ancient Rome",
+  "pantheonRome": "Pantheon",
+  "pantheonRomeDesc": "Visit this remarkably preserved ancient temple",
+  "fontaineTrevi": "Trevi Fountain",
+  "fontaineTreviDesc": "Admire Rome's most famous fountain",
+  "placeEspagne": "Spanish Steps",
+  "placeEspagneDesc": "Discover this iconic square and its monumental staircase",
+  "vatican": "Vatican City",
+  "vaticanDesc": "Explore the world's smallest state and its artistic treasures",
+
+  // Marseille walks steps
+  "vieuxPort": "Old Port",
+  "vieuxPortDesc": "Discover Marseille's historic heart",
+  "notredameGarde": "Notre-Dame de la Garde",
+  "notredameGardeDesc": "Visit the 'Good Mother' watching over Marseille",
+  "panier": "Le Panier",
+  "panierDesc": "Explore Marseille's oldest district",
+  "mucem": "MUCEM",
+  "mucemDesc": "Discover this museum dedicated to Mediterranean civilizations",
+  "corniche": "La Corniche",
+  "cornicheDesc": "Walk along this panoramic road",
+
+  // Lyon walks steps
+  "fourviere": "Fourvière Basilica",
+  "fourviereDesc": "Admire the 'praying hill' and its basilica",
+  "vieuxLyon": "Old Lyon",
+  "vieuxLyonDesc": "Explore Lyon's Renaissance district",
+  "croixRousse": "La Croix-Rousse",
+  "croixRousseDesc": "Discover the silk workers' district",
+  "presquile": "La Presqu'île",
+  "presquileDesc": "Walk through the heart of Lyon",
+  "confluences": "Confluences Museum",
+  "confluencesDesc": "Visit this museum with futuristic architecture",
+
+  // Nice walks steps
+  "promenadeAnglais": "Promenade des Anglais",
+  "promenadeAnglaisDesc": "Stroll along this famous promenade",
+  "vieuxNice": "Old Nice",
+  "vieuxNiceDesc": "Explore the colorful streets of old Nice",
+  "collineChateau": "Castle Hill",
+  "collineChateauDesc": "Enjoy a panoramic view of the city",
+  "courseSaleya": "Cours Saleya",
+  "courseSaleyaDesc": "Discover the flower market and its terraces",
+  "museeMatis": "Matisse Museum",
+  "museeMatisDesc": "Visit this museum dedicated to the famous painter"
 };

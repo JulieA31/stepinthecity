@@ -10,6 +10,11 @@ const MyWalks = () => {
   const [memories, setMemories] = useState<{ [key: string]: WalkMemory[] }>({});
   const { toast } = useToast();
   const { t } = useLanguage();
+  const [selectedWalk, setSelectedWalk] = useState<string | null>(null);
+  const [newMemory, setNewMemory] = useState<{ description: string; file: File | null }>({
+    description: "",
+    file: null,
+  });
 
   useEffect(() => {
     fetchWalks();
@@ -71,19 +76,44 @@ const MyWalks = () => {
     });
   };
 
-  const handleAddMemory = async (walkId: string, newMemories: WalkMemory[]) => {
+  const handleAddMemory = async () => {
+    if (!selectedWalk || !newMemory.file) return;
+
     const { data: { session } } = await supabase.auth.getSession();
     if (!session) return;
 
-    const { error } = await supabase
+    // Upload the file to storage
+    const fileExt = newMemory.file.name.split('.').pop();
+    const fileName = `${crypto.randomUUID()}.${fileExt}`;
+    const { error: uploadError, data: uploadData } = await supabase.storage
       .from('walk_memories')
-      .insert(newMemories.map(memory => ({
-        ...memory,
-        user_id: session.user.id,
-        saved_walk_id: walkId
-      })));
+      .upload(fileName, newMemory.file);
 
-    if (error) {
+    if (uploadError) {
+      toast({
+        title: t("error"),
+        description: t("errorUploadingPhoto"),
+        variant: "destructive",
+      });
+      return;
+    }
+
+    // Get the public URL for the uploaded file
+    const { data: { publicUrl } } = supabase.storage
+      .from('walk_memories')
+      .getPublicUrl(fileName);
+
+    // Create the memory record
+    const { error: memoryError } = await supabase
+      .from('walk_memories')
+      .insert({
+        user_id: session.user.id,
+        saved_walk_id: selectedWalk,
+        photo_url: publicUrl,
+        description: newMemory.description
+      });
+
+    if (memoryError) {
       toast({
         title: t("error"),
         description: t("errorAddingPhoto"),
@@ -96,15 +126,19 @@ const MyWalks = () => {
     const { data: updatedMemories } = await supabase
       .from('walk_memories')
       .select('*')
-      .eq('saved_walk_id', walkId)
+      .eq('saved_walk_id', selectedWalk)
       .order('created_at', { ascending: false });
 
     if (updatedMemories) {
       setMemories(prev => ({
         ...prev,
-        [walkId]: updatedMemories
+        [selectedWalk]: updatedMemories
       }));
     }
+
+    // Reset form
+    setNewMemory({ description: "", file: null });
+    setSelectedWalk(null);
 
     toast({
       title: t("success"),
@@ -145,7 +179,13 @@ const MyWalks = () => {
               walk={walk}
               memories={memories[walk.id] || []}
               onDelete={() => handleDelete(walk.id)}
-              onAddMemory={(newMemories) => handleAddMemory(walk.id, newMemories)}
+              onAddMemory={{
+                selectedWalk,
+                setSelectedWalk,
+                newMemory,
+                setNewMemory,
+                handleAddMemory
+              }}
             />
           ))}
         </div>

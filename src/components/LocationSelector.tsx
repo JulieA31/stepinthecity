@@ -1,7 +1,9 @@
 import {
   Select,
   SelectContent,
+  SelectGroup,
   SelectItem,
+  SelectLabel,
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
@@ -23,17 +25,17 @@ const LocationSelector = ({ onCitySelect }: LocationSelectorProps) => {
         </SelectTrigger>
         <SelectContent>
           {Object.entries(touristicCities).map(([country, cities]) => (
-            <div key={country}>
-              <div className="px-2 py-1.5 text-sm font-semibold">
+            <SelectGroup key={country}>
+              <SelectLabel className="flex items-center">
                 <span className="mr-2">{countryFlags[country]}</span>
                 {country}
-              </div>
+              </SelectLabel>
               {cities.map((city) => (
                 <SelectItem key={city} value={city}>
                   {city}
                 </SelectItem>
               ))}
-            </div>
+            </SelectGroup>
           ))}
         </SelectContent>
       </Select>

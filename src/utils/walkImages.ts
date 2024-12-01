@@ -16,10 +16,10 @@ export const getImageForWalk = (title: string) => {
     "Lyon entre Rhône et Saône": "/lovable-uploads/c7cf9ecb-7db7-4a9f-a203-3bfcfb30c3e5.png",
     "Le goût de Lyon": "/lovable-uploads/d5fe661b-ffde-4a9f-8fe0-0ea742ee45a0.png",
     "Sur les pas de Guignol": "/lovable-uploads/c612c987-4f0b-4d1d-b90d-2656adec4d8d.png",
-    "Toulouse à travers les siècles": "https://images.unsplash.com/photo-1469796466635-455ede028aca?auto=format&fit=crop&w=1200&q=80",
-    "Toulouse, cité de l'espace et de l'innovation": "https://images.unsplash.com/photo-1487887235947-a955ef187fcc?auto=format&fit=crop&w=1200&q=80",
+    "Toulouse à travers les siècles": "/lovable-uploads/3ab9757a-9939-4153-aa29-de40517ba020.png",
+    "Toulouse, cité de l'espace et de l'innovation": "/lovable-uploads/785fa524-1371-4e95-a9be-9c0f408890db.png",
     "À la découverte des saveurs de la Ville Rose": "https://images.unsplash.com/photo-1504674900247-0877df9cc836?auto=format&fit=crop&w=1200&q=80",
-    "Toulouse, capitale du rugby": "https://images.unsplash.com/photo-1544213456-bc37cb97df74?auto=format&fit=crop&w=1200&q=80",
+    "Toulouse, capitale du rugby": "/lovable-uploads/c62ff07e-4ff7-4090-abf8-743da501d09b.png",
     "Nice, entre mer et Histoire": "https://images.unsplash.com/photo-1493397212122-2b85dda8106b",
     "Nice, muse des peintres et des artistes": "https://images.unsplash.com/photo-1487958449943-2429e8be8625",
     "Nice au naturel": "https://images.unsplash.com/photo-1433832597046-4f10e10ac764"

@@ -5,10 +5,17 @@ import SavedWalk from "@/components/SavedWalk";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/components/ui/use-toast";
 import { useLanguage } from "@/contexts/LanguageContext";
+import { WalkMemory } from "@/types/walk";
 
 const MyWalks = () => {
   const [savedWalks, setSavedWalks] = useState<any[]>([]);
+  const [memories, setMemories] = useState<{ [key: string]: WalkMemory[] }>({});
   const [isLoading, setIsLoading] = useState(true);
+  const [selectedWalk, setSelectedWalk] = useState<string | null>(null);
+  const [newMemory, setNewMemory] = useState<{ description: string; file: File | null }>({
+    description: "",
+    file: null,
+  });
   const navigate = useNavigate();
   const { toast } = useToast();
   const { t } = useLanguage();
@@ -35,6 +42,17 @@ const MyWalks = () => {
 
       if (error) throw error;
       setSavedWalks(walks || []);
+
+      // Fetch memories for each walk
+      const memoriesData: { [key: string]: WalkMemory[] } = {};
+      for (const walk of walks || []) {
+        const { data: walkMemories } = await supabase
+          .from("walk_memories")
+          .select("*")
+          .eq("saved_walk_id", walk.id);
+        memoriesData[walk.id] = walkMemories || [];
+      }
+      setMemories(memoriesData);
     } catch (error: any) {
       toast({
         variant: "destructive",
@@ -44,6 +62,59 @@ const MyWalks = () => {
     } finally {
       setIsLoading(false);
     }
+  };
+
+  const handleAddMemory = async () => {
+    if (!selectedWalk || !newMemory.file) return;
+
+    const file = newMemory.file;
+    const fileExt = file.name.split('.').pop();
+    const fileName = `${Math.random()}.${fileExt}`;
+    const filePath = `${fileName}`;
+
+    const { error: uploadError } = await supabase.storage
+      .from('walk_memories')
+      .upload(filePath, file);
+
+    if (uploadError) {
+      toast({
+        variant: "destructive",
+        title: t("error"),
+        description: t("errorAddingPhoto"),
+      });
+      return;
+    }
+
+    const { data: { publicUrl } } = supabase.storage
+      .from('walk_memories')
+      .getPublicUrl(filePath);
+
+    const { error: dbError } = await supabase
+      .from('walk_memories')
+      .insert([
+        {
+          saved_walk_id: selectedWalk,
+          photo_url: publicUrl,
+          description: newMemory.description,
+        },
+      ]);
+
+    if (dbError) {
+      toast({
+        variant: "destructive",
+        title: t("error"),
+        description: t("errorAddingPhoto"),
+      });
+      return;
+    }
+
+    toast({
+      title: t("success"),
+      description: t("photoAdded"),
+    });
+
+    setNewMemory({ description: "", file: null });
+    fetchSavedWalks();
   };
 
   if (isLoading) {
@@ -81,7 +152,15 @@ const MyWalks = () => {
               <SavedWalk
                 key={walk.id}
                 walk={walk}
+                memories={memories[walk.id] || []}
                 onDelete={fetchSavedWalks}
+                onAddMemory={{
+                  selectedWalk,
+                  setSelectedWalk,
+                  newMemory,
+                  setNewMemory,
+                  handleAddMemory,
+                }}
               />
             ))}
           </div>

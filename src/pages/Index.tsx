@@ -1,9 +1,9 @@
-import { LampFloor, Clock, Compass, MapPin, Menu, X } from "lucide-react";
+import { LampFloor, Clock, Compass, MapPin } from "lucide-react";
 import { Link } from "react-router-dom";
-import { useState } from "react";
+import { useLanguage } from "@/contexts/LanguageContext";
 
 const Index = () => {
-  const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const { t } = useLanguage();
 
   return (
     <div className="min-h-screen bg-secondary">
@@ -14,58 +14,16 @@ const Index = () => {
               <LampFloor className="w-6 h-6 text-primary" />
               <h1 className="text-4xl font-display text-text">StepInTheCity</h1>
             </div>
-            
-            <div className="flex items-center gap-4">
-              <nav className="hidden lg:flex items-center gap-4">
-                <Link to="/custom" className="text-text hover:text-primary transition-colors">
-                  Parcours personnalisé
-                </Link>
-                <Link to="/predefined" className="text-text hover:text-primary transition-colors">
-                  Parcours prédéfinis
-                </Link>
-              </nav>
-              
-              <button 
-                onClick={() => setIsMenuOpen(!isMenuOpen)}
-                className="cursor-pointer"
-                aria-label="Toggle menu"
-              >
-                {isMenuOpen ? <X className="w-8 h-8" /> : <Menu className="w-8 h-8" />}
-              </button>
-            </div>
-
-            <nav className={`${
-              isMenuOpen ? 'block' : 'hidden'
-            } absolute top-full right-0 w-64 
-            bg-white shadow-lg rounded-lg
-            mt-2 py-4 z-50`}>
-              <div className="flex flex-col items-start px-4">
-                <Link 
-                  to="/custom" 
-                  className="w-full text-left py-2 text-text hover:text-primary transition-colors"
-                  onClick={() => setIsMenuOpen(false)}
-                >
-                  Parcours personnalisé
-                </Link>
-                <Link 
-                  to="/predefined" 
-                  className="w-full text-left py-2 text-text hover:text-primary transition-colors"
-                  onClick={() => setIsMenuOpen(false)}
-                >
-                  Parcours prédéfinis
-                </Link>
-              </div>
-            </nav>
           </div>
 
           <div className="text-center">
             <img 
               src="/lovable-uploads/fd183326-fb36-4fca-88df-47ac0310f4c7.png"
-              alt="Illustration urbaine avec des personnes marchant dans la ville et des arbres roses"
+              alt="Urban illustration with people walking in the city and pink trees"
               className="w-full h-96 object-contain bg-white rounded-lg shadow-md mx-auto"
             />
             <h2 className="font-bigelow text-5xl md:text-7xl text-text mt-6 mb-8">
-              Explore la ville autrement
+              {t("exploreCity")}
             </h2>
           </div>
         </div>
@@ -78,13 +36,13 @@ const Index = () => {
               <div className="p-3 bg-primary/10 rounded-full">
                 <Compass className="w-6 h-6 text-primary" />
               </div>
-              <h2 className="text-2xl font-display">Itinéraire Personnalisé</h2>
+              <h2 className="text-2xl font-display">{t("customItinerary")}</h2>
             </div>
             <p className="text-gray-600">
-              Crée ton parcours idéal en fonction de tes préférences et de ton temps.
+              {t("createCustomRoute")}
             </p>
             <button className="btn-primary mt-6 w-full">
-              Commencer
+              {t("start")}
             </button>
           </Link>
 
@@ -93,13 +51,13 @@ const Index = () => {
               <div className="p-3 bg-primary/10 rounded-full">
                 <MapPin className="w-6 h-6 text-primary" />
               </div>
-              <h2 className="text-2xl font-display">Parcours Prédéfinis</h2>
+              <h2 className="text-2xl font-display">{t("predefinedItineraries")}</h2>
             </div>
             <p className="text-gray-600 text-center">
-              Découvre nos sélections d'itinéraires thématiques soigneusement préparés.
+              {t("discoverRoutes")}
             </p>
             <button className="btn-primary mt-6 w-full">
-              Explorer
+              {t("explore")}
             </button>
           </Link>
 
@@ -109,29 +67,29 @@ const Index = () => {
                 <div className="p-3 bg-primary/10 rounded-full">
                   <Clock className="w-6 h-6 text-primary" />
                 </div>
-                <h2 className="text-2xl font-display">Comment ça marche ?</h2>
+                <h2 className="text-2xl font-display">{t("howItWorks")}</h2>
               </div>
               <div className="grid md:grid-cols-3 gap-6 mt-6">
                 <div className="text-center">
                   <div className="w-12 h-12 bg-accent/10 rounded-full flex items-center justify-center mx-auto mb-4">
                     <span className="text-accent font-bold">1</span>
                   </div>
-                  <h3 className="font-semibold mb-2">Choisis ton style</h3>
-                  <p className="text-gray-600">Sélectionne le type de balade qui te correspond</p>
+                  <h3 className="font-semibold mb-2">{t("chooseStyle")}</h3>
+                  <p className="text-gray-600">{t("selectWalkType")}</p>
                 </div>
                 <div className="text-center">
                   <div className="w-12 h-12 bg-accent/10 rounded-full flex items-center justify-center mx-auto mb-4">
                     <span className="text-accent font-bold">2</span>
                   </div>
-                  <h3 className="font-semibold mb-2">Personnalise</h3>
-                  <p className="text-gray-600">Ajuste la durée et les points d'intérêt</p>
+                  <h3 className="font-semibold mb-2">{t("customize")}</h3>
+                  <p className="text-gray-600">{t("adjustDuration")}</p>
                 </div>
                 <div className="text-center">
                   <div className="w-12 h-12 bg-accent/10 rounded-full flex items-center justify-center mx-auto mb-4">
                     <span className="text-accent font-bold">3</span>
                   </div>
-                  <h3 className="font-semibold mb-2">Explore</h3>
-                  <p className="text-gray-600">Laisse-toi guider à travers la ville</p>
+                  <h3 className="font-semibold mb-2">{t("explore")}</h3>
+                  <p className="text-gray-600">{t("letGuide")}</p>
                 </div>
               </div>
             </div>

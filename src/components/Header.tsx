@@ -2,13 +2,14 @@ import { Link, useLocation, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
-import { LogOut, Menu, X, Home, MapPin, Map, Book } from "lucide-react";
+import { LogOut, Menu, X, Home, MapPin, Map, Book, Languages } from "lucide-react";
 import {
   Sheet,
   SheetContent,
   SheetTrigger,
 } from "@/components/ui/sheet";
 import { useToast } from "./ui/use-toast";
+import { useLanguage } from "@/contexts/LanguageContext";
 
 const Header = () => {
   const location = useLocation();
@@ -16,6 +17,7 @@ const Header = () => {
   const { toast } = useToast();
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
+  const { t, language, setLanguage } = useLanguage();
 
   useEffect(() => {
     const checkUser = async () => {
@@ -41,14 +43,18 @@ const Header = () => {
   const handleCarnetClick = () => {
     if (!isLoggedIn) {
       toast({
-        title: "Connexion requise",
-        description: "Veuillez vous connecter pour accéder à votre carnet de route",
+        title: t("loginRequired"),
+        description: t("loginToAccess"),
       });
       navigate("/login");
     } else {
       navigate("/my-walks");
     }
     setIsOpen(false);
+  };
+
+  const toggleLanguage = () => {
+    setLanguage(language === 'fr' ? 'en' : 'fr');
   };
 
   const NavLinks = () => (
@@ -61,7 +67,7 @@ const Header = () => {
         }`}
       >
         <Home className="h-4 w-4" />
-        Accueil
+        {t("home")}
       </Link>
       <Link
         to="/predefined"
@@ -71,7 +77,7 @@ const Header = () => {
         }`}
       >
         <MapPin className="h-4 w-4" />
-        Parcours prédéfinis
+        {t("predefinedRoutes")}
       </Link>
       <Link
         to="/custom"
@@ -81,7 +87,7 @@ const Header = () => {
         }`}
       >
         <Map className="h-4 w-4" />
-        Parcours personnalisé
+        {t("customRoute")}
       </Link>
       <button
         onClick={handleCarnetClick}
@@ -90,7 +96,7 @@ const Header = () => {
         }`}
       >
         <Book className="h-4 w-4" />
-        Mon Carnet de Route
+        {t("myRouteBook")}
       </button>
     </>
   );
@@ -112,7 +118,16 @@ const Header = () => {
             <NavLinks />
           </nav>
 
-          <div className="hidden md:block">
+          <div className="hidden md:flex items-center gap-4">
+            <Button
+              variant="ghost"
+              size="icon"
+              onClick={toggleLanguage}
+              className="mr-2"
+            >
+              <Languages className="h-5 w-5" />
+            </Button>
+            
             {isLoggedIn ? (
               <Button 
                 variant="ghost" 
@@ -120,19 +135,27 @@ const Header = () => {
                 onClick={handleLogout}
               >
                 <LogOut className="h-4 w-4" />
-                Se déconnecter
+                {t("logout")}
               </Button>
             ) : (
               <Link to="/login">
                 <Button variant="default">
-                  Se connecter / S'inscrire
+                  {t("login")}
                 </Button>
               </Link>
             )}
           </div>
 
           {/* Menu mobile */}
-          <div className="md:hidden">
+          <div className="md:hidden flex items-center gap-2">
+            <Button
+              variant="ghost"
+              size="icon"
+              onClick={toggleLanguage}
+            >
+              <Languages className="h-5 w-5" />
+            </Button>
+            
             <Sheet open={isOpen} onOpenChange={setIsOpen}>
               <SheetTrigger asChild>
                 <Button variant="ghost" size="icon" className="h-10 w-10">
@@ -149,12 +172,12 @@ const Header = () => {
                       onClick={handleLogout}
                     >
                       <LogOut className="h-5 w-5 mr-2" />
-                      Se déconnecter
+                      {t("logout")}
                     </Button>
                   ) : (
                     <Link to="/login" onClick={() => setIsOpen(false)}>
                       <Button variant="default" className="w-full">
-                        Se connecter / S'inscrire
+                        {t("login")}
                       </Button>
                     </Link>
                   )}

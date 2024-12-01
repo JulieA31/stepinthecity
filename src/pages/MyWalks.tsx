@@ -1,21 +1,17 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { useToast } from "@/components/ui/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import SavedWalk from "@/components/SavedWalk";
-import { SavedWalk as SavedWalkType, WalkMemory } from "@/types/walk";
+import { Button } from "@/components/ui/button";
+import { useToast } from "@/components/ui/use-toast";
+import { useLanguage } from "@/contexts/LanguageContext";
 
 const MyWalks = () => {
-  const [savedWalks, setSavedWalks] = useState<SavedWalkType[]>([]);
-  const [memories, setMemories] = useState<{ [key: string]: WalkMemory[] }>({});
-  const [selectedWalk, setSelectedWalk] = useState<string | null>(null);
-  const [newMemory, setNewMemory] = useState<{ description: string; file: File | null }>({
-    description: "",
-    file: null,
-  });
-  
-  const { toast } = useToast();
+  const [savedWalks, setSavedWalks] = useState<any[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
   const navigate = useNavigate();
+  const { toast } = useToast();
+  const { t } = useLanguage();
 
   useEffect(() => {
     const checkUser = async () => {
@@ -31,161 +27,65 @@ const MyWalks = () => {
   }, [navigate]);
 
   const fetchSavedWalks = async () => {
-    const { data: { session } } = await supabase.auth.getSession();
-    if (!session) return;
+    try {
+      const { data: walks, error } = await supabase
+        .from("saved_walks")
+        .select("*")
+        .order("created_at", { ascending: false });
 
-    const { data, error } = await supabase
-      .from("saved_walks")
-      .select("*")
-      .eq('user_id', session.user.id)
-      .order("created_at", { ascending: false });
-
-    if (error) {
+      if (error) throw error;
+      setSavedWalks(walks || []);
+    } catch (error: any) {
       toast({
-        title: "Erreur",
-        description: "Impossible de charger vos parcours enregistrés",
         variant: "destructive",
+        title: t("error"),
+        description: error.message,
       });
-      return;
+    } finally {
+      setIsLoading(false);
     }
-
-    setSavedWalks(data);
-    data.forEach((walk) => fetchWalkMemories(walk.id));
   };
 
-  const fetchWalkMemories = async (walkId: string) => {
-    const { data, error } = await supabase
-      .from("walk_memories")
-      .select("*")
-      .eq("saved_walk_id", walkId)
-      .order("created_at", { ascending: false });
-
-    if (error) {
-      toast({
-        title: "Erreur",
-        description: "Impossible de charger les souvenirs",
-        variant: "destructive",
-      });
-      return;
-    }
-
-    setMemories((prev) => ({ ...prev, [walkId]: data }));
-  };
-
-  const handleAddMemory = async () => {
-    if (!selectedWalk || !newMemory.file) return;
-
-    const { data: { session } } = await supabase.auth.getSession();
-    if (!session) {
-      toast({
-        title: "Erreur",
-        description: "Vous devez être connecté pour ajouter un souvenir",
-        variant: "destructive",
-      });
-      return;
-    }
-
-    const file = newMemory.file;
-    const fileExt = file.name.split(".").pop();
-    const filePath = `${crypto.randomUUID()}.${fileExt}`;
-
-    const { error: uploadError } = await supabase.storage
-      .from("walk_memories")
-      .upload(filePath, file);
-
-    if (uploadError) {
-      toast({
-        title: "Erreur",
-        description: "Impossible d'uploader la photo",
-        variant: "destructive",
-      });
-      return;
-    }
-
-    const { data: { publicUrl } } = supabase.storage
-      .from("walk_memories")
-      .getPublicUrl(filePath);
-
-    const { error: dbError } = await supabase.from("walk_memories").insert({
-      saved_walk_id: selectedWalk,
-      photo_url: publicUrl,
-      description: newMemory.description,
-      user_id: session.user.id
-    });
-
-    if (dbError) {
-      toast({
-        title: "Erreur",
-        description: "Impossible de sauvegarder le souvenir",
-        variant: "destructive",
-      });
-      return;
-    }
-
-    toast({
-      title: "Succès",
-      description: "Souvenir ajouté avec succès",
-    });
-
-    setNewMemory({ description: "", file: null });
-    fetchWalkMemories(selectedWalk);
-  };
-
-  const deleteWalk = async (walkId: string) => {
-    const { error } = await supabase
-      .from("saved_walks")
-      .delete()
-      .eq("id", walkId);
-
-    if (error) {
-      toast({
-        title: "Erreur",
-        description: "Impossible de supprimer le parcours",
-        variant: "destructive",
-      });
-      return;
-    }
-
-    toast({
-      title: "Succès",
-      description: "Parcours supprimé avec succès",
-    });
-
-    fetchSavedWalks();
-  };
+  if (isLoading) {
+    return (
+      <div className="min-h-screen bg-secondary pt-20">
+        <div className="container mx-auto px-4 py-8">
+          <div className="animate-pulse">
+            <div className="h-8 bg-gray-200 rounded w-1/4 mb-8"></div>
+            <div className="space-y-4">
+              {[1, 2, 3].map((i) => (
+                <div key={i} className="h-40 bg-gray-200 rounded"></div>
+              ))}
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-secondary pt-20">
       <div className="container mx-auto px-4 py-8">
-        <div className="flex flex-col items-center mb-12">
-          <img 
-            src="/lovable-uploads/813c2bfd-c10a-4b25-99d1-6171f478abb9.png" 
-            alt="Illustration de personnes en balade"
-            className="w-full max-w-xl h-auto mb-8 rounded-lg"
-          />
-          <h1 className="text-4xl font-display text-text text-center mb-4">Mon Carnet de Route</h1>
-        </div>
-        
-        <section>
-          <h2 className="text-2xl font-display text-text mb-6">Mes Parcours</h2>
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+        <h1 className="text-4xl font-display text-text mb-8">{t("myRoutes")}</h1>
+
+        {savedWalks.length === 0 ? (
+          <div className="text-center py-12">
+            <p className="text-gray-600 mb-4">{t("noSavedRoutes")}</p>
+            <Button onClick={() => navigate("/predefined")}>
+              {t("startExploring")}
+            </Button>
+          </div>
+        ) : (
+          <div className="space-y-6">
             {savedWalks.map((walk) => (
               <SavedWalk
                 key={walk.id}
                 walk={walk}
-                memories={memories[walk.id] || []}
-                onDelete={deleteWalk}
-                onAddMemory={{
-                  selectedWalk,
-                  setSelectedWalk,
-                  newMemory,
-                  setNewMemory,
-                  handleAddMemory,
-                }}
+                onDelete={fetchSavedWalks}
               />
             ))}
           </div>
-        </section>
+        )}
       </div>
     </div>
   );

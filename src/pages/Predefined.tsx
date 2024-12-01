@@ -18,7 +18,7 @@ import {
   lyonGourmandSteps,
   lyonGuignolSteps
 } from "@/data/walkSteps";
-import { touristicCities, cityItineraries } from "@/components/LocationSelector";
+import { touristicCities, cityItineraries } from "@/data/cities";
 import LocationSelector from "@/components/LocationSelector";
 
 const Predefined = () => {

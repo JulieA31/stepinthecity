@@ -19,7 +19,10 @@ export const getImageForWalk = (title: string) => {
     "Toulouse à travers les siècles": "https://images.unsplash.com/photo-1469796466635-455ede028aca?auto=format&fit=crop&w=1200&q=80",
     "Toulouse, cité de l'espace et de l'innovation": "https://images.unsplash.com/photo-1487887235947-a955ef187fcc?auto=format&fit=crop&w=1200&q=80",
     "À la découverte des saveurs de la Ville Rose": "https://images.unsplash.com/photo-1504674900247-0877df9cc836?auto=format&fit=crop&w=1200&q=80",
-    "Toulouse, capitale du rugby": "https://images.unsplash.com/photo-1544213456-bc37cb97df74?auto=format&fit=crop&w=1200&q=80"
+    "Toulouse, capitale du rugby": "https://images.unsplash.com/photo-1544213456-bc37cb97df74?auto=format&fit=crop&w=1200&q=80",
+    "Nice, entre mer et Histoire": "https://images.unsplash.com/photo-1493397212122-2b85dda8106b",
+    "Nice, muse des peintres et des artistes": "https://images.unsplash.com/photo-1487958449943-2429e8be8625",
+    "Nice au naturel": "https://images.unsplash.com/photo-1433832597046-4f10e10ac764"
   };
   return imageMap[title] || "https://images.unsplash.com/photo-1472396961693-142e6e269027";
 };

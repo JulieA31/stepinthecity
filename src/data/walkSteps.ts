@@ -4,3 +4,4 @@ export * from './walks/lisbonne';
 export * from './walks/marseille';
 export * from './walks/lyon';
 export * from './walks/toulouse';
+export * from './walks/nice';

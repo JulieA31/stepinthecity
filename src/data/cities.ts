@@ -4,7 +4,7 @@ import { portugalItineraries } from './itineraries/portugal';
 
 export const touristicCities = {
   France: ["Paris", "Marseille", "Lyon", "Toulouse", "Nice"],
-  Italy: ["Rome", "Venise", "Florence"],
+  Italy: ["Rome", "Venise", "Florence", "Milan"],
   Portugal: ["Lisbonne"]
 };
 
@@ -17,5 +17,5 @@ export const cityItineraries = {
   ...italyItineraries.Rome,
   ...italyItineraries.Venise,
   ...italyItineraries.Florence,
-  ...portugalItineraries.Lisbonne
+  ...italyItineraries.Milan
 };

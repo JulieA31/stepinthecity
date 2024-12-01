@@ -79,5 +79,35 @@ export const italyItineraries = {
       difficulty: "Facile",
       city: "Florence"
     }
+  ],
+  Milan: [
+    {
+      title: "Sur les pas de Léonard de Vinci",
+      description: "Suivez les traces de l'un des plus grands génies de l'histoire. Milan a été un lieu majeur de la carrière de Léonard de Vinci, où il a réalisé certaines de ses œuvres les plus emblématiques.",
+      duration: "3h",
+      difficulty: "Modéré",
+      city: "Milan"
+    },
+    {
+      title: "Milano, la mode et le design",
+      description: "Milan est une capitale mondiale de la mode et du design. Suivez ce parcours pour découvrir les quartiers et les lieux qui font la renommée de la ville.",
+      duration: "2h30",
+      difficulty: "Facile",
+      city: "Milan"
+    },
+    {
+      title: "Sur les traces de l'histoire de Milan",
+      description: "Partez à la découverte des lieux historiques et des monuments qui ont marqué l'évolution de Milan.",
+      duration: "3h",
+      difficulty: "Modéré",
+      city: "Milan"
+    },
+    {
+      title: "Les saveurs de Milan",
+      description: "Savourez les spécialités culinaires de Milan et découvrez des lieux où la gastronomie est mise à l'honneur.",
+      duration: "2h30",
+      difficulty: "Facile",
+      city: "Milan"
+    }
   ]
 };

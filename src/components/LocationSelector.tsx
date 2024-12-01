@@ -9,7 +9,7 @@ import {
 import { MapPin } from "lucide-react";
 
 export const touristicCities = {
-  France: ["Paris", "Marseille", "Lyon"],
+  France: ["Paris", "Marseille", "Lyon", "Toulouse"],
   Italy: ["Rome"],
   Portugal: ["Lisbonne"]
 };
@@ -126,6 +126,36 @@ export const cityItineraries: { [key: string]: any[] } = {
       description: "Une découverte des spécialités culinaires lisboètes.",
       duration: "2h30",
       difficulty: "Facile"
+    }
+  ],
+  Toulouse: [
+    {
+      title: "Toulouse à travers les siècles",
+      description: "Explorez Toulouse, de l'époque romaine à l'âge d'or du pastel, en parcourant ses lieux emblématiques.",
+      duration: "3h",
+      difficulty: "Modéré",
+      city: "Toulouse"
+    },
+    {
+      title: "Toulouse, cité de l'espace et de l'innovation",
+      description: "Un parcours à la découverte des sites scientifiques et technologiques de la ville rose.",
+      duration: "3h30",
+      difficulty: "Modéré",
+      city: "Toulouse"
+    },
+    {
+      title: "À la découverte des saveurs de la Ville Rose",
+      description: "Une promenade gourmande à travers les lieux emblématiques de la gastronomie toulousaine.",
+      duration: "2h30",
+      difficulty: "Facile",
+      city: "Toulouse"
+    },
+    {
+      title: "Toulouse, capitale du rugby",
+      description: "Un parcours pour découvrir l'histoire et la culture du rugby dans la ville rose.",
+      duration: "3h",
+      difficulty: "Modéré",
+      city: "Toulouse"
     }
   ]
 };

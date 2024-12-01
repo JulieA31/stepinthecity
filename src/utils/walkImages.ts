@@ -22,7 +22,11 @@ export const getImageForWalk = (title: string) => {
     "Toulouse, capitale du rugby": "/lovable-uploads/c62ff07e-4ff7-4090-abf8-743da501d09b.png",
     "Nice, entre mer et Histoire": "/lovable-uploads/c8bcd89d-184f-45eb-ab0d-e29b5fc7ffea.png",
     "Nice, muse des peintres et des artistes": "/lovable-uploads/668b53d3-ee46-4b49-9289-72c06f55db81.png",
-    "Nice au naturel": "/lovable-uploads/931ba2b3-3c22-458c-80d3-69e1efa58937.png"
+    "Nice au naturel": "/lovable-uploads/931ba2b3-3c22-458c-80d3-69e1efa58937.png",
+    "Venise et son passé glorieux": "https://images.unsplash.com/photo-1523906834658-6e24ef2386f9?auto=format&fit=crop&w=1200&q=80",
+    "Venise, la ville des amoureux": "https://images.unsplash.com/photo-1514890547357-a9ee288728e0?auto=format&fit=crop&w=1200&q=80",
+    "Venise et ses chefs-d'œuvre": "https://images.unsplash.com/photo-1534113414509-0eec2bfb493f?auto=format&fit=crop&w=1200&q=80",
+    "Venise et ses îles": "https://images.unsplash.com/photo-1605101100278-5d1deb2b6498?auto=format&fit=crop&w=1200&q=80"
   };
   return imageMap[title] || "https://images.unsplash.com/photo-1472396961693-142e6e269027";
 };

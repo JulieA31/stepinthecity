@@ -23,7 +23,11 @@ import {
   toulouseRugbySteps,
   niceHistoriqueSteps,
   niceArtistiqueSteps,
-  niceNaturelSteps
+  niceNaturelSteps,
+  veniseHistoriqueSteps,
+  veniseRomantiqueSteps,
+  veniseArtistiqueSteps,
+  veniseNatureArtisanatSteps
 } from "@/data/walkSteps";
 import { touristicCities, cityItineraries } from "@/data/cities";
 import LocationSelector from "@/components/LocationSelector";
@@ -52,20 +56,21 @@ const Predefined = () => {
       "Sur les traces du passé": surLesTracesDuPasseSteps,
       "Entre terre et mer": entreTerreMerSteps,
       "Marseille et ses arts": marseilleArtsSteps,
-      // Lyon
       "Lyon à travers les siècles": lyonSieclesSteps,
       "Lyon entre Rhône et Saône": lyonRhoneSaoneSteps,
       "Le goût de Lyon": lyonGourmandSteps,
       "Sur les pas de Guignol": lyonGuignolSteps,
-      // Toulouse
       "Toulouse à travers les siècles": toulouseHistoriqueSteps,
       "Toulouse, cité de l'espace et de l'innovation": toulouseScienceSteps,
       "À la découverte des saveurs de la Ville Rose": toulouseGastronomieSteps,
       "Toulouse, capitale du rugby": toulouseRugbySteps,
-      // Nice
       "Nice, entre mer et Histoire": niceHistoriqueSteps,
       "Nice, muse des peintres et des artistes": niceArtistiqueSteps,
-      "Nice au naturel": niceNaturelSteps
+      "Nice au naturel": niceNaturelSteps,
+      "Venise et son passé glorieux": veniseHistoriqueSteps,
+      "Venise, la ville des amoureux": veniseRomantiqueSteps,
+      "Venise et ses chefs-d'œuvre": veniseArtistiqueSteps,
+      "Venise et ses îles": veniseNatureArtisanatSteps
     };
     return stepsMap[title] || [];
   };

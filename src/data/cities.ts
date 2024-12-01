@@ -1,6 +1,6 @@
 export const touristicCities = {
   France: ["Paris", "Marseille", "Lyon", "Toulouse", "Nice"],
-  Italy: ["Rome"],
+  Italy: ["Rome", "Venise"],
   Portugal: ["Lisbonne"]
 };
 
@@ -129,6 +129,73 @@ export const cityItineraries: { [key: string]: any[] } = {
       duration: "3h",
       difficulty: "Modéré",
       city: "Nice"
+    }
+  ],
+  Rome: [
+    {
+      title: "Sur les pas de César",
+      description: "Un voyage à travers l'histoire de Rome, en visitant les monuments et sites emblématiques.",
+      duration: "3h",
+      difficulty: "Modéré",
+      city: "Rome"
+    },
+    {
+      title: "Rome baroque",
+      description: "Découvrez les merveilles architecturales et artistiques de la période baroque.",
+      duration: "2h30",
+      difficulty: "Facile",
+    },
+    {
+      title: "Vatican et spiritualité",
+      description: "Un parcours autour de la spiritualité et de l'art au Vatican.",
+      duration: "3h",
+      difficulty: "Modéré",
+    }
+  ],
+  Venise: [
+    {
+      title: "Venise et son passé glorieux",
+      description: "Un parcours à travers les monuments emblématiques qui ont marqué l'histoire de la Sérénissime.",
+      duration: "3h",
+      difficulty: "Modéré",
+      city: "Venise"
+    },
+    {
+      title: "Venise, la ville des amoureux",
+      description: "Une balade romantique à travers les plus beaux panoramas de la ville.",
+      duration: "2h30",
+      difficulty: "Facile",
+      city: "Venise"
+    },
+    {
+      title: "Venise et ses chefs-d'œuvre",
+      description: "Un parcours culturel à travers les plus grands musées et théâtres de la ville.",
+      duration: "3h",
+      difficulty: "Modéré",
+      city: "Venise"
+    },
+    {
+      title: "Venise et ses îles",
+      description: "Une découverte des îles de la lagune, entre artisanat et nature.",
+      duration: "4h",
+      difficulty: "Modéré",
+      city: "Venise"
+    }
+  ],
+  Lisbonne: [
+    {
+      title: "Lisbonne historique",
+      description: "Un parcours à travers l'histoire de la ville, avec des visites des quartiers historiques.",
+      duration: "3h",
+      difficulty: "Modéré",
+      city: "Lisbonne"
+    },
+    {
+      title: "Saveurs portugaises",
+      description: "Une immersion dans la gastronomie portugaise à travers ses plats typiques.",
+      duration: "2h30",
+      difficulty: "Facile",
+      city: "Lisbonne"
     }
   ]
 };

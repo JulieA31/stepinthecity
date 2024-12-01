@@ -41,6 +41,9 @@ const Predefined = () => {
   const [selectedWalk, setSelectedWalk] = useState<any | null>(null);
   const [selectedCity, setSelectedCity] = useState<string>("");
 
+  console.log('Cities available:', touristicCities);
+  console.log('City itineraries:', cityItineraries);
+
   const toggleAudio = (title: string) => {
     setAudioEnabled(prev => ({
       ...prev,
@@ -84,12 +87,15 @@ const Predefined = () => {
   };
 
   const handleCitySelect = (city: string) => {
+    console.log('Selected city:', city);
     setSelectedCity(city);
   };
 
   const renderWalks = () => {
     if (selectedCity) {
+      console.log('Rendering walks for city:', selectedCity);
       const itineraries = cityItineraries[selectedCity];
+      console.log('Found itineraries:', itineraries);
       if (!itineraries) return null;
 
       return (
@@ -114,37 +120,42 @@ const Predefined = () => {
 
     return (
       <>
-        {Object.entries(touristicCities).map(([country, cities]) => (
-          <div key={country} className="mb-12">
-            <h2 className="text-3xl font-display text-text mb-6">
-              <span className="mr-2">{countryFlags[country]}</span>
-              {country}
-            </h2>
-            {cities.map(city => {
-              const itineraries = cityItineraries[city];
-              if (!itineraries) return null;
-              
-              return (
-                <div key={city} className="mb-8">
-                  <h3 className="text-2xl font-display text-text mb-4">{city}</h3>
-                  <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-                    {itineraries.map((walk: any, index: number) => (
-                      <WalkCard
-                        key={index}
-                        walk={walk}
-                        audioEnabled={audioEnabled[walk.title]}
-                        onAudioToggle={toggleAudio}
-                        onClick={() => setSelectedWalk(walk)}
-                        getImageForWalk={getImageForWalk}
-                        city={city}
-                      />
-                    ))}
+        {Object.entries(touristicCities).map(([country, cities]) => {
+          console.log('Rendering country:', country, 'with cities:', cities);
+          return (
+            <div key={country} className="mb-12">
+              <h2 className="text-3xl font-display text-text mb-6">
+                <span className="mr-2">{countryFlags[country]}</span>
+                {country}
+              </h2>
+              {cities.map(city => {
+                console.log('Processing city:', city);
+                const itineraries = cityItineraries[city];
+                console.log('Found itineraries for city:', itineraries);
+                if (!itineraries) return null;
+                
+                return (
+                  <div key={city} className="mb-8">
+                    <h3 className="text-2xl font-display text-text mb-4">{city}</h3>
+                    <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+                      {itineraries.map((walk: any, index: number) => (
+                        <WalkCard
+                          key={index}
+                          walk={walk}
+                          audioEnabled={audioEnabled[walk.title]}
+                          onAudioToggle={toggleAudio}
+                          onClick={() => setSelectedWalk(walk)}
+                          getImageForWalk={getImageForWalk}
+                          city={city}
+                        />
+                      ))}
+                    </div>
                   </div>
-                </div>
-              );
-            })}
-          </div>
-        ))}
+                );
+              })}
+            </div>
+          );
+        })}
       </>
     );
   };

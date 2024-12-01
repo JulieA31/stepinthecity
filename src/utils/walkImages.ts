@@ -27,10 +27,10 @@ export const getImageForWalk = (title: string) => {
     "Venise, la ville des amoureux": "https://images.unsplash.com/photo-1514890547357-a9ee288728e0?auto=format&fit=crop&w=1200&q=80",
     "Venise et ses chefs-d'œuvre": "https://images.unsplash.com/photo-1534113414509-0eec2bfb493f?auto=format&fit=crop&w=1200&q=80",
     "Venise et ses îles": "https://images.unsplash.com/photo-1605101100278-5d1deb2b6498?auto=format&fit=crop&w=1200&q=80",
-    "Sur les pas de Léonard de Vinci": "https://images.unsplash.com/photo-1487958449943-2429e8be8625?auto=format&fit=crop&w=1200&q=80",
-    "Milano, la mode et le design": "https://images.unsplash.com/photo-1518005020951-eccb494ad742?auto=format&fit=crop&w=1200&q=80",
-    "Sur les traces de l'histoire de Milan": "https://images.unsplash.com/photo-1496307653780-42ee777d4833?auto=format&fit=crop&w=1200&q=80",
-    "Les saveurs de Milan": "https://images.unsplash.com/photo-1431576901776-e539bd916ba2?auto=format&fit=crop&w=1200&q=80",
+    "Sur les traces des Médicis": "https://images.unsplash.com/photo-1473177104440-2731x4096",
+    "Florence, berceau de la Renaissance": "https://images.unsplash.com/photo-1439337153520-4000x6016",
+    "Florence et ses panoramas": "https://images.unsplash.com/photo-1492321936769-2671x4000",
+    "Saveurs et délices de Florence": "https://images.unsplash.com/photo-1466442929976-2834x4251"
   };
   return imageMap[title] || "https://images.unsplash.com/photo-1472396961693-142e6e269027";
 };

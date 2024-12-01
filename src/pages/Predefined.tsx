@@ -27,15 +27,7 @@ import {
   veniseHistoriqueSteps,
   veniseRomantiqueSteps,
   veniseArtistiqueSteps,
-  veniseNatureArtisanatSteps,
-  mediciSteps,
-  renaissanceSteps,
-  panoramaSteps,
-  gastronomieSteps,
-  leonardoSteps,
-  modeDesignSteps,
-  histoireSteps,
-  saveursMilanSteps
+  veniseNatureArtisanatSteps
 } from "@/data/walkSteps";
 import { touristicCities, cityItineraries } from "@/data/cities";
 import LocationSelector from "@/components/LocationSelector";
@@ -78,15 +70,7 @@ const Predefined = () => {
       "Venise et son passé glorieux": veniseHistoriqueSteps,
       "Venise, la ville des amoureux": veniseRomantiqueSteps,
       "Venise et ses chefs-d'œuvre": veniseArtistiqueSteps,
-      "Venise et ses îles": veniseNatureArtisanatSteps,
-      "Sur les traces des Médicis": mediciSteps,
-      "Florence, berceau de la Renaissance": renaissanceSteps,
-      "Florence et ses panoramas": panoramaSteps,
-      "Saveurs et délices de Florence": gastronomieSteps,
-      "Sur les pas de Léonard de Vinci": leonardoSteps,
-      "Milano, la mode et le design": modeDesignSteps,
-      "Sur les traces de l'histoire de Milan": histoireSteps,
-      "Les saveurs de Milan": saveursMilanSteps
+      "Venise et ses îles": veniseNatureArtisanatSteps
     };
     return stepsMap[title] || [];
   };

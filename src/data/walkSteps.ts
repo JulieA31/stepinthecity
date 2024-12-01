@@ -7,4 +7,3 @@ export * from './walks/toulouse';
 export * from './walks/nice';
 export * from './walks/venise';
 export * from './walks/florence';
-export * from './walks/milan';

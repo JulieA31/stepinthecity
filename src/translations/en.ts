@@ -38,6 +38,7 @@ export const enTranslations = {
   "audioGuide": "Audio guide",
   "audioAvailable": "Audio guide available",
   "audioNotAvailable": "Audio guide not available",
+  "selectCountry": "Select a country",
   
   // Walks
   "classicsParis": "Paris Classics",
@@ -74,20 +75,8 @@ export const enTranslations = {
   "niceArtDesc": "Discover Nice from a creative angle, following in the footsteps of artists who were inspired by its unique light.",
   "niceNature": "Nice Naturally",
   "niceNatureDesc": "A relaxing walk through the most beautiful green and natural spaces of Nice.",
-  "selectCountry": "Select a country",
-
-  // Difficulty levels
-  "easy": "Easy",
-  "moderate": "Moderate",
-  "hard": "Hard",
 
   // Walk details
-  "routeSteps": "Route steps",
-  "duration": "Duration",
-  "difficulty": "Difficulty",
-  "audioGuide": "Audio guide",
-
-  // Paris walks steps
   "placeVendome": "Place Vendôme",
   "placeVendomeDesc": "Admire this royal square and its luxury boutiques",
   "palaisRoyal": "Palais Royal",
@@ -106,8 +95,6 @@ export const enTranslations = {
   "arcTriompheDesc": "Discover this historic monument and its panoramic view",
   "placeConcorde": "Place de la Concorde",
   "placeConcordeDesc": "Explore Paris's largest square",
-
-  // Rome walks steps
   "colisee": "Colosseum",
   "coliseeDesc": "Discover the world's most famous amphitheater",
   "forumRomain": "Roman Forum",
@@ -120,8 +107,6 @@ export const enTranslations = {
   "placeEspagneDesc": "Discover this iconic square and its monumental staircase",
   "vatican": "Vatican City",
   "vaticanDesc": "Explore the world's smallest state and its artistic treasures",
-
-  // Marseille walks steps
   "vieuxPort": "Old Port",
   "vieuxPortDesc": "Discover Marseille's historic heart",
   "notredameGarde": "Notre-Dame de la Garde",
@@ -132,8 +117,6 @@ export const enTranslations = {
   "mucemDesc": "Discover this museum dedicated to Mediterranean civilizations",
   "corniche": "La Corniche",
   "cornicheDesc": "Walk along this panoramic road",
-
-  // Lyon walks steps
   "fourviere": "Fourvière Basilica",
   "fourviereDesc": "Admire the 'praying hill' and its basilica",
   "vieuxLyon": "Old Lyon",
@@ -144,8 +127,6 @@ export const enTranslations = {
   "presquileDesc": "Walk through the heart of Lyon",
   "confluences": "Confluences Museum",
   "confluencesDesc": "Visit this museum with futuristic architecture",
-
-  // Nice walks steps
   "promenadeAnglais": "Promenade des Anglais",
   "promenadeAnglaisDesc": "Stroll along this famous promenade",
   "vieuxNice": "Old Nice",

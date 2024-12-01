@@ -9,13 +9,13 @@ export const touristicCities = {
 };
 
 export const cityItineraries = {
-  ...franceItineraries.Paris,
-  ...franceItineraries.Marseille,
-  ...franceItineraries.Lyon,
-  ...franceItineraries.Toulouse,
-  ...franceItineraries.Nice,
-  ...italyItineraries.Rome,
-  ...italyItineraries.Venise,
-  ...italyItineraries.Florence,
-  ...portugalItineraries.Lisbonne
+  Paris: franceItineraries.Paris,
+  Marseille: franceItineraries.Marseille,
+  Lyon: franceItineraries.Lyon,
+  Toulouse: franceItineraries.Toulouse,
+  Nice: franceItineraries.Nice,
+  Rome: italyItineraries.Rome,
+  Venise: italyItineraries.Venise,
+  Florence: italyItineraries.Florence,
+  Lisbonne: portugalItineraries.Lisbonne
 };

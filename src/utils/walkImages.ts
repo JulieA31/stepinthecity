@@ -27,10 +27,10 @@ export const getImageForWalk = (title: string) => {
     "Venise, la ville des amoureux": "https://images.unsplash.com/photo-1514890547357-a9ee288728e0?auto=format&fit=crop&w=1200&q=80",
     "Venise et ses chefs-d'œuvre": "https://images.unsplash.com/photo-1534113414509-0eec2bfb493f?auto=format&fit=crop&w=1200&q=80",
     "Venise et ses îles": "https://images.unsplash.com/photo-1605101100278-5d1deb2b6498?auto=format&fit=crop&w=1200&q=80",
-    "Sur les traces des Médicis": "https://images.unsplash.com/photo-1473177104440-2731x4096",
-    "Florence, berceau de la Renaissance": "https://images.unsplash.com/photo-1439337153520-4000x6016",
-    "Florence et ses panoramas": "https://images.unsplash.com/photo-1492321936769-2671x4000",
-    "Saveurs et délices de Florence": "https://images.unsplash.com/photo-1466442929976-2834x4251"
+    "Sur les traces des Médicis": "/lovable-uploads/e033d088-6611-4642-b8cc-db34ee2d6760.png",
+    "Florence, berceau de la Renaissance": "/lovable-uploads/ef89b623-953b-4360-89f5-5504df241724.png",
+    "Florence et ses panoramas": "/lovable-uploads/15629582-848a-4c40-8452-a44f181a470f.png",
+    "Saveurs et délices de Florence": "/lovable-uploads/b32ee3e0-a11e-44e8-969c-9fe62f675c53.png"
   };
   return imageMap[title] || "https://images.unsplash.com/photo-1472396961693-142e6e269027";
 };

@@ -9,7 +9,10 @@ import {
   victorHugoSteps,
   romeAntiqueSteps,
   romeBaroqueSteps,
-  vaticanSteps 
+  vaticanSteps,
+  surLesTracesDuPasseSteps,
+  entreTerreMerSteps,
+  marseilleArtsSteps
 } from "@/data/walkSteps";
 import { touristicCities, cityItineraries } from "@/components/LocationSelector";
 import LocationSelector from "@/components/LocationSelector";

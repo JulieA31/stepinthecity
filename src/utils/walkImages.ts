@@ -12,10 +12,10 @@ export const getImageForWalk = (title: string) => {
     "Sur les pas de César": "/lovable-uploads/9cca43e2-895d-425c-8241-4f75705a0235.png",
     "Rome baroque": "https://images.unsplash.com/photo-1529260830199-42c24126f198?auto=format&fit=crop&w=1200&q=80",
     "Vatican et spiritualité": "https://images.unsplash.com/photo-1531572753322-ad063cecc140?auto=format&fit=crop&w=1200&q=80",
-    "Lyon à travers les siècles": "https://images.unsplash.com/photo-1472396961693-142e6e269027?auto=format&fit=crop&w=1200&q=80",
-    "Lyon entre Rhône et Saône": "https://images.unsplash.com/photo-1438565434616-af9238b0a3dc?auto=format&fit=crop&w=1200&q=80",
-    "Le goût de Lyon": "https://images.unsplash.com/photo-1466721591366-2d5fba72dc4d?auto=format&fit=crop&w=1200&q=80",
-    "Sur les pas de Guignol": "https://images.unsplash.com/photo-1493962853295-c31c41d95b6d?auto=format&fit=crop&w=1200&q=80"
+    "Lyon à travers les siècles": "/lovable-uploads/052190c5-0d22-4d5a-a57c-8c1afe789006.png",
+    "Lyon entre Rhône et Saône": "/lovable-uploads/c7cf9ecb-7db7-4a9f-a203-3bfcfb30c3e5.png",
+    "Le goût de Lyon": "/lovable-uploads/d5fe661b-ffde-4a9f-8fe0-0ea742ee45a0.png",
+    "Sur les pas de Guignol": "/lovable-uploads/c612c987-4f0b-4d1d-b90d-2656adec4d8d.png"
   };
   return imageMap[title] || "https://images.unsplash.com/photo-1472396961693-142e6e269027";
 };
